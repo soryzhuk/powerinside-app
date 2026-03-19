@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -29,7 +29,7 @@ const LANGUAGES = [
 
 type Role = "ATHLETE" | "COACH";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialRole = searchParams.get("role") === "coach" ? "COACH" : "ATHLETE";
@@ -37,6 +37,7 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [country, setCountry] = useState("UA");
   const [language, setLanguage] = useState("uk");
@@ -58,6 +59,7 @@ export default function RegisterPage() {
         password,
         phone: phone || undefined,
         country,
+        address: address || undefined,
         language,
         role,
       });
@@ -161,6 +163,15 @@ export default function RegisterPage() {
           />
 
           <Input
+            label="Поштова адреса"
+            type="text"
+            placeholder="вул. Шевченка, 1, м. Київ"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            autoComplete="street-address"
+          />
+
+          <Input
             label="Пароль"
             type="password"
             placeholder="Мінімум 6 символів"
@@ -223,5 +234,13 @@ export default function RegisterPage() {
         </p>
       </CardBody>
     </Card>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }

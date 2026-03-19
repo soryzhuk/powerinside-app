@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Inter } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
@@ -22,13 +21,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="uk" className={inter.variable}>
-      <head>
-        {/* Telegram WebApp SDK — loaded for /tg routes, harmless on others */}
-        <Script
-          src="https://telegram.org/js/telegram-web-app.js"
-          strategy="beforeInteractive"
-        />
-      </head>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <Providers>{children}</Providers>
       </body>

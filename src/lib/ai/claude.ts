@@ -5,9 +5,14 @@ import {
   SUPPORT_SYSTEM_PROMPT,
 } from "./prompts";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// Lazy initialization to avoid build-time errors when ANTHROPIC_API_KEY is not set
+let _anthropic: Anthropic | null = null;
+function getClient(): Anthropic {
+  if (!_anthropic) {
+    _anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  }
+  return _anthropic;
+}
 
 const MODEL = "claude-sonnet-4-20250514";
 const MAX_TOKENS = 4096;
@@ -25,7 +30,7 @@ export async function chatWithCoach(
   messages: ChatMessage[],
   systemPrompt: string = INTERVIEW_SYSTEM_PROMPT
 ): Promise<string> {
-  const response = await anthropic.messages.create({
+  const response = await getClient().messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     system: systemPrompt,
@@ -52,7 +57,7 @@ export async function chatWithAthlete(
     coachContext.coachRules
   );
 
-  const response = await anthropic.messages.create({
+  const response = await getClient().messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     system: systemPrompt,
@@ -71,7 +76,7 @@ export async function chatWithAthlete(
  * Returns the full response text.
  */
 export async function chatSupport(messages: ChatMessage[]): Promise<string> {
-  const response = await anthropic.messages.create({
+  const response = await getClient().messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     system: SUPPORT_SYSTEM_PROMPT,
@@ -93,7 +98,7 @@ export async function* streamChatWithCoach(
   messages: ChatMessage[],
   systemPrompt: string = INTERVIEW_SYSTEM_PROMPT
 ): AsyncGenerator<string, void, unknown> {
-  const stream = anthropic.messages.stream({
+  const stream = getClient().messages.stream({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     system: systemPrompt,
@@ -126,7 +131,7 @@ export async function* streamChatWithAthlete(
     coachContext.coachRules
   );
 
-  const stream = anthropic.messages.stream({
+  const stream = getClient().messages.stream({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     system: systemPrompt,
@@ -153,7 +158,7 @@ export async function* streamChatWithAthlete(
 export async function* streamChatSupport(
   messages: ChatMessage[]
 ): AsyncGenerator<string, void, unknown> {
-  const stream = anthropic.messages.stream({
+  const stream = getClient().messages.stream({
     model: MODEL,
     max_tokens: MAX_TOKENS,
     system: SUPPORT_SYSTEM_PROMPT,

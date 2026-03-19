@@ -16,6 +16,7 @@ export const authRouter = router({
         name: z.string().min(1),
         phone: z.string().optional(),
         country: z.string().optional(),
+        address: z.string().optional(),
         language: z.string().default("uk"),
         role: z
           .enum(["ATHLETE", "COACH", "INVESTOR"])
@@ -43,6 +44,7 @@ export const authRouter = router({
           name: input.name,
           phone: input.phone,
           country: input.country,
+          address: input.address,
           language: input.language,
           role: input.role,
           balance: {

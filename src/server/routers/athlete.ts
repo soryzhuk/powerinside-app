@@ -2,12 +2,14 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "../trpc";
 import { chatWithAthlete, type ChatMessage } from "@/lib/ai/claude";
+import { checkAndResetWeeklyBalance } from "@/lib/balance";
 
 export const athleteRouter = router({
   /**
    * Get the current user's message balance.
    */
   getBalance: protectedProcedure.query(async ({ ctx }) => {
+    await checkAndResetWeeklyBalance(ctx.session.user.id);
     const balance = await ctx.prisma.messageBalance.findUnique({
       where: { userId: ctx.session.user.id },
     });
@@ -43,6 +45,9 @@ export const athleteRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // Reset weekly balance if needed
+      await checkAndResetWeeklyBalance(ctx.session.user.id);
+
       // Check message balance
       const balance = await ctx.prisma.messageBalance.findUnique({
         where: { userId: ctx.session.user.id },

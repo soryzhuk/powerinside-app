@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { TelegramProvider } from "@/components/telegram/tg-provider";
 import type { ReactNode } from "react";
 
@@ -8,10 +9,16 @@ export const metadata = {
 
 export default function TelegramLayout({ children }: { children: ReactNode }) {
   return (
-    <TelegramProvider>
-      <div className="min-h-screen bg-[var(--tg-theme-bg-color,#0f0f23)] text-[var(--tg-theme-text-color,#e0e0e0)]">
-        {children}
-      </div>
-    </TelegramProvider>
+    <>
+      <Script
+        src="https://telegram.org/js/telegram-web-app.js"
+        strategy="beforeInteractive"
+      />
+      <TelegramProvider>
+        <div className="min-h-screen bg-[var(--tg-theme-bg-color,#0f0f23)] text-[var(--tg-theme-text-color,#e0e0e0)]">
+          {children}
+        </div>
+      </TelegramProvider>
+    </>
   );
 }

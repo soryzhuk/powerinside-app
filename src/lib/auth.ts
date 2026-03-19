@@ -1,9 +1,9 @@
 import NextAuth, { type NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
-import prisma from "./prisma";
-import type { User, UserRole } from "@/app/generated/prisma/client";
+import pg from "pg";
+
+type UserRole = "ATHLETE" | "COACH" | "INVESTOR" | "ADMIN" | "OWNER";
 
 declare module "next-auth" {
   interface Session {
@@ -17,10 +17,37 @@ declare module "next-auth" {
   }
 }
 
-// JWT type extension handled via type assertion in callbacks
+async function findUserByEmail(email: string) {
+  const pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
+  try {
+    const result = await pool.query(
+      'SELECT id, email, name, image, "passwordHash", role FROM users WHERE email = $1',
+      [email]
+    );
+    return result.rows[0] || null;
+  } finally {
+    await pool.end();
+  }
+}
+
+async function findUserById(id: string) {
+  const pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
+  try {
+    const result = await pool.query(
+      "SELECT role FROM users WHERE id = $1",
+      [id]
+    );
+    return result.rows[0] || null;
+  } finally {
+    await pool.end();
+  }
+}
 
 export const authConfig: NextAuthConfig = {
-  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
   },
@@ -42,9 +69,7 @@ export const authConfig: NextAuthConfig = {
         const email = credentials.email as string;
         const password = credentials.password as string;
 
-        const user = await prisma.user.findUnique({
-          where: { email },
-        });
+        const user = await findUserByEmail(email);
 
         if (!user || !user.passwordHash) {
           return null;
@@ -61,7 +86,6 @@ export const authConfig: NextAuthConfig = {
           email: user.email,
           name: user.name,
           image: user.image,
-          role: user.role,
         };
       },
     }),
@@ -70,7 +94,8 @@ export const authConfig: NextAuthConfig = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id as string;
-        token.role = (user as unknown as User).role;
+        const dbUser = await findUserById(user.id as string);
+        token.role = dbUser?.role ?? "ATHLETE";
       }
       return token;
     },

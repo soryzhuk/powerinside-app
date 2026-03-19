@@ -100,7 +100,7 @@ export default function LandingPage() {
             <span className="text-primary">силових видів спорту</span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-lg sm:text-xl text-muted mb-10 leading-relaxed">
+          <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted mb-10 leading-relaxed">
             Персоналізований AI-коучинг на основі методик реальних тренерів.
             Пауерліфтинг, стронгмен, важка атлетика — знайдіть свого тренера та
             досягайте нових висот.

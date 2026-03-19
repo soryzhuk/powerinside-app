@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   MessageSquare,
   Gift,
@@ -8,34 +9,55 @@ import {
   ShoppingCart,
   Check,
   Zap,
+  Crown,
 } from "lucide-react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 
 const MESSAGE_PACKS = [
-  { messages: 10, price: 10, popular: false },
-  { messages: 20, price: 18, popular: false },
-  { messages: 50, price: 30, popular: true },
-  { messages: 100, price: 50, popular: false },
+  { id: "pack_10", messages: 10, price: 10, popular: false },
+  { id: "pack_20", messages: 20, price: 18, popular: false },
+  { id: "pack_50", messages: 50, price: 30, popular: true },
+  { id: "pack_100", messages: 100, price: 50, popular: false },
 ];
 
-export default function BalancePage() {
-  const [purchasing, setPurchasing] = useState<number | null>(null);
+function BalanceContent() {
+  const searchParams = useSearchParams();
 
   const balanceQuery = trpc.athlete.getBalance.useQuery();
-  const balance = balanceQuery.data;
+  const subscriptionQuery = trpc.billing.getSubscription.useQuery();
+  const checkoutMutation = trpc.billing.createCheckoutSession.useMutation();
 
-  async function handlePurchase(messages: number, price: number) {
-    setPurchasing(messages);
-    // TODO: integrate with Stripe payment flow
-    // For now, simulate a delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setPurchasing(null);
-    alert(
-      `Оплата $${price} за ${messages} повідомлень буде доступна найближчим часом.`
-    );
+  const balance = balanceQuery.data;
+  const subscription = subscriptionQuery.data;
+
+  // Show feedback after Stripe redirect
+  useEffect(() => {
+    if (searchParams.get("success") === "1") {
+      balanceQuery.refetch();
+      subscriptionQuery.refetch();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function handlePurchasePack(packId: string) {
+    const result = await checkoutMutation.mutateAsync({
+      type: "pack",
+      planId: packId,
+    });
+    if (result.url) window.location.href = result.url;
   }
+
+  async function handleSubscribe() {
+    const result = await checkoutMutation.mutateAsync({
+      type: "subscription",
+      planId: "BASIC",
+    });
+    if (result.url) window.location.href = result.url;
+  }
+
+  const hasActiveSubscription = subscription?.status === "ACTIVE";
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -47,6 +69,18 @@ export default function BalancePage() {
           Управляйте своїм балансом та купуйте пакети повідомлень
         </p>
       </div>
+
+      {searchParams.get("success") === "1" && (
+        <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
+          ✓ Оплата успішна! Ваш баланс оновлено.
+        </div>
+      )}
+
+      {searchParams.get("canceled") === "1" && (
+        <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm">
+          Оплату скасовано.
+        </div>
+      )}
 
       {/* Current balance */}
       <div className="grid sm:grid-cols-3 gap-4">
@@ -103,30 +137,71 @@ export default function BalancePage() {
             <p className="text-sm text-muted-foreground">Загальний баланс</p>
             <p className="text-3xl font-bold">{balance?.total ?? "..."}</p>
           </div>
-          <p className="text-sm text-muted-foreground">
-            повідомлень доступно
-          </p>
+          <p className="text-sm text-muted-foreground">повідомлень доступно</p>
         </CardBody>
       </Card>
 
-      {/* Subscription info */}
-      <Card>
+      {/* Subscription */}
+      <Card className={hasActiveSubscription ? "border-primary/40" : ""}>
         <CardHeader>
-          <h2 className="text-lg font-semibold">Підписка</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Підписка</h2>
+            {hasActiveSubscription && (
+              <span className="px-2 py-0.5 text-xs rounded-full bg-primary/20 text-primary font-medium">
+                Активна
+              </span>
+            )}
+          </div>
         </CardHeader>
         <CardBody>
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-secondary">
-              <Zap className="w-5 h-5 text-muted-foreground" />
+          {hasActiveSubscription ? (
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Crown className="w-5 h-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium">
+                  {subscription?.plan ?? "BASIC"} — $30 / місяць
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {subscription?.currentPeriodEnd
+                    ? `Наступне списання: ${new Date(subscription.currentPeriodEnd).toLocaleDateString("uk-UA")}`
+                    : "Підписка активна"}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium">Безкоштовний план</p>
-              <p className="text-xs text-muted-foreground">
-                50 безкоштовних повідомлень при реєстрації. Оновіть підписку для
-                більшого доступу.
-              </p>
+          ) : (
+            <div className="flex items-start gap-4">
+              <div className="flex-1">
+                <p className="text-sm font-medium mb-1">
+                  Basic — $30 / місяць
+                </p>
+                <ul className="text-xs text-muted-foreground space-y-1 mb-4">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                    20 повідомлень на тиждень
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                    AI-чат з тренером
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-green-400 shrink-0" />
+                    Доступ до методики
+                  </li>
+                </ul>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  loading={checkoutMutation.isPending}
+                  onClick={handleSubscribe}
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Підключити Basic
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </CardBody>
       </Card>
 
@@ -136,7 +211,7 @@ export default function BalancePage() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {MESSAGE_PACKS.map((pack) => (
             <Card
-              key={pack.messages}
+              key={pack.id}
               className={
                 pack.popular
                   ? "border-primary/50 ring-1 ring-primary/20"
@@ -176,8 +251,8 @@ export default function BalancePage() {
                 <Button
                   fullWidth
                   variant={pack.popular ? "primary" : "outline"}
-                  loading={purchasing === pack.messages}
-                  onClick={() => handlePurchase(pack.messages, pack.price)}
+                  loading={checkoutMutation.isPending}
+                  onClick={() => handlePurchasePack(pack.id)}
                 >
                   Купити
                 </Button>
@@ -187,5 +262,13 @@ export default function BalancePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function BalancePage() {
+  return (
+    <Suspense>
+      <BalanceContent />
+    </Suspense>
   );
 }

@@ -4,6 +4,22 @@ import { router, coachProcedure } from "../trpc";
 import { chatWithCoach, type ChatMessage } from "@/lib/ai/claude";
 import { INTERVIEW_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import type { InterviewRound } from "@/app/generated/prisma/client";
+import {
+  sendInterviewRoundCompletedEmail,
+  sendInterviewCompletedEmail,
+} from "@/lib/email";
+
+const ROUND_LABELS: Record<string, string> = {
+  TARGET_ATHLETE: "Цільовий атлет",
+  LOAD_MANAGEMENT: "Управління навантаженням",
+  AUTOREGULATION: "Авторегуляція",
+  PROGRESSION_DELOAD: "Прогресія та розвантаження",
+  EXERCISE_SELECTION: "Підбір вправ",
+  TECHNIQUE_STANDARDS: "Стандарти техніки",
+  LIFESTYLE_RECOVERY: "Спосіб життя та відновлення",
+};
+
+const TOTAL_ROUNDS = 7;
 
 export const coachRouter = router({
   /**
@@ -227,6 +243,35 @@ export const coachRouter = router({
         },
       });
 
+      // Send email asynchronously — don't block the response
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.session.user.id },
+        select: { email: true, name: true },
+      });
+
+      if (user) {
+        const roundLabel = ROUND_LABELS[session.round] ?? session.round;
+        const insights = updated.summary?.insights ?? "Резюме ще формується.";
+
+        sendInterviewRoundCompletedEmail({
+          coachEmail: user.email,
+          coachName: user.name ?? "Тренер",
+          roundLabel,
+          insights,
+        }).catch(console.error);
+
+        // If all rounds completed — send final email
+        const completedCount = await ctx.prisma.interviewSession.count({
+          where: { coachId: profile.id, status: "COMPLETED" },
+        });
+        if (completedCount >= TOTAL_ROUNDS) {
+          sendInterviewCompletedEmail({
+            coachEmail: user.email,
+            coachName: user.name ?? "Тренер",
+          }).catch(console.error);
+        }
+      }
+
       return updated;
     }),
 
@@ -269,6 +314,40 @@ export const coachRouter = router({
     return ctx.prisma.methodologyRule.findMany({
       where: { coachId: profile.id },
       orderBy: [{ round: "asc" }, { createdAt: "asc" }],
+    });
+  }),
+
+  /**
+   * Get payouts for the current coach (70% share from subscriptions).
+   */
+  getPayouts: coachProcedure.query(async ({ ctx }) => {
+    const profile = await ctx.prisma.coachProfile.findUnique({
+      where: { userId: ctx.session.user.id },
+    });
+
+    if (!profile) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Coach profile not found.",
+      });
+    }
+
+    return ctx.prisma.payout.findMany({
+      where: { coachId: profile.id },
+      orderBy: { createdAt: "desc" },
+    });
+  }),
+
+  /**
+   * List active coaches (for athletes to choose from).
+   */
+  listActive: coachProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.coachProfile.findMany({
+      where: { status: "ACTIVE" },
+      include: {
+        user: { select: { id: true, name: true, image: true } },
+        _count: { select: { methodologyRules: true, knowledgeBase: true } },
+      },
     });
   }),
 });

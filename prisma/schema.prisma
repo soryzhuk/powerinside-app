@@ -250,6 +250,7 @@ model WisdomEntry {
 model Subscription {
   id               String             @id @default(cuid())
   userId           String             @unique
+  coachId          String?
   plan             SubscriptionPlan   @default(BASIC)
   status           SubscriptionStatus @default(ACTIVE)
   stripeCustomerId String?
@@ -338,13 +339,16 @@ model ExpertAnswer {
 // ─── Payouts ──────────────────────────────────────
 
 model Payout {
-  id          String       @id @default(cuid())
-  coachId     String
-  amount      Int
-  status      PayoutStatus @default(PENDING)
-  periodStart DateTime
-  periodEnd   DateTime
-  createdAt   DateTime     @default(now())
+  id              String       @id @default(cuid())
+  coachId         String
+  amount          Int
+  platformFee     Int          @default(0)
+  status          PayoutStatus @default(PENDING)
+  sourceType      String       @default("subscription")
+  stripePaymentId String?
+  periodStart     DateTime
+  periodEnd       DateTime
+  createdAt       DateTime     @default(now())
 
   coach CoachProfile @relation(fields: [coachId], references: [id], onDelete: Cascade)
 

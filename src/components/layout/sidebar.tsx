@@ -14,6 +14,8 @@ import {
   Users,
   BarChart3,
   ShieldCheck,
+  HelpCircle,
+  MessagesSquare,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -27,17 +29,25 @@ const navByRole: Record<string, NavItem[]> = {
   ATHLETE: [
     { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
     { label: "Чат", href: "/chat", icon: MessageCircle },
+    { label: "Мультиексперт", href: "/qa", icon: HelpCircle },
     { label: "Баланс", href: "/balance", icon: Wallet },
     { label: "Профіль", href: "/profile", icon: UserCircle },
   ],
   COACH: [
     { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
     { label: "Інтерв'ю", href: "/interview", icon: ClipboardList },
+    { label: "Питання атлетів", href: "/expert-qa", icon: MessagesSquare },
     { label: "База знань", href: "/knowledge", icon: BookOpen },
     { label: "Виплати", href: "/payouts", icon: Banknote },
     { label: "Профіль", href: "/profile", icon: UserCircle },
   ],
   ADMIN: [
+    { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
+    { label: "Користувачі", href: "/admin/users", icon: Users },
+    { label: "Тренери", href: "/admin/coaches", icon: ShieldCheck },
+    { label: "Аналітика", href: "/admin/analytics", icon: BarChart3 },
+  ],
+  OWNER: [
     { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
     { label: "Користувачі", href: "/admin/users", icon: Users },
     { label: "Тренери", href: "/admin/coaches", icon: ShieldCheck },
