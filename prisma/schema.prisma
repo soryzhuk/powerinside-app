@@ -1,0 +1,383 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ATHLETE
+  COACH
+  INVESTOR
+  ADMIN
+  OWNER
+}
+
+enum CoachStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum SubscriptionPlan {
+  BASIC
+  INDIVIDUAL
+  PERSONAL
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+enum InterviewRound {
+  TARGET_ATHLETE
+  LOAD_MANAGEMENT
+  AUTOREGULATION
+  PROGRESSION_DELOAD
+  EXERCISE_SELECTION
+  TECHNIQUE_STANDARDS
+  LIFESTYLE_RECOVERY
+}
+
+enum InterviewSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum ConversationType {
+  AI_QA
+  SUPPORT
+  MULTI_EXPERT
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ─── Auth (NextAuth) ──────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── Users ────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  phone         String?
+  passwordHash  String?
+  name          String?
+  image         String?
+  country       String?
+  address       String?
+  language      String    @default("uk")
+  role          UserRole  @default(ATHLETE)
+  telegramId    String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  coachProfile  CoachProfile?
+  subscription  Subscription?
+  balance       MessageBalance?
+  purchases     MessagePackPurchase[]
+  conversations Conversation[]
+  referralsSent     Referral[] @relation("Referrer")
+  referralsReceived Referral[] @relation("Referred")
+  expertAnswers     ExpertAnswer[]
+
+  @@map("users")
+}
+
+// ─── Coach ────────────────────────────────────────
+
+model CoachProfile {
+  id             String      @id @default(cuid())
+  userId         String      @unique
+  status         CoachStatus @default(PENDING)
+  whitelisted    Boolean     @default(false)
+  identityDoc    String?
+  bio            String?
+  specialization String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interviewSessions InterviewSession[]
+  knowledgeBase    KnowledgeEntry[]
+  methodologyRules MethodologyRule[]
+  payouts          Payout[]
+
+  @@map("coach_profiles")
+}
+
+// ─── Interview ────────────────────────────────────
+
+model InterviewSession {
+  id        String                 @id @default(cuid())
+  coachId   String
+  round     InterviewRound
+  status    InterviewSessionStatus @default(IN_PROGRESS)
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+
+  coach    CoachProfile       @relation(fields: [coachId], references: [id], onDelete: Cascade)
+  messages InterviewMessage[]
+  summary  InterviewRoundSummary?
+
+  @@unique([coachId, round])
+  @@map("interview_sessions")
+}
+
+model InterviewMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("interview_messages")
+}
+
+model InterviewRoundSummary {
+  id          String   @id @default(cuid())
+  sessionId   String   @unique
+  insights    String
+  rules       Json
+  terminology Json
+  fingerprint Json
+  confirmed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("interview_round_summaries")
+}
+
+// ─── Knowledge Base ───────────────────────────────
+
+model MethodologyRule {
+  id          String         @id @default(cuid())
+  coachId     String
+  round       InterviewRound
+  title       String
+  condition   String?
+  signal      String?
+  decision    String?
+  exception   String?
+  alternative String?
+  confirmed   Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+
+  coach CoachProfile @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@map("methodology_rules")
+}
+
+model KnowledgeEntry {
+  id        String   @id @default(cuid())
+  coachId   String
+  category  String
+  question  String
+  answer    String
+  approved  Boolean  @default(false)
+  source    String
+  createdAt DateTime @default(now())
+
+  coach CoachProfile @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@map("knowledge_entries")
+}
+
+model WisdomEntry {
+  id        String   @id @default(cuid())
+  category  String
+  content   String
+  source    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@map("wisdom_entries")
+}
+
+// ─── Subscriptions & Billing ──────────────────────
+
+model Subscription {
+  id               String             @id @default(cuid())
+  userId           String             @unique
+  plan             SubscriptionPlan   @default(BASIC)
+  status           SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId String?
+  stripeSubId      String?
+  currentPeriodEnd DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model MessageBalance {
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  weeklyRemaining    Int       @default(0)
+  purchasedRemaining Int       @default(0)
+  freeRemaining      Int       @default(50)
+  weekResetAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("message_balances")
+}
+
+model MessagePackPurchase {
+  id              String   @id @default(cuid())
+  userId          String
+  quantity        Int
+  amount          Int
+  stripePaymentId String?
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("message_pack_purchases")
+}
+
+// ─── Conversations ────────────────────────────────
+
+model Conversation {
+  id        String           @id @default(cuid())
+  userId    String
+  coachId   String?
+  type      ConversationType @default(AI_QA)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages      Message[]
+  expertAnswers ExpertAnswer[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String
+  content        String
+  billed         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model ExpertAnswer {
+  id             String   @id @default(cuid())
+  conversationId String
+  coachId        String
+  content        String
+  selected       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  coach        User         @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@map("expert_answers")
+}
+
+// ─── Payouts ──────────────────────────────────────
+
+model Payout {
+  id          String       @id @default(cuid())
+  coachId     String
+  amount      Int
+  status      PayoutStatus @default(PENDING)
+  periodStart DateTime
+  periodEnd   DateTime
+  createdAt   DateTime     @default(now())
+
+  coach CoachProfile @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@map("payouts")
+}
+
+// ─── Referrals ────────────────────────────────────
+
+model Referral {
+  id          String   @id @default(cuid())
+  referrerId  String
+  referredId  String
+  bonusAmount Int      @default(0)
+  claimed     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  referrer User @relation("Referrer", fields: [referrerId], references: [id])
+  referred User @relation("Referred", fields: [referredId], references: [id])
+
+  @@unique([referrerId, referredId])
+  @@map("referrals")
+}
+
+// ─── Audit Log ────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@map("audit_logs")
+}

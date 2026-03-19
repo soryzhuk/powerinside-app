@@ -1,0 +1,1 @@
+{"@prisma/engines": true, "prisma": true, "@swc/core": true, "@parcel/watcher": true}
