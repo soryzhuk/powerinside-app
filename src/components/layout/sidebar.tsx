@@ -123,7 +123,9 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 ? "Атлет"
                 : role === "COACH"
                   ? "Тренер"
-                  : "Адмін"}
+                  : role === "OWNER"
+                    ? "Власник"
+                    : "Адмін"}
             </p>
           </div>
         </div>

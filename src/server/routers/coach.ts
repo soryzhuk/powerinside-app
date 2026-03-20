@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { router, coachProcedure } from "../trpc";
+import { router, coachProcedure, protectedProcedure } from "../trpc";
 import { chatWithCoach, type ChatMessage } from "@/lib/ai/claude";
 import { INTERVIEW_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import type { InterviewRound } from "@/app/generated/prisma/client";
@@ -341,7 +341,7 @@ export const coachRouter = router({
   /**
    * List active coaches (for athletes to choose from).
    */
-  listActive: coachProcedure.query(async ({ ctx }) => {
+  listActive: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.coachProfile.findMany({
       where: { status: "ACTIVE" },
       include: {
