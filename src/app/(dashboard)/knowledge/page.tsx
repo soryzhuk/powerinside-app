@@ -122,9 +122,11 @@ export default function KnowledgePage() {
                     {roundRules.map((rule) => (
                       <div
                         key={rule.id}
-                        className="p-3 rounded-lg bg-secondary/50 border border-border/50"
+                        className="p-3 rounded-lg bg-secondary/50 border border-border/50 space-y-1"
                       >
-                        <p className="text-sm">{rule.content}</p>
+                        <p className="text-sm font-medium">{rule.title}</p>
+                        {rule.condition && <p className="text-xs text-muted-foreground">Умова: {rule.condition}</p>}
+                        {rule.decision && <p className="text-xs text-muted-foreground">Рішення: {rule.decision}</p>}
                       </div>
                     ))}
                   </div>
@@ -161,7 +163,10 @@ export default function KnowledgePage() {
             <Card key={entry.id}>
               <CardBody>
                 <div className="flex items-start justify-between gap-4">
-                  <p className="text-sm flex-1">{entry.content}</p>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-medium">{entry.question}</p>
+                    <p className="text-sm text-muted-foreground">{entry.answer}</p>
+                  </div>
                   <span className="text-xs text-muted-foreground shrink-0">
                     {new Date(entry.createdAt).toLocaleDateString("uk")}
                   </span>
