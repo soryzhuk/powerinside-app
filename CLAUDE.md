@@ -18,7 +18,17 @@
 - Сгенерированный клиент: `app/generated/prisma`
 - Конфигурация: `prisma.config.ts`
 - Seed: `npx tsx prisma/seed.ts`
-- Миграции: `npx prisma migrate dev`
+- Миграции локально: `npx prisma migrate dev`
+- Миграции на Railway: только ручные (`npx prisma migrate deploy` через CLI с DATABASE_URL от Railway)
+- Build script: `prisma generate && next build` (generate обязателен перед next build)
+
+# Railway
+- Проект: powerinside.app (ID: e0632587-b8bf-48bf-9670-46aada008ce6)
+- Сервис приложения: powerinside-app (ID: ac61ddaa-4fcf-4302-abea-14df6afdb965)
+- Сервис БД: Postgres (ID: b3a09167-ddd9-489c-a611-366570b925bb)
+- Internal DB URL: postgresql://postgres:powerinside2026@postgres.railway.internal:5432/powerinside
+- Среда: production (ID: 82eb5e54-1755-4d2e-b872-85d8f17c732b)
+- Токен API: в `.claude/settings.local.json` (не коммитить!)
 
 # Пользователи (seed)
 - Owner: owner@powerinside.app / admin123 (роль OWNER)
