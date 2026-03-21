@@ -75,7 +75,7 @@ export default function AdminCoachesPage() {
           />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {(["ALL", "PENDING", "ACTIVE", "SUSPENDED"] as const).map((status) => (
             <button
               key={status}

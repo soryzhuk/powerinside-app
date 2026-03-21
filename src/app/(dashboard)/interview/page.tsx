@@ -131,10 +131,10 @@ export default function InterviewPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-5rem)]">
+    <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100dvh-5rem)]">
       {/* Rounds sidebar */}
-      <div className="lg:w-80 shrink-0">
-        <Card className="h-full">
+      <div className="w-full lg:w-80 shrink-0">
+        <Card className="h-auto lg:h-full">
           <CardHeader>
             <h2 className="text-lg font-semibold">Раунди інтерв'ю</h2>
             <p className="text-sm text-muted-foreground mt-1">

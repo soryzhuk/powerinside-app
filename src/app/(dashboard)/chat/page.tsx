@@ -126,18 +126,18 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-5rem)]">
+    <div className="flex flex-col h-[calc(100dvh-5rem)]">
       {/* Top bar: coach selector + balance */}
-      <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <label className="text-sm font-medium text-muted-foreground whitespace-nowrap">
             Тренер:
           </label>
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-none">
             <select
               value={selectedCoachId}
               onChange={(e) => setSelectedCoachId(e.target.value)}
-              className="appearance-none w-48 px-3 py-2 pr-8 rounded-lg bg-input border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="appearance-none w-full sm:w-48 px-3 py-2 pr-8 rounded-lg bg-input border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {coaches.length === 0 && (
                 <option value="">Немає доступних тренерів</option>
