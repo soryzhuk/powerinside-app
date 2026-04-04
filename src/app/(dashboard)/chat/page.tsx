@@ -15,6 +15,31 @@ interface Message {
   createdAt: Date | string;
 }
 
+/** Renders message text with clickable URLs */
+function MessageContent({ text, isUser }: { text: string; isUser: boolean }) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return (
+    <p className="whitespace-pre-wrap break-words overflow-wrap-anywhere">
+      {parts.map((part, i) =>
+        /^https?:\/\//.test(part) ? (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`underline break-all ${isUser ? "text-white/90 hover:text-white" : "text-primary hover:text-primary/80"}`}
+          >
+            {part}
+          </a>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </p>
+  );
+}
+
 export default function ChatPage() {
   const searchParams = useSearchParams();
   const initialConversationId = searchParams.get("conversation");
@@ -184,13 +209,13 @@ export default function ChatPage() {
               className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                className={`max-w-[80%] min-w-0 px-4 py-3 rounded-2xl text-sm leading-relaxed overflow-hidden ${
                   msg.role === "user"
                     ? "bg-primary text-white rounded-br-md"
                     : "bg-secondary border border-border text-foreground rounded-bl-md"
                 }`}
               >
-                <p className="whitespace-pre-wrap">{msg.content}</p>
+                <MessageContent text={msg.content} isUser={msg.role === "user"} />
               </div>
             </div>
           ))}

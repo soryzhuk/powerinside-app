@@ -227,7 +227,7 @@ export default function QaPage() {
                             </div>
                             {answer.content ? (
                               <>
-                                <p className="text-foreground">{answer.content}</p>
+                                <p className="text-foreground break-words overflow-wrap-anywhere">{answer.content}</p>
                                 {!hasSelected && !answer.selected && (
                                   <button
                                     onClick={() => handleSelectAnswer(answer.id)}

@@ -143,7 +143,7 @@ export default function ExpertQaPage() {
                 <Card key={item.id} className="opacity-70">
                   <CardBody>
                     <p className="text-sm font-medium mb-2">{questionText}</p>
-                    <p className="text-sm text-muted-foreground border-l-2 border-primary/40 pl-3">
+                    <p className="text-sm text-muted-foreground border-l-2 border-primary/40 pl-3 break-words overflow-wrap-anywhere">
                       {item.content}
                     </p>
                     {item.selected && (
