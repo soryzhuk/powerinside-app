@@ -214,9 +214,6 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
       tg.setBottomBarColor(bottomColor);
     }
 
-    // Enable closing confirmation so users don't accidentally leave
-    tg.enableClosingConfirmation();
-
     // Authenticate with backend
     if (tg.initData) {
       authenticate(tg);
