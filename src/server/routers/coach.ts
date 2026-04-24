@@ -339,6 +339,22 @@ export const coachRouter = router({
   }),
 
   /**
+   * List statuses of all interview sessions for the current coach.
+   * Used in TG Mini App to show which rounds are completed.
+   */
+  listSessionStatuses: coachProcedure.query(async ({ ctx }) => {
+    const profile = await ctx.prisma.coachProfile.findUnique({
+      where: { userId: ctx.session.user.id },
+      select: { id: true },
+    });
+    if (!profile) return [];
+    return ctx.prisma.interviewSession.findMany({
+      where: { coachId: profile.id },
+      select: { round: true, status: true },
+    });
+  }),
+
+  /**
    * List active coaches (for athletes to choose from).
    */
   listActive: protectedProcedure.query(async ({ ctx }) => {

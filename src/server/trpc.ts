@@ -38,7 +38,8 @@ const isAuthed = middleware(async ({ ctx, next }) => {
 export const protectedProcedure = t.procedure.use(isAuthed);
 
 /**
- * Middleware: requires COACH role.
+ * Middleware: requires COACH, ADMIN, or OWNER role.
+ * Admins can access coach procedures to manage/preview coach functionality.
  */
 const isCoach = middleware(async ({ ctx, next }) => {
   if (!ctx.session?.user) {
@@ -47,7 +48,8 @@ const isCoach = middleware(async ({ ctx, next }) => {
       message: "You must be logged in.",
     });
   }
-  if (ctx.session.user.role !== "COACH") {
+  const role = ctx.session.user.role;
+  if (role !== "COACH" && role !== "ADMIN" && role !== "OWNER") {
     throw new TRPCError({
       code: "FORBIDDEN",
       message: "Only coaches can access this resource.",

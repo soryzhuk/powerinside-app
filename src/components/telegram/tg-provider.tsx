@@ -137,6 +137,8 @@ interface TelegramContextValue {
   token: string | null;
   isLoading: boolean;
   error: string | null;
+  isNew: boolean;
+  setAuth: (token: string, role: string) => void;
 }
 
 const TelegramContext = createContext<TelegramContextValue>({
@@ -146,6 +148,8 @@ const TelegramContext = createContext<TelegramContextValue>({
   token: null,
   isLoading: true,
   error: null,
+  isNew: false,
+  setAuth: () => {},
 });
 
 export function useTelegram() {
@@ -159,6 +163,13 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isNew, setIsNew] = useState(false);
+
+  const setAuth = useCallback((newToken: string, role: string) => {
+    setToken(newToken);
+    setUser((prev) => prev ? { ...prev, role } : null);
+    setIsNew(false);
+  }, []);
 
   const authenticate = useCallback(async (tgWebApp: TelegramWebApp) => {
     try {
@@ -176,6 +187,7 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
       const data = await res.json();
       setUser(data.user);
       setToken(data.token);
+      setIsNew(data.isNew ?? false);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Auth error";
       setError(message);
@@ -225,7 +237,7 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
 
   return (
     <TelegramContext.Provider
-      value={{ isTelegram, webApp, user, token, isLoading, error }}
+      value={{ isTelegram, webApp, user, token, isLoading, error, isNew, setAuth }}
     >
       {children}
     </TelegramContext.Provider>

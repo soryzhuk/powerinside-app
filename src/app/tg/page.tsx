@@ -26,6 +26,7 @@ const sans  = "'Inter', system-ui, sans-serif";
 const mono  = "'JetBrains Mono', ui-monospace, monospace";
 
 type Tab = "chat" | "balance" | "profile" | "admin";
+type CoachTab = "interview" | "profile";
 type Tone = "sand" | "stone" | "sage" | "dark";
 const TONES: Tone[] = ["sand", "sage", "stone", "dark"];
 
@@ -33,6 +34,20 @@ function getInitials(name?: string | null) {
   if (!name) return "TC";
   return name.split(" ").map((w) => w[0] ?? "").join("").slice(0, 2).toUpperCase();
 }
+
+// ─── ROUNDS config ────────────────────────────────────────────────────────────
+
+const ROUNDS = [
+  { key: "TARGET_ATHLETE",     label: "Цільовий атлет",              desc: "Хто твій ідеальний учень?" },
+  { key: "LOAD_MANAGEMENT",    label: "Управління навантаженням",     desc: "Як плануєш обсяги та інтенсивність?" },
+  { key: "AUTOREGULATION",     label: "Авторегуляція",                desc: "Як адаптуєш план під стан атлета?" },
+  { key: "PROGRESSION_DELOAD", label: "Прогресія та розвантаження",   desc: "Стратегія прогресу та відновлення" },
+  { key: "EXERCISE_SELECTION", label: "Підбір вправ",                 desc: "Критерії вибору та варіації вправ" },
+  { key: "TECHNIQUE_STANDARDS",label: "Стандарти техніки",            desc: "Вимоги до техніки виконання" },
+  { key: "LIFESTYLE_RECOVERY", label: "Спосіб життя та відновлення",  desc: "Сон, харчування, стрес-менеджмент" },
+] as const;
+
+type RoundKey = (typeof ROUNDS)[number]["key"];
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 
@@ -54,7 +69,7 @@ function Avatar({ initials, size = 40, tone = "sand" }: { initials: string; size
   );
 }
 
-// ─── TabBar ───────────────────────────────────────────────────────────────────
+// ─── TabBar (athlete) ─────────────────────────────────────────────────────────
 
 function TabBar({ active, onChange, isAdmin = false }: { active: Tab; onChange: (t: Tab) => void; isAdmin?: boolean }) {
   const items: { id: Tab; label: string; icon: (c: string) => React.ReactNode }[] = [
@@ -105,7 +120,521 @@ function TabBar({ active, onChange, isAdmin = false }: { active: Tab; onChange: 
   );
 }
 
-// ─── CoachesListScreen ────────────────────────────────────────────────────────
+// ─── CoachTabBar ──────────────────────────────────────────────────────────────
+
+function CoachTabBar({ active, onChange }: { active: CoachTab; onChange: (t: CoachTab) => void }) {
+  const items: { id: CoachTab; label: string; icon: (c: string) => React.ReactNode }[] = [
+    { id: "interview", label: "Інтерв'ю", icon: (c) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>
+      </svg>
+    )},
+    { id: "profile", label: "Профіль", icon: (c) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="3.8"/><path d="M4 21c1.5-4 4.6-6 8-6s6.5 2 8 6"/>
+      </svg>
+    )},
+  ];
+  return (
+    <div style={{
+      display: "flex", justifyContent: "space-around", alignItems: "center",
+      padding: "10px 8px 6px", borderTop: `1px solid ${P.line}`,
+      background: P.bg, flexShrink: 0,
+    }}>
+      {items.map((it) => {
+        const on = it.id === active;
+        const c = on ? P.sand : P.textMute;
+        return (
+          <div key={it.id} onClick={() => onChange(it.id)} style={{
+            display: "flex", flexDirection: "column", alignItems: "center",
+            gap: 4, flex: 1, padding: "6px 0", cursor: "pointer",
+          }}>
+            {it.icon(c)}
+            <span style={{ fontSize: 10, letterSpacing: 0.4, textTransform: "uppercase", color: c, fontWeight: 500 }}>
+              {it.label}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── OnboardingScreen ─────────────────────────────────────────────────────────
+
+function OnboardingScreen({ onSelect, isPending }: {
+  onSelect: (role: "ATHLETE" | "COACH") => void;
+  isPending: boolean;
+}) {
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* Top label */}
+      <div style={{ padding: "24px 28px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase" }}>
+          Powerinside · Est 2026
+        </div>
+      </div>
+
+      {/* Editorial frame */}
+      <div style={{ flex: 1, overflow: "hidden", padding: "20px 28px 0" }}>
+        <div style={{
+          position: "relative", height: 260, borderRadius: 18,
+          background: "linear-gradient(180deg,#2A251D 0%,#1B1812 100%)",
+          overflow: "hidden", border: `1px solid ${P.line}`,
+        }}>
+          <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: "repeating-linear-gradient(45deg, rgba(201,165,116,0.06) 0 10px, transparent 10px 20px)",
+          }} />
+          <div style={{
+            position: "absolute", left: 24, top: 24, right: 24,
+            display: "flex", justifyContent: "space-between",
+            fontFamily: mono, fontSize: 10, color: P.textMute, letterSpacing: 1,
+          }}>
+            <span>N° 001</span><span>— METHODOLOGY —</span><span>∞</span>
+          </div>
+          <div style={{
+            position: "absolute", left: 24, right: 24, bottom: 80,
+            fontFamily: serif, fontSize: 66, lineHeight: 0.88, color: P.text,
+            fontWeight: 400, letterSpacing: -2,
+          }}>
+            Inside<br/>
+            <span style={{ fontStyle: "italic", color: P.sand }}>power.</span>
+          </div>
+          <div style={{
+            position: "absolute", left: 24, right: 24, bottom: 20,
+            fontSize: 12.5, lineHeight: 1.5, color: P.textDim,
+          }}>
+            AI-розмова з методикою тренера. Без шаблонів — тільки те, що він сам би сказав.
+          </div>
+        </div>
+
+        {/* Role selection */}
+        <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 4 }}>
+            — Обери свою роль
+          </div>
+
+          {/* Athlete card */}
+          <div onClick={() => !isPending && onSelect("ATHLETE")} style={{
+            background: P.surface, borderRadius: 16, padding: "18px 20px",
+            border: `1px solid ${P.line}`, cursor: "pointer",
+            display: "flex", alignItems: "center", gap: 16,
+            opacity: isPending ? 0.6 : 1,
+          }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 22, background: P.sandSoft,
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="8" r="3.8"/><path d="M4 21c1.5-4 4.6-6 8-6s6.5 2 8 6"/>
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: P.text }}>Я атлет</div>
+              <div style={{ fontSize: 12, color: P.textDim, marginTop: 2 }}>
+                Задаю питання тренерам і отримую відповіді з їх методики
+              </div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </div>
+
+          {/* Coach card */}
+          <div onClick={() => !isPending && onSelect("COACH")} style={{
+            background: P.surface2, borderRadius: 16, padding: "18px 20px",
+            border: `1px solid ${P.sand}44`, cursor: "pointer",
+            display: "flex", alignItems: "center", gap: 16,
+            opacity: isPending ? 0.6 : 1,
+          }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 22, background: P.sandSoft,
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+              </svg>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: P.text }}>Я тренер</div>
+              <div style={{ fontSize: 12, color: P.textDim, marginTop: 2 }}>
+                Проходжу AI-інтерв'ю з 7 раундів — моя методика стає базою для атлетів
+              </div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: "16px 28px 20px" }}>
+        <div style={{ textAlign: "center", fontSize: 11.5, color: P.textMute, fontFamily: mono, letterSpacing: 0.5 }}>
+          {isPending ? "Зберігаємо вибір…" : "Вибір можна змінити через підтримку"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── CoachInterviewList ───────────────────────────────────────────────────────
+
+function CoachInterviewList({ onSelect, completedRounds }: {
+  onSelect: (round: RoundKey) => void;
+  completedRounds: Set<string>;
+}) {
+  const done = completedRounds.size;
+  const pct = Math.round((done / ROUNDS.length) * 100);
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
+        <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 16 }}>
+          AI-Інтерв'ю з методики
+        </div>
+        <div style={{ fontFamily: serif, fontSize: 30, lineHeight: 1.05, fontWeight: 400, letterSpacing: -0.5, color: P.text }}>
+          Розкажи, як ти<br/>
+          <span style={{ fontStyle: "italic", color: P.stone }}>тренуєш.</span>
+        </div>
+        <div style={{ fontSize: 13, color: P.textDim, marginTop: 8, marginBottom: 16 }}>
+          {done === 0
+            ? "7 раундів питань від AI. Твої відповіді — основа методики."
+            : done < ROUNDS.length
+            ? `${done} з ${ROUNDS.length} раундів завершено. Продовжуй.`
+            : "Всі раунди завершено! Методика записана."}
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ background: P.surface2, borderRadius: 4, height: 6, overflow: "hidden", marginBottom: 4 }}>
+          <div style={{ height: "100%", background: P.sand, width: `${pct}%`, transition: "width 0.4s", borderRadius: 4 }} />
+        </div>
+        <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginBottom: 16 }}>
+          {done} / {ROUNDS.length} раундів · {pct}%
+        </div>
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "0 24px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+        {ROUNDS.map((r, i) => {
+          const isDone = completedRounds.has(r.key);
+          return (
+            <div key={r.key} onClick={() => onSelect(r.key as RoundKey)} style={{
+              background: isDone ? P.surface : P.surface,
+              borderRadius: 14, padding: "14px 16px",
+              border: `1px solid ${isDone ? P.sand + "33" : P.line}`,
+              display: "flex", alignItems: "center", gap: 14, cursor: "pointer",
+            }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 16, flexShrink: 0,
+                background: isDone ? P.sandSoft : P.surface2,
+                border: `1px solid ${isDone ? P.sand + "66" : P.line}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                {isDone ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 13l4 4L19 7"/>
+                  </svg>
+                ) : (
+                  <span style={{ fontFamily: mono, fontSize: 10, color: P.textMute }}>0{i + 1}</span>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: isDone ? P.textDim : P.text }}>{r.label}</div>
+                <div style={{ fontSize: 11.5, color: P.textMute, marginTop: 2 }}>{r.desc}</div>
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 6l6 6-6 6"/>
+              </svg>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── CoachInterviewChat ───────────────────────────────────────────────────────
+
+type IMsg = { id: string; role: string; content: string };
+
+function CoachInterviewChat({ roundKey, onBack, onComplete }: {
+  roundKey: RoundKey;
+  onBack: () => void;
+  onComplete: () => void;
+}) {
+  const { token, webApp } = useTelegram();
+  const [input, setInput] = useState("");
+  const [localMessages, setLocalMessages] = useState<IMsg[]>([]);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const endRef = useRef<HTMLDivElement>(null);
+
+  const round = ROUNDS.find((r) => r.key === roundKey)!;
+
+  const sessionQuery = trpc.coach.getInterviewSession.useQuery(
+    { round: roundKey },
+    { enabled: !!token }
+  );
+
+  const sendMutation = trpc.coach.sendInterviewMessage.useMutation({
+    onSuccess: (msg) => {
+      setLocalMessages((prev) => [...prev, { id: msg.id, role: "assistant", content: msg.content }]);
+    },
+  });
+
+  const completeMutation = trpc.coach.completeRound.useMutation({
+    onSuccess: () => onComplete(),
+  });
+
+  useEffect(() => {
+    if (sessionQuery.data) {
+      setSessionId(sessionQuery.data.id);
+      setLocalMessages(sessionQuery.data.messages.map((m) => ({
+        id: m.id, role: m.role, content: m.content,
+      })));
+    }
+  }, [sessionQuery.data]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [localMessages.length, sendMutation.isPending]);
+
+  function handleSend() {
+    if (!input.trim() || !sessionId || sendMutation.isPending) return;
+    webApp?.HapticFeedback?.impactOccurred("light");
+    const userMsg: IMsg = { id: Date.now().toString(), role: "user", content: input.trim() };
+    setLocalMessages((prev) => [...prev, userMsg]);
+    sendMutation.mutate({ sessionId, content: input.trim() });
+    setInput("");
+  }
+
+  const isCompleted = sessionQuery.data?.status === "COMPLETED";
+  const hasMessages = localMessages.length > 0;
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* Header */}
+      <div style={{
+        padding: "10px 20px 12px", display: "flex", alignItems: "center", gap: 12,
+        borderBottom: `1px solid ${P.line}`, flexShrink: 0,
+      }}>
+        <div onClick={onBack} style={{ cursor: "pointer", display: "flex", alignItems: "center", padding: "4px 4px 4px 0" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={P.textDim} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 14, fontWeight: 500 }}>{round.label}</div>
+          <div style={{ fontSize: 11, color: isCompleted ? P.success : P.textDim, fontFamily: mono }}>
+            {isCompleted ? "✓ Завершено" : "AI-інтерв'ю · Дай розгорнуту відповідь"}
+          </div>
+        </div>
+        {!isCompleted && hasMessages && (
+          <div onClick={() => !completeMutation.isPending && completeMutation.mutate({ sessionId: sessionId! })} style={{
+            padding: "6px 12px", borderRadius: 10, background: P.sandSoft,
+            color: P.sand, fontSize: 11, fontWeight: 600, cursor: "pointer",
+            fontFamily: mono, letterSpacing: 0.5, flexShrink: 0,
+          }}>
+            Завершити
+          </div>
+        )}
+      </div>
+
+      {/* Messages */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "12px 20px", display: "flex", flexDirection: "column", gap: 10 }}>
+        {localMessages.length === 0 && !sessionQuery.isLoading && (
+          <div style={{ padding: "20px 0" }}>
+            <div style={{ fontFamily: serif, fontSize: 22, lineHeight: 1.15, fontWeight: 400, color: P.text, marginBottom: 10 }}>
+              {round.desc}
+            </div>
+            <div style={{ fontSize: 13, color: P.textDim, lineHeight: 1.5 }}>
+              Розкажи докладно — AI задасть уточнюючі питання. Чим більше деталей, тим точніше твоя методика буде представлена атлетам.
+            </div>
+          </div>
+        )}
+
+        {localMessages.map((m) =>
+          m.role === "user" ? (
+            <div key={m.id} style={{ alignSelf: "flex-end", maxWidth: "78%" }}>
+              <div style={{
+                background: P.sand, color: "#17140F", padding: "10px 14px",
+                borderRadius: "16px 16px 4px 16px", fontSize: 13.5, lineHeight: 1.45, fontWeight: 500,
+              }}>{m.content}</div>
+            </div>
+          ) : (
+            <div key={m.id} style={{ alignSelf: "flex-start", maxWidth: "88%" }}>
+              <div style={{
+                background: P.surface, color: P.text, padding: "10px 14px",
+                borderRadius: "16px 16px 16px 4px", fontSize: 13.5, lineHeight: 1.5,
+                whiteSpace: "pre-wrap", border: `1px solid ${P.line}`,
+              }}>{m.content}</div>
+            </div>
+          )
+        )}
+
+        {sendMutation.isPending && (
+          <div style={{ alignSelf: "flex-start" }}>
+            <div style={{
+              background: P.surface, border: `1px solid ${P.line}`,
+              padding: "12px 16px", borderRadius: "16px 16px 16px 4px",
+              display: "flex", gap: 5, alignItems: "center",
+            }}>
+              {[0, 150, 300].map((d) => (
+                <span key={d} style={{
+                  width: 6, height: 6, borderRadius: 3, background: P.textDim,
+                  display: "inline-block", animation: `bounce 1.2s ${d}ms ease-in-out infinite`,
+                }} />
+              ))}
+            </div>
+          </div>
+        )}
+        <div ref={endRef} />
+      </div>
+
+      {/* Composer */}
+      {!isCompleted && (
+        <div style={{
+          padding: "10px 16px 14px", borderTop: `1px solid ${P.line}`,
+          display: "flex", gap: 10, alignItems: "center", flexShrink: 0,
+        }}>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+            placeholder="Відповідай докладно…"
+            style={{
+              flex: 1, background: P.surface, borderRadius: 22, padding: "10px 16px",
+              fontSize: 13.5, color: P.text, border: `1px solid ${P.line}`,
+              outline: "none", fontFamily: sans,
+            }}
+          />
+          <div onClick={handleSend} style={{
+            width: 44, height: 44, borderRadius: 22, flexShrink: 0,
+            background: input.trim() ? P.sand : P.surface,
+            border: input.trim() ? "none" : `1px solid ${P.line}`,
+            display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+            boxShadow: input.trim() ? "0 4px 12px rgba(201,165,116,0.25)" : "none",
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={input.trim() ? "#17140F" : P.textMute} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── CoachProfileScreen ───────────────────────────────────────────────────────
+
+function CoachProfileScreen() {
+  const { user, token } = useTelegram();
+  const profileQuery = trpc.coach.getProfile.useQuery(undefined, { enabled: !!token });
+  const profile = profileQuery.data;
+  const initials = getInitials(user?.name);
+  const isActive = profile?.status === "ACTIVE";
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px 24px" }}>
+      <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 20 }}>
+        Профіль тренера
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+        <Avatar initials={initials} size={68} tone="sand" />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: serif, fontSize: 22, fontWeight: 400, letterSpacing: -0.3 }}>{user?.name || "..."}</div>
+          <div style={{
+            marginTop: 8, display: "inline-flex", gap: 6, alignItems: "center",
+            padding: "4px 10px", borderRadius: 999, fontFamily: mono, fontSize: 10, letterSpacing: 1,
+            background: isActive ? "rgba(125,149,117,0.15)" : P.sandSoft,
+            color: isActive ? P.success : P.sand,
+          }}>
+            {isActive ? "● АКТИВНИЙ" : "● ОЧІКУЄ АКТИВАЦІЇ"}
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      {profile && (
+        <div style={{
+          display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0,
+          background: P.surface, borderRadius: 16, border: `1px solid ${P.line}`,
+          overflow: "hidden", marginBottom: 20,
+        }}>
+          {[
+            [profile._count.methodologyRules, "Правил"],
+            [profile._count.knowledgeBase,    "Записів"],
+            [profile._count.interviewSessions, "/ 7 раундів"],
+          ].map(([n, l], i) => (
+            <div key={String(l)} style={{
+              padding: "16px 10px", textAlign: "center",
+              borderRight: i < 2 ? `1px solid ${P.line}` : "none",
+            }}>
+              <div style={{ fontFamily: serif, fontSize: 26, fontWeight: 400, color: P.text, letterSpacing: -0.5 }}>{n}</div>
+              <div style={{ fontSize: 10.5, color: P.textDim, marginTop: 2 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!isActive && (
+        <div style={{
+          background: P.surface, borderRadius: 14, padding: "16px 18px",
+          border: `1px solid ${P.line}`,
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 500, color: P.text, marginBottom: 6 }}>
+            Що далі?
+          </div>
+          <div style={{ fontSize: 12.5, color: P.textDim, lineHeight: 1.6 }}>
+            Після завершення інтерв'ю адміністратор перевірить твою методику і активує профіль. Атлети зможуть задавати тобі питання через AI.
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop: 20, fontFamily: mono, fontSize: 10, color: P.textMute, textAlign: "center" }}>
+        POWERINSIDE · ТРЕНЕР · V 0.1
+      </div>
+    </div>
+  );
+}
+
+// ─── CoachPage ────────────────────────────────────────────────────────────────
+
+function CoachInterviewTabContent() {
+  const { token } = useTelegram();
+  const [activeRound, setActiveRound] = useState<RoundKey | null>(null);
+
+  const statusesQuery = trpc.coach.listSessionStatuses.useQuery(undefined, { enabled: !!token });
+  const completedRounds = new Set<string>(
+    (statusesQuery.data ?? []).filter((s) => s.status === "COMPLETED").map((s) => s.round)
+  );
+
+  if (activeRound !== null) {
+    return (
+      <CoachInterviewChat
+        roundKey={activeRound}
+        onBack={() => setActiveRound(null)}
+        onComplete={() => { setActiveRound(null); statusesQuery.refetch(); }}
+      />
+    );
+  }
+  return <CoachInterviewList onSelect={(r) => setActiveRound(r)} completedRounds={completedRounds} />;
+}
+
+function CoachPage() {
+  const [activeTab, setActiveTab] = useState<CoachTab>("interview");
+  return (
+    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        {activeTab === "interview" && <CoachInterviewTabContent />}
+        {activeTab === "profile"   && <CoachProfileScreen />}
+      </div>
+      <CoachTabBar active={activeTab} onChange={(t) => setActiveTab(t)} />
+    </div>
+  );
+}
+
+// ─── ATHLETE TABS ─────────────────────────────────────────────────────────────
 
 type CoachItem = {
   id: string;
@@ -129,10 +658,8 @@ function CoachesListScreen({ coaches, isLoading, onSelect }: {
           <span style={{ fontStyle: "italic", color: P.stone }}>говорити.</span>
         </div>
         <div style={{ fontSize: 13, color: P.textDim, marginTop: 10 }}>
-          {isLoading
-            ? "Завантаження..."
-            : coaches.length > 0
-            ? `${coaches.length} активних методологій. Кожна пройшла 7 раундів AI-інтерв'ю.`
+          {isLoading ? "Завантаження..." : coaches.length > 0
+            ? `${coaches.length} активних методологій.`
             : "Активних тренерів поки немає."}
         </div>
       </div>
@@ -143,7 +670,6 @@ function CoachesListScreen({ coaches, isLoading, onSelect }: {
             <div style={{ width: 28, height: 28, borderRadius: 14, border: `2px solid ${P.sand}`, borderTopColor: "transparent", animation: "spin 1s linear infinite" }} />
           </div>
         )}
-
         {coaches.map((coach, i) => (
           <div key={coach.id} onClick={() => onSelect(coach.id)} style={{
             background: P.surface, borderRadius: 16, padding: "16px",
@@ -169,7 +695,6 @@ function CoachesListScreen({ coaches, isLoading, onSelect }: {
             </svg>
           </div>
         ))}
-
         {!isLoading && coaches.length === 0 && (
           <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, marginTop: 40 }}>
             Активних тренерів поки немає
@@ -180,17 +705,13 @@ function CoachesListScreen({ coaches, isLoading, onSelect }: {
   );
 }
 
-// ─── ChatView ─────────────────────────────────────────────────────────────────
-
 type Msg = { id: string; role: string; content: string };
-
 const EMPTY_PROMPTS = [
   "Склади розминку перед присідом",
   "Чи варто тренуватись при болю в спині?",
   "Як харчуватись у день змагань?",
   "Поясни, що таке авторегуляція",
 ];
-
 const QUICK_REPLIES = ["Скільки підходів?", "Що їсти після?", "Ще питання"];
 
 function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPending, error, onPromptSend }: {
@@ -213,7 +734,6 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      {/* Header */}
       <div style={{
         padding: "10px 20px 12px", display: "flex", alignItems: "center", gap: 12,
         borderBottom: `1px solid ${P.line}`, flexShrink: 0,
@@ -233,7 +753,6 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
         </div>
       </div>
 
-      {/* Messages */}
       <div style={{ flex: 1, overflowY: "auto", padding: "8px 20px", display: "flex", flexDirection: "column", gap: 10 }}>
         {isEmpty && (
           <div style={{ display: "flex", flexDirection: "column", paddingTop: 20 }}>
@@ -250,7 +769,7 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
               <span style={{ fontStyle: "italic", color: P.stone }}>не наважувався.</span>
             </div>
             <div style={{ fontSize: 13, color: P.textDim, marginTop: 10, maxWidth: 270 }}>
-              Я відповідаю так, як мій тренер. Мої правила — його методика, не гугл.
+              Я відповідаю так, як мій тренер. Мої правила — його методика.
             </div>
             <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 8 }}>
               {EMPTY_PROMPTS.map((p, i) => (
@@ -269,56 +788,34 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
             </div>
           </div>
         )}
-
         {messages.map((m) =>
           m.role === "user" ? (
             <div key={m.id} style={{ alignSelf: "flex-end", maxWidth: "78%" }}>
-              <div style={{
-                background: P.sand, color: "#17140F",
-                padding: "10px 14px", borderRadius: "16px 16px 4px 16px",
-                fontSize: 13.5, lineHeight: 1.45, fontWeight: 500,
-              }}>{m.content}</div>
+              <div style={{ background: P.sand, color: "#17140F", padding: "10px 14px", borderRadius: "16px 16px 4px 16px", fontSize: 13.5, lineHeight: 1.45, fontWeight: 500 }}>{m.content}</div>
             </div>
           ) : (
             <div key={m.id} style={{ alignSelf: "flex-start", maxWidth: "84%" }}>
-              <div style={{
-                background: P.surface, color: P.text,
-                padding: "10px 14px", borderRadius: "16px 16px 16px 4px",
-                fontSize: 13.5, lineHeight: 1.5, whiteSpace: "pre-wrap",
-                border: `1px solid ${P.line}`,
-              }}>{m.content}</div>
+              <div style={{ background: P.surface, color: P.text, padding: "10px 14px", borderRadius: "16px 16px 16px 4px", fontSize: 13.5, lineHeight: 1.5, whiteSpace: "pre-wrap", border: `1px solid ${P.line}` }}>{m.content}</div>
             </div>
           )
         )}
-
         {isPending && (
           <div style={{ alignSelf: "flex-start" }}>
-            <div style={{
-              background: P.surface, border: `1px solid ${P.line}`,
-              padding: "12px 16px", borderRadius: "16px 16px 16px 4px",
-              display: "flex", gap: 5, alignItems: "center",
-            }}>
+            <div style={{ background: P.surface, border: `1px solid ${P.line}`, padding: "12px 16px", borderRadius: "16px 16px 16px 4px", display: "flex", gap: 5, alignItems: "center" }}>
               {[0, 150, 300].map((d) => (
-                <span key={d} style={{
-                  width: 6, height: 6, borderRadius: 3, background: P.textDim,
-                  display: "inline-block", animation: `bounce 1.2s ${d}ms ease-in-out infinite`,
-                }} />
+                <span key={d} style={{ width: 6, height: 6, borderRadius: 3, background: P.textDim, display: "inline-block", animation: `bounce 1.2s ${d}ms ease-in-out infinite` }} />
               ))}
             </div>
           </div>
         )}
-
         {error && (
           <p style={{ textAlign: "center", fontSize: 12, color: "#C99B85" }}>
-            {error.includes("no messages remaining")
-              ? "Недостатньо повідомлень. Поповніть баланс."
-              : "Помилка. Спробуй ще раз."}
+            {error.includes("no messages remaining") ? "Недостатньо повідомлень. Поповніть баланс." : "Помилка. Спробуй ще раз."}
           </p>
         )}
         <div ref={endRef} />
       </div>
 
-      {/* Suggestion chips (only when there are messages) */}
       {!isEmpty && (
         <div style={{ padding: "4px 20px 8px", display: "flex", gap: 6, overflowX: "auto", flexShrink: 0 }}>
           {QUICK_REPLIES.map((s) => (
@@ -331,21 +828,13 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
         </div>
       )}
 
-      {/* Composer */}
-      <div style={{
-        padding: "10px 16px 14px", borderTop: `1px solid ${P.line}`,
-        display: "flex", gap: 10, alignItems: "center", flexShrink: 0,
-      }}>
+      <div style={{ padding: "10px 16px 14px", borderTop: `1px solid ${P.line}`, display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
         <input
           value={input}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(); } }}
           placeholder="Запитай тренера…"
-          style={{
-            flex: 1, background: P.surface, borderRadius: 22, padding: "10px 16px",
-            fontSize: 13.5, color: P.text, border: `1px solid ${P.line}`,
-            outline: "none", fontFamily: sans,
-          }}
+          style={{ flex: 1, background: P.surface, borderRadius: 22, padding: "10px 16px", fontSize: 13.5, color: P.text, border: `1px solid ${P.line}`, outline: "none", fontFamily: sans }}
         />
         <div onClick={onSend} style={{
           width: 44, height: 44, borderRadius: 22, flexShrink: 0,
@@ -353,7 +842,6 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
           border: input.trim() ? "none" : `1px solid ${P.line}`,
           display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
           boxShadow: input.trim() ? "0 4px 12px rgba(201,165,116,0.25)" : "none",
-          transition: "background 0.15s, box-shadow 0.15s",
         }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={input.trim() ? "#17140F" : P.textMute} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
@@ -363,8 +851,6 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
     </div>
   );
 }
-
-// ─── ChatTab ──────────────────────────────────────────────────────────────────
 
 function ChatTab() {
   const { token, webApp } = useTelegram();
@@ -400,16 +886,10 @@ function ChatTab() {
       <CoachesListScreen
         coaches={coaches}
         isLoading={coachesQuery.isLoading}
-        onSelect={(id) => {
-          setSelectedCoachId(id);
-          setConversationId(null);
-          setInput("");
-          webApp?.HapticFeedback?.selectionChanged();
-        }}
+        onSelect={(id) => { setSelectedCoachId(id); setConversationId(null); setInput(""); webApp?.HapticFeedback?.selectionChanged(); }}
       />
     );
   }
-
   if (!selectedCoach) return null;
 
   return (
@@ -427,115 +907,59 @@ function ChatTab() {
   );
 }
 
-// ─── BalanceTab ───────────────────────────────────────────────────────────────
-
 function BalanceTab() {
   const { token } = useTelegram();
   const balanceQuery = trpc.athlete.getBalance.useQuery(undefined, { enabled: !!token });
   const subscriptionQuery = trpc.billing.getSubscription.useQuery(undefined, { enabled: !!token });
   const balance = balanceQuery.data;
   const sub = subscriptionQuery.data;
-
-  const free      = balance?.freeRemaining ?? 0;
-  const weekly    = balance?.weeklyRemaining ?? 0;
+  const free = balance?.freeRemaining ?? 0;
+  const weekly = balance?.weeklyRemaining ?? 0;
   const purchased = balance?.purchasedRemaining ?? 0;
-  const total     = balance?.total ?? free + weekly + purchased;
-
+  const total = balance?.total ?? free + weekly + purchased;
   const PACKS = [
-    { n: 50,  price: "$5",  label: "Для розминки",  hot: false },
-    { n: 200, price: "$15", label: "Популярний",     hot: true  },
-    { n: 500, price: "$30", label: "Найвигідніше",  hot: false },
+    { n: 50, price: "$5", label: "Для розминки", hot: false },
+    { n: 200, price: "$15", label: "Популярний", hot: true },
+    { n: 500, price: "$30", label: "Найвигідніше", hot: false },
   ];
-
   return (
     <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px 24px" }}>
-      <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 18 }}>
-        Баланс
-      </div>
-
-      {/* Hero */}
-      <div style={{
-        background: `linear-gradient(180deg, ${P.surface2} 0%, ${P.surface} 100%)`,
-        borderRadius: 20, padding: "22px 22px 20px",
-        border: `1px solid ${P.line}`, position: "relative", overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", top: 0, right: 0, fontFamily: mono, fontSize: 9, color: P.textMute, padding: "10px 14px", letterSpacing: 1 }}>
-          ВСЬОГО / ЗАЛИШОК
-        </div>
-        <div style={{ fontFamily: serif, fontSize: 80, lineHeight: 0.9, fontWeight: 400, color: P.text, letterSpacing: -2.5 }}>
-          {balanceQuery.isLoading ? "·" : total}
-        </div>
+      <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 18 }}>Баланс</div>
+      <div style={{ background: `linear-gradient(180deg, ${P.surface2} 0%, ${P.surface} 100%)`, borderRadius: 20, padding: "22px 22px 20px", border: `1px solid ${P.line}`, position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: 0, right: 0, fontFamily: mono, fontSize: 9, color: P.textMute, padding: "10px 14px", letterSpacing: 1 }}>ВСЬОГО / ЗАЛИШОК</div>
+        <div style={{ fontFamily: serif, fontSize: 80, lineHeight: 0.9, fontWeight: 400, color: P.text, letterSpacing: -2.5 }}>{balanceQuery.isLoading ? "·" : total}</div>
         <div style={{ fontSize: 12, color: P.textDim, marginTop: 6 }}>повідомлень до тренера</div>
-
         <div style={{ marginTop: 20, display: "flex", height: 6, borderRadius: 3, overflow: "hidden", gap: 2 }}>
           <div style={{ flex: Math.max(free, 1), background: P.success, opacity: 0.7 }} />
           <div style={{ flex: Math.max(weekly, 1), background: "#7A8BA0", opacity: 0.7 }} />
           <div style={{ flex: Math.max(purchased, 1), background: P.sand }} />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontFamily: mono, fontSize: 10, color: P.textMute }}>
-          <span>● {free} безкоштовних</span>
-          <span>● {weekly} тижневих</span>
-          <span>● {purchased} куплених</span>
+          <span>● {free} безкоштовних</span><span>● {weekly} тижневих</span><span>● {purchased} куплених</span>
         </div>
       </div>
-
-      {/* Subscription */}
       {sub && (
-        <div style={{
-          marginTop: 14, padding: "14px 16px", background: P.surface,
-          borderRadius: 14, border: `1px solid ${P.line}`,
-          display: "flex", alignItems: "center", gap: 12,
-        }}>
+        <div style={{ marginTop: 14, padding: "14px 16px", background: P.surface, borderRadius: 14, border: `1px solid ${P.line}`, display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: P.sandSoft, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/>
-            </svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13.5, fontWeight: 500 }}>
-              {sub.plan} · {sub.status === "ACTIVE" ? "активна" : "неактивна"}
-            </div>
-            {sub.currentPeriodEnd && (
-              <div style={{ fontSize: 11.5, color: P.textDim, marginTop: 1 }}>
-                Продовжиться {new Date(sub.currentPeriodEnd).toLocaleDateString("uk")} · $30
-              </div>
-            )}
+            <div style={{ fontSize: 13.5, fontWeight: 500 }}>{sub.plan} · {sub.status === "ACTIVE" ? "активна" : "неактивна"}</div>
+            {sub.currentPeriodEnd && <div style={{ fontSize: 11.5, color: P.textDim, marginTop: 1 }}>Продовжиться {new Date(sub.currentPeriodEnd).toLocaleDateString("uk")} · $30</div>}
           </div>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 6l6 6-6 6"/>
-          </svg>
         </div>
       )}
-
-      {/* Packs */}
       <div style={{ marginTop: 22 }}>
-        <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 10 }}>
-          — Пакети повідомлень
-        </div>
+        <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 10 }}>— Пакети повідомлень</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {PACKS.map((it) => (
-            <div key={it.n} style={{
-              padding: "14px 16px", borderRadius: 14,
-              background: it.hot ? P.surface2 : P.surface,
-              border: `1px solid ${it.hot ? P.sand + "44" : P.line}`,
-              display: "flex", alignItems: "center", gap: 14,
-            }}>
-              <div style={{ fontFamily: serif, fontSize: 28, fontWeight: 400, color: P.text, letterSpacing: -0.5, width: 58 }}>
-                {it.n}
-              </div>
+            <div key={it.n} style={{ padding: "14px 16px", borderRadius: 14, background: it.hot ? P.surface2 : P.surface, border: `1px solid ${it.hot ? P.sand + "44" : P.line}`, display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ fontFamily: serif, fontSize: 28, fontWeight: 400, color: P.text, letterSpacing: -0.5, width: 58 }}>{it.n}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>{it.label}</div>
-                <div style={{ fontSize: 11, color: P.textDim, marginTop: 1 }}>
-                  ≈ ${(parseFloat(it.price.slice(1)) / it.n * 100).toFixed(1)} / 100 повідомл.
-                </div>
+                <div style={{ fontSize: 11, color: P.textDim, marginTop: 1 }}>≈ ${(parseFloat(it.price.slice(1)) / it.n * 100).toFixed(1)} / 100 повідомл.</div>
               </div>
-              <div style={{
-                padding: "8px 14px", borderRadius: 10,
-                background: it.hot ? P.sand : "transparent",
-                color: it.hot ? "#17140F" : P.text,
-                border: it.hot ? "none" : `1px solid ${P.line}`,
-                fontSize: 13, fontWeight: 600,
-              }}>{it.price}</div>
+              <div style={{ padding: "8px 14px", borderRadius: 10, background: it.hot ? P.sand : "transparent", color: it.hot ? "#17140F" : P.text, border: it.hot ? "none" : `1px solid ${P.line}`, fontSize: 13, fontWeight: 600 }}>{it.price}</div>
             </div>
           ))}
         </div>
@@ -544,14 +968,10 @@ function BalanceTab() {
   );
 }
 
-// ─── ProfileTab ───────────────────────────────────────────────────────────────
-
 function ProfileTab() {
   const { user, token } = useTelegram();
   const subscriptionQuery = trpc.billing.getSubscription.useQuery(undefined, { enabled: !!token });
   const sub = subscriptionQuery.data;
-  const initials = getInitials(user?.name);
-
   const rows: [string, string][] = [
     ["Підписка", sub?.plan ?? (subscriptionQuery.isLoading ? "..." : "Немає")],
     ["Сповіщення", "Увімкнено"],
@@ -559,56 +979,30 @@ function ProfileTab() {
     ["Зв'язатись з підтримкою", ""],
     ["Вийти з акаунту", ""],
   ];
-
   return (
     <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px 24px" }}>
-      <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 20 }}>
-        Профіль
-      </div>
-
+      <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 20 }}>Профіль</div>
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <Avatar initials={initials} size={68} tone="stone" />
+        <Avatar initials={getInitials(user?.name)} size={68} tone="stone" />
         <div style={{ flex: 1 }}>
           <div style={{ fontFamily: serif, fontSize: 24, fontWeight: 400, letterSpacing: -0.3 }}>{user?.name || "..."}</div>
-          <div style={{ fontSize: 12, color: P.textDim, marginTop: 2 }}>
-            {user?.role === "ATHLETE" ? "Спортсмен" : user?.role || "Атлет"}
-          </div>
-          {sub?.status === "ACTIVE" && (
-            <div style={{
-              marginTop: 8, display: "inline-flex", gap: 6, alignItems: "center",
-              padding: "4px 10px", borderRadius: 999,
-              background: P.sandSoft, color: P.sand,
-              fontFamily: mono, fontSize: 10, letterSpacing: 1,
-            }}>● {sub.plan}</div>
-          )}
+          <div style={{ fontSize: 12, color: P.textDim, marginTop: 2 }}>{user?.role === "ATHLETE" ? "Спортсмен" : user?.role || "Атлет"}</div>
+          {sub?.status === "ACTIVE" && <div style={{ marginTop: 8, display: "inline-flex", gap: 6, alignItems: "center", padding: "4px 10px", borderRadius: 999, background: P.sandSoft, color: P.sand, fontFamily: mono, fontSize: 10, letterSpacing: 1 }}>● {sub.plan}</div>}
         </div>
       </div>
-
       <div style={{ marginTop: 28 }}>
-        <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 10 }}>
-          — Налаштування
-        </div>
+        <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 10 }}>— Налаштування</div>
         <div style={{ background: P.surface, borderRadius: 14, border: `1px solid ${P.line}`, overflow: "hidden" }}>
           {rows.map(([label, value], i) => (
-            <div key={label} style={{
-              padding: "14px 16px", display: "flex", alignItems: "center",
-              borderBottom: i < rows.length - 1 ? `1px solid ${P.lineSoft}` : "none",
-            }}>
+            <div key={label} style={{ padding: "14px 16px", display: "flex", alignItems: "center", borderBottom: i < rows.length - 1 ? `1px solid ${P.lineSoft}` : "none" }}>
               <div style={{ flex: 1, fontSize: 13.5, color: i === rows.length - 1 ? "#C99B85" : P.text }}>{label}</div>
               {value && <span style={{ fontSize: 12, color: P.textDim, marginRight: 8 }}>{value}</span>}
-              {i < rows.length - 1 && (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 6l6 6-6 6"/>
-                </svg>
-              )}
+              {i < rows.length - 1 && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>}
             </div>
           ))}
         </div>
       </div>
-
-      <div style={{ marginTop: 20, fontFamily: mono, fontSize: 10, color: P.textMute, textAlign: "center" }}>
-        POWERINSIDE · V 0.1 · TELEGRAM MINI APP
-      </div>
+      <div style={{ marginTop: 20, fontFamily: mono, fontSize: 10, color: P.textMute, textAlign: "center" }}>POWERINSIDE · V 0.1 · TELEGRAM MINI APP</div>
     </div>
   );
 }
@@ -616,193 +1010,215 @@ function ProfileTab() {
 // ─── AdminTab ─────────────────────────────────────────────────────────────────
 
 type AdminSection = "stats" | "coaches" | "users";
-
-type AdminCoach = {
-  id: string;
-  status: string;
-  user: { name?: string | null; email: string; createdAt: Date };
-  _count: { interviewSessions: number; knowledgeBase: number; methodologyRules: number };
-};
-
-type AdminUser = {
-  id: string;
-  name?: string | null;
-  email: string;
-  role: string;
-  createdAt: Date;
-  _count: { conversations: number };
-};
-
-const ROLE_LABEL: Record<string, string> = {
-  ATHLETE: "Атлет", COACH: "Тренер", INVESTOR: "Інвестор", ADMIN: "Адмін", OWNER: "Власник",
-};
-const STATUS_LABEL: Record<string, string> = {
-  PENDING: "Очікує", ACTIVE: "Активний", SUSPENDED: "Призупинений",
-};
-const STATUS_COLOR: Record<string, string> = {
-  PENDING: "#C9A574", ACTIVE: "#7D9575", SUSPENDED: "#C99B85",
-};
+type AdminCoach = { id: string; status: string; user: { name?: string | null; email: string; createdAt: Date }; _count: { interviewSessions: number; knowledgeBase: number; methodologyRules: number } };
+type AdminUser = { id: string; name?: string | null; email: string; role: string; createdAt: Date; _count: { conversations: number } };
+const ROLE_LABEL: Record<string, string> = { ATHLETE: "Атлет", COACH: "Тренер", INVESTOR: "Інвестор", ADMIN: "Адмін", OWNER: "Власник" };
+const STATUS_LABEL: Record<string, string> = { PENDING: "Очікує", ACTIVE: "Активний", SUSPENDED: "Призупинений" };
+const STATUS_COLOR: Record<string, string> = { PENDING: "#C9A574", ACTIVE: "#7D9575", SUSPENDED: "#C99B85" };
 
 function AdminTab() {
   const { token } = useTelegram();
   const [section, setSection] = useState<AdminSection>("stats");
   const utils = trpc.useUtils();
-
   const statsQuery   = trpc.admin.getStats.useQuery(undefined, { enabled: !!token });
   const coachesQuery = trpc.admin.getCoaches.useQuery(undefined, { enabled: !!token && section === "coaches" });
   const usersQuery   = trpc.admin.getUsers.useQuery({ page: 1, perPage: 30 }, { enabled: !!token && section === "users" });
-
   const activateMutation = trpc.admin.activateCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
   const suspendMutation  = trpc.admin.suspendCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
-
   const stats   = statsQuery.data;
   const coaches = (coachesQuery.data ?? []) as AdminCoach[];
   const users   = (usersQuery.data?.users ?? []) as AdminUser[];
-
-  const sections: { id: AdminSection; label: string }[] = [
-    { id: "stats",   label: "Аналітика" },
-    { id: "coaches", label: "Тренери"   },
-    { id: "users",   label: "Юзери"     },
-  ];
-
+  const sections: { id: AdminSection; label: string }[] = [{ id: "stats", label: "Аналітика" }, { id: "coaches", label: "Тренери" }, { id: "users", label: "Юзери" }];
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      {/* Header */}
       <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
-        <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 14 }}>
-          Адміністрування
-        </div>
-        {/* Segmented control */}
+        <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 14 }}>Адміністрування</div>
         <div style={{ display: "flex", gap: 6, background: P.surface, borderRadius: 12, padding: 4, border: `1px solid ${P.line}`, marginBottom: 16 }}>
           {sections.map((s) => (
-            <div key={s.id} onClick={() => setSection(s.id)} style={{
-              flex: 1, textAlign: "center", padding: "8px 0", borderRadius: 9, cursor: "pointer",
-              background: section === s.id ? P.sand : "transparent",
-              color: section === s.id ? "#17140F" : P.textDim,
-              fontSize: 12, fontWeight: section === s.id ? 600 : 400, transition: "all 0.15s",
-            }}>{s.label}</div>
+            <div key={s.id} onClick={() => setSection(s.id)} style={{ flex: 1, textAlign: "center", padding: "8px 0", borderRadius: 9, cursor: "pointer", background: section === s.id ? P.sand : "transparent", color: section === s.id ? "#17140F" : P.textDim, fontSize: 12, fontWeight: section === s.id ? 600 : 400 }}>{s.label}</div>
           ))}
         </div>
       </div>
-
-      {/* Content */}
       <div style={{ flex: 1, overflowY: "auto", padding: "0 24px 24px" }}>
-
-        {/* ── Stats ── */}
         {section === "stats" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {[
-              { label: "Всього юзерів",    value: stats?.totalUsers },
-              { label: "Всього тренерів",  value: stats?.totalCoaches },
-              { label: "Активних тренерів",value: stats?.activeCoaches },
-              { label: "Активних підписок",value: stats?.activeSubscriptions },
-              { label: "Всього підписок",  value: stats?.totalSubscriptions },
-              { label: "Виручка (пакети)", value: stats !== undefined ? `$${(stats.totalRevenue / 100).toFixed(2)}` : undefined },
-            ].map((card) => (
-              <div key={card.label} style={{
-                background: P.surface, borderRadius: 14, padding: "16px 18px",
-                border: `1px solid ${P.line}`, display: "flex", justifyContent: "space-between", alignItems: "center",
-              }}>
-                <span style={{ fontSize: 13, color: P.textDim }}>{card.label}</span>
-                <span style={{ fontFamily: serif, fontSize: 26, fontWeight: 400, color: P.text, letterSpacing: -0.5 }}>
-                  {statsQuery.isLoading ? "·" : (card.value ?? 0)}
-                </span>
+            {[["Всього юзерів", stats?.totalUsers], ["Всього тренерів", stats?.totalCoaches], ["Активних тренерів", stats?.activeCoaches], ["Активних підписок", stats?.activeSubscriptions], ["Всього підписок", stats?.totalSubscriptions], ["Виручка (пакети)", stats !== undefined ? `$${(stats.totalRevenue / 100).toFixed(2)}` : undefined]].map(([label, value]) => (
+              <div key={String(label)} style={{ background: P.surface, borderRadius: 14, padding: "16px 18px", border: `1px solid ${P.line}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, color: P.textDim }}>{label}</span>
+                <span style={{ fontFamily: serif, fontSize: 26, fontWeight: 400, color: P.text, letterSpacing: -0.5 }}>{statsQuery.isLoading ? "·" : (value ?? 0)}</span>
               </div>
             ))}
-
-            {/* Conversion bar */}
-            {stats && stats.totalCoaches > 0 && (
-              <div style={{ background: P.surface, borderRadius: 14, padding: "16px 18px", border: `1px solid ${P.line}` }}>
-                <div style={{ fontSize: 12, color: P.textDim, marginBottom: 10 }}>Конверсія тренерів</div>
-                <div style={{ height: 6, borderRadius: 3, background: P.surface2, overflow: "hidden" }}>
-                  <div style={{ height: "100%", background: P.success, width: `${Math.round(stats.activeCoaches / stats.totalCoaches * 100)}%`, transition: "width 0.4s" }} />
-                </div>
-                <div style={{ fontSize: 11, color: P.textMute, marginTop: 6, fontFamily: mono }}>
-                  {Math.round(stats.activeCoaches / stats.totalCoaches * 100)}% активних
-                </div>
-              </div>
-            )}
           </div>
         )}
-
-        {/* ── Coaches ── */}
         {section === "coaches" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {coachesQuery.isLoading && (
-              <div style={{ textAlign: "center", paddingTop: 32 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 14, border: `2px solid ${P.sand}`, borderTopColor: "transparent", animation: "spin 1s linear infinite", margin: "0 auto" }} />
-              </div>
-            )}
             {coaches.map((coach) => (
               <div key={coach.id} style={{ background: P.surface, borderRadius: 14, padding: "14px 16px", border: `1px solid ${P.line}` }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
                   <div style={{ fontSize: 14, fontWeight: 500, color: P.text }}>{coach.user.name || "Без імені"}</div>
-                  <span style={{ fontFamily: mono, fontSize: 10, color: STATUS_COLOR[coach.status] || P.textDim }}>
-                    {STATUS_LABEL[coach.status] || coach.status}
-                  </span>
+                  <span style={{ fontFamily: mono, fontSize: 10, color: STATUS_COLOR[coach.status] || P.textDim }}>{STATUS_LABEL[coach.status] || coach.status}</span>
                 </div>
-                <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginBottom: 10 }}>
-                  {coach._count.methodologyRules} правил · {coach._count.knowledgeBase} записів · {coach._count.interviewSessions}/7 інтерв'ю
-                </div>
+                <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginBottom: 10 }}>{coach._count.methodologyRules} правил · {coach._count.knowledgeBase} записів · {coach._count.interviewSessions}/7</div>
                 <div style={{ display: "flex", gap: 8 }}>
-                  {coach.status !== "ACTIVE" && (
-                    <div onClick={() => activateMutation.mutate({ coachId: coach.id })} style={{
-                      flex: 1, textAlign: "center", padding: "8px", borderRadius: 10,
-                      background: P.success, color: "#17140F", fontSize: 12, fontWeight: 600,
-                      cursor: "pointer", opacity: activateMutation.isPending ? 0.5 : 1,
-                    }}>Активувати</div>
-                  )}
-                  {coach.status !== "SUSPENDED" && (
-                    <div onClick={() => suspendMutation.mutate({ coachId: coach.id })} style={{
-                      flex: 1, textAlign: "center", padding: "8px", borderRadius: 10,
-                      background: "transparent", color: "#C99B85", fontSize: 12, fontWeight: 500,
-                      cursor: "pointer", border: `1px solid rgba(201,155,133,0.3)`,
-                      opacity: suspendMutation.isPending ? 0.5 : 1,
-                    }}>Призупинити</div>
-                  )}
+                  {coach.status !== "ACTIVE" && <div onClick={() => activateMutation.mutate({ coachId: coach.id })} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: 10, background: P.success, color: "#17140F", fontSize: 12, fontWeight: 600, cursor: "pointer", opacity: activateMutation.isPending ? 0.5 : 1 }}>Активувати</div>}
+                  {coach.status !== "SUSPENDED" && <div onClick={() => suspendMutation.mutate({ coachId: coach.id })} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: 10, background: "transparent", color: "#C99B85", fontSize: 12, fontWeight: 500, cursor: "pointer", border: "1px solid rgba(201,155,133,0.3)", opacity: suspendMutation.isPending ? 0.5 : 1 }}>Призупинити</div>}
                 </div>
               </div>
             ))}
-            {!coachesQuery.isLoading && coaches.length === 0 && (
-              <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Тренерів немає</p>
-            )}
+            {!coachesQuery.isLoading && coaches.length === 0 && <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Тренерів немає</p>}
           </div>
         )}
-
-        {/* ── Users ── */}
         {section === "users" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {usersQuery.isLoading && (
-              <div style={{ textAlign: "center", paddingTop: 32 }}>
-                <div style={{ width: 28, height: 28, borderRadius: 14, border: `2px solid ${P.sand}`, borderTopColor: "transparent", animation: "spin 1s linear infinite", margin: "0 auto" }} />
-              </div>
-            )}
             {users.map((u) => (
-              <div key={u.id} style={{
-                background: P.surface, borderRadius: 14, padding: "14px 16px",
-                border: `1px solid ${P.line}`, display: "flex", alignItems: "center", gap: 12,
-              }}>
+              <div key={u.id} style={{ background: P.surface, borderRadius: 14, padding: "14px 16px", border: `1px solid ${P.line}`, display: "flex", alignItems: "center", gap: 12 }}>
                 <Avatar initials={getInitials(u.name)} size={36} tone="dark" />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 500, color: P.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {u.name || "Без імені"}
-                  </div>
-                  <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginTop: 2 }}>
-                    {u._count.conversations} розмов · {new Date(u.createdAt).toLocaleDateString("uk")}
-                  </div>
+                  <div style={{ fontSize: 13.5, fontWeight: 500, color: P.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.name || "Без імені"}</div>
+                  <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginTop: 2 }}>{u._count.conversations} розмов · {new Date(u.createdAt).toLocaleDateString("uk")}</div>
                 </div>
-                <span style={{
-                  padding: "3px 8px", borderRadius: 999, fontSize: 10, fontWeight: 500,
-                  fontFamily: mono, background: P.sandSoft, color: P.sand,
-                }}>{ROLE_LABEL[u.role] || u.role}</span>
+                <span style={{ padding: "3px 8px", borderRadius: 999, fontSize: 10, fontWeight: 500, fontFamily: mono, background: P.sandSoft, color: P.sand }}>{ROLE_LABEL[u.role] || u.role}</span>
               </div>
             ))}
-            {!usersQuery.isLoading && users.length === 0 && (
-              <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Юзерів немає</p>
-            )}
+            {!usersQuery.isLoading && users.length === 0 && <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Юзерів немає</p>}
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ─── AdminTabBar (5 tabs) ─────────────────────────────────────────────────────
+
+type AdminTab5 = "chat" | "balance" | "interview" | "admin" | "profile";
+
+function AdminTabBar({ active, onChange }: { active: AdminTab5; onChange: (t: AdminTab5) => void }) {
+  const items: { id: AdminTab5; label: string; icon: (c: string) => React.ReactNode }[] = [
+    { id: "chat", label: "Чат", icon: (c) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 12a8 8 0 0 1-11.4 7.2L4 21l1.8-5.6A8 8 0 1 1 21 12z"/>
+      </svg>
+    )},
+    { id: "balance", label: "Баланс", icon: (c) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18"/><circle cx="16.5" cy="14.5" r="1.2" fill={c}/>
+      </svg>
+    )},
+    { id: "interview", label: "Інтерв'ю", icon: (c) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>
+      </svg>
+    )},
+    { id: "admin", label: "Адмін", icon: (c) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+      </svg>
+    )},
+    { id: "profile", label: "Профіль", icon: (c) => (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="3.8"/><path d="M4 21c1.5-4 4.6-6 8-6s6.5 2 8 6"/>
+      </svg>
+    )},
+  ];
+  return (
+    <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", padding: "8px 4px 6px", borderTop: `1px solid ${P.line}`, background: P.bg, flexShrink: 0 }}>
+      {items.map((it) => {
+        const on = it.id === active;
+        const c = on ? P.sand : P.textMute;
+        return (
+          <div key={it.id} onClick={() => onChange(it.id)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flex: 1, padding: "4px 0", cursor: "pointer" }}>
+            {it.icon(c)}
+            <span style={{ fontSize: 9, letterSpacing: 0.3, textTransform: "uppercase", color: c, fontWeight: 500 }}>{it.label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── AdminProfileTab (with preview mode) ─────────────────────────────────────
+
+function AdminProfileTab() {
+  const { user } = useTelegram();
+  const [preview, setPreview] = useState<"none" | "athlete" | "coach">("none");
+
+  if (preview === "athlete") {
+    return (
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div onClick={() => setPreview("none")} style={{
+          padding: "10px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
+          background: P.surface2, borderBottom: `1px solid ${P.line}`, flexShrink: 0,
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          <span style={{ fontSize: 11, color: P.sand, fontFamily: mono, letterSpacing: 1 }}>PREVIEW: РЕЖИМ АТЛЕТА</span>
+        </div>
+        <ChatTab />
+      </div>
+    );
+  }
+
+  if (preview === "coach") {
+    return (
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div onClick={() => setPreview("none")} style={{
+          padding: "10px 20px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
+          background: P.surface2, borderBottom: `1px solid ${P.line}`, flexShrink: 0,
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          <span style={{ fontSize: 11, color: P.sand, fontFamily: mono, letterSpacing: 1 }}>PREVIEW: РЕЖИМ ТРЕНЕРА</span>
+        </div>
+        <CoachInterviewTabContent />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px 24px" }}>
+      <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 20 }}>Профіль адміна</div>
+
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+        <Avatar initials={getInitials(user?.name)} size={68} tone="sand" />
+        <div style={{ flex: 1 }}>
+          <div style={{ fontFamily: serif, fontSize: 22, fontWeight: 400, letterSpacing: -0.3 }}>{user?.name || "..."}</div>
+          <div style={{ marginTop: 8, display: "inline-flex", gap: 6, alignItems: "center", padding: "4px 10px", borderRadius: 999, background: P.sandSoft, color: P.sand, fontFamily: mono, fontSize: 10, letterSpacing: 1 }}>
+            ● АДМІН
+          </div>
+        </div>
+      </div>
+
+      {/* Preview mode buttons */}
+      <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 10 }}>— Перегляд інтерфейсів</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div onClick={() => setPreview("athlete")} style={{
+          background: P.surface, borderRadius: 14, padding: "14px 16px",
+          border: `1px solid ${P.line}`, display: "flex", alignItems: "center", gap: 14, cursor: "pointer",
+        }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: P.sandSoft, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.8"/><path d="M4 21c1.5-4 4.6-6 8-6s6.5 2 8 6"/></svg>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 500, color: P.text }}>Режим атлета</div>
+            <div style={{ fontSize: 11.5, color: P.textDim, marginTop: 1 }}>Переглянути як виглядає інтерфейс атлета</div>
+          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+
+        <div onClick={() => setPreview("coach")} style={{
+          background: P.surface, borderRadius: 14, padding: "14px 16px",
+          border: `1px solid ${P.line}`, display: "flex", alignItems: "center", gap: 14, cursor: "pointer",
+        }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: P.sandSoft, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 500, color: P.text }}>Режим тренера</div>
+            <div style={{ fontSize: 11.5, color: P.textDim, marginTop: 1 }}>Переглянути AI-інтерв'ю і інтерфейс тренера</div>
+          </div>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 20, fontFamily: mono, fontSize: 10, color: P.textMute, textAlign: "center" }}>POWERINSIDE · ADMIN · V 0.1</div>
     </div>
   );
 }
@@ -811,15 +1227,31 @@ function AdminTab() {
 
 export default function TelegramMainPage() {
   const [activeTab, setActiveTab] = useState<Tab>("chat");
-  const { isLoading, error, webApp, user } = useTelegram();
+  const [adminTab, setAdminTab] = useState<AdminTab5>("chat");
+  const { isLoading, error, webApp, user, isNew, setAuth } = useTelegram();
   const isAdminUser = user?.role === "ADMIN" || user?.role === "OWNER";
+  const isCoachUser = user?.role === "COACH";
+
+  const selectRoleMutation = trpc.auth.selectRole.useMutation({
+    onSuccess: (data) => setAuth(data.token, data.role),
+  });
+
+  const globalStyle = (
+    <style>{`
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      input { background: transparent; }
+      input::placeholder { color: ${P.textMute}; }
+      ::-webkit-scrollbar { display: none; }
+      scrollbar-width: none;
+    `}</style>
+  );
 
   if (isLoading) {
     return (
-      <div style={{
-        height: "100dvh", display: "flex", alignItems: "center", justifyContent: "center",
-        flexDirection: "column", gap: 14, background: P.bg, fontFamily: sans,
-      }}>
+      <div style={{ height: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 14, background: P.bg, fontFamily: sans }}>
+        {globalStyle}
         <div style={{ width: 32, height: 32, borderRadius: 16, border: `2px solid ${P.sand}`, borderTopColor: "transparent", animation: "spin 1s linear infinite" }} />
         <p style={{ fontSize: 13, color: P.textDim }}>Завантаження…</p>
       </div>
@@ -828,46 +1260,56 @@ export default function TelegramMainPage() {
 
   if (error) {
     return (
-      <div style={{
-        height: "100dvh", display: "flex", alignItems: "center", justifyContent: "center",
-        flexDirection: "column", gap: 8, background: P.bg, padding: "0 24px", fontFamily: sans,
-      }}>
+      <div style={{ height: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 8, background: P.bg, padding: "0 24px", fontFamily: sans }}>
+        {globalStyle}
         <p style={{ fontSize: 14, color: "#C99B85" }}>Помилка авторизації</p>
         <p style={{ fontSize: 12, color: P.textDim, textAlign: "center" }}>{error}</p>
       </div>
     );
   }
 
-  return (
+  const shell = (children: React.ReactNode, bottomBar: React.ReactNode) => (
+    <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: P.bg, color: P.text, fontFamily: sans, overflow: "hidden" }}>
+      {globalStyle}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>{children}</div>
+      {bottomBar}
+    </div>
+  );
+
+  // ── NEW USER: onboarding role selection ──
+  if (isNew) {
+    return shell(
+      <OnboardingScreen onSelect={(role) => selectRoleMutation.mutate({ role })} isPending={selectRoleMutation.isPending} />,
+      null
+    );
+  }
+
+  // ── ADMIN: 5-tab combined interface ──
+  if (isAdminUser) {
+    return shell(
+      <>
+        {adminTab === "chat"      && <ChatTab />}
+        {adminTab === "balance"   && <BalanceTab />}
+        {adminTab === "interview" && <CoachInterviewTabContent />}
+        {adminTab === "admin"     && <AdminTab />}
+        {adminTab === "profile"   && <AdminProfileTab />}
+      </>,
+      <AdminTabBar active={adminTab} onChange={(t) => { setAdminTab(t); webApp?.HapticFeedback?.selectionChanged(); }} />
+    );
+  }
+
+  // ── COACH: interview + profile ──
+  if (isCoachUser) {
+    return <CoachPage />;
+  }
+
+  // ── ATHLETE: chat + balance + profile ──
+  return shell(
     <>
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        input { background: transparent; }
-        input::placeholder { color: ${P.textMute}; }
-        ::-webkit-scrollbar { display: none; }
-        scrollbar-width: none;
-      `}</style>
-      <div style={{
-        height: "100dvh", display: "flex", flexDirection: "column",
-        background: P.bg, color: P.text, fontFamily: sans, overflow: "hidden",
-      }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          {activeTab === "chat"    && <ChatTab />}
-          {activeTab === "balance" && <BalanceTab />}
-          {activeTab === "profile" && <ProfileTab />}
-          {activeTab === "admin"   && isAdminUser && <AdminTab />}
-        </div>
-        <TabBar
-          active={activeTab}
-          isAdmin={isAdminUser}
-          onChange={(t) => {
-            setActiveTab(t);
-            webApp?.HapticFeedback?.selectionChanged();
-          }}
-        />
-      </div>
-    </>
+      {activeTab === "chat"    && <ChatTab />}
+      {activeTab === "balance" && <BalanceTab />}
+      {activeTab === "profile" && <ProfileTab />}
+    </>,
+    <TabBar active={activeTab} onChange={(t) => { setActiveTab(t); webApp?.HapticFeedback?.selectionChanged(); }} />
   );
 }

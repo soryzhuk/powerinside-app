@@ -2,6 +2,7 @@ import { z } from "zod";
 import { hash } from "bcryptjs";
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { createTelegramJWT } from "@/lib/telegram-jwt";
 
 export const authRouter = router({
   /**
@@ -83,4 +84,40 @@ export const authRouter = router({
   getSession: protectedProcedure.query(async ({ ctx }) => {
     return ctx.session;
   }),
+
+  /**
+   * Select role during Telegram Mini App onboarding.
+   * Returns a new JWT with the updated role so the client can use coach/athlete procedures immediately.
+   */
+  selectRole: protectedProcedure
+    .input(z.object({ role: z.enum(["ATHLETE", "COACH"]) }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: { role: input.role },
+      });
+
+      if (input.role === "COACH") {
+        const existing = await ctx.prisma.coachProfile.findUnique({
+          where: { userId: user.id },
+        });
+        if (!existing) {
+          await ctx.prisma.coachProfile.create({
+            data: { userId: user.id, status: "PENDING" },
+          });
+        }
+      }
+
+      if (!user.telegramId) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "No telegramId on user." });
+      }
+
+      const token = createTelegramJWT({
+        userId: user.id,
+        telegramId: user.telegramId,
+        role: user.role,
+      });
+
+      return { token, role: user.role };
+    }),
 });

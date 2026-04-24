@@ -1,40 +1,11 @@
 import { NextRequest } from "next/server";
-import { createHmac } from "crypto";
 import { validateTelegramWebAppData, parseTelegramInitData } from "@/lib/telegram";
+import { createTelegramJWT } from "@/lib/telegram-jwt";
 import prisma from "@/lib/prisma";
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
-const JWT_SECRET = process.env.NEXTAUTH_SECRET || "powerinside-tg-secret";
 
 const ADMIN_USERNAMES = ["soloveynik", "sergiyryzhuk"];
-
-/**
- * Creates a simple HMAC-based JWT token for Telegram Mini App users.
- * This token is used to authenticate tRPC requests from the Mini App.
- */
-function createTelegramJWT(payload: {
-  userId: string;
-  telegramId: string;
-  role: string;
-}): string {
-  const header = Buffer.from(
-    JSON.stringify({ alg: "HS256", typ: "JWT" })
-  ).toString("base64url");
-
-  const body = Buffer.from(
-    JSON.stringify({
-      ...payload,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 hours
-    })
-  ).toString("base64url");
-
-  const signature = createHmac("sha256", JWT_SECRET)
-    .update(`${header}.${body}`)
-    .digest("base64url");
-
-  return `${header}.${body}.${signature}`;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -83,10 +54,14 @@ export async function POST(request: NextRequest) {
       where: { telegramId },
     });
 
-    const isAdmin = tgUser.username ? ADMIN_USERNAMES.includes(tgUser.username) : false;
-    const assignedRole = isAdmin ? "ADMIN" : "ATHLETE";
+    const isAdminUser = tgUser.username ? ADMIN_USERNAMES.includes(tgUser.username) : false;
+    const assignedRole = isAdminUser ? "ADMIN" : "ATHLETE";
+    // Admins skip onboarding — they get access to all interfaces immediately
+    let isNew = false;
 
     if (!user) {
+      // Only non-admin new users need onboarding
+      if (!isAdminUser) isNew = true;
       const name = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ");
 
       user = await prisma.user.create({
@@ -111,10 +86,17 @@ export async function POST(request: NextRequest) {
         data: {
           name: name || user.name,
           image: tgUser.photo_url || user.image,
-          // Promote to ADMIN if in the list (never demote existing OWNER/ADMIN)
-          ...(isAdmin && user.role === "ATHLETE" ? { role: "ADMIN" } : {}),
+          ...(isAdminUser && user.role === "ATHLETE" ? { role: "ADMIN" } : {}),
         },
       });
+    }
+
+    // Auto-create CoachProfile for admins so they can use coach procedures
+    if (isAdminUser || user.role === "ADMIN" || user.role === "OWNER") {
+      const existingProfile = await prisma.coachProfile.findUnique({ where: { userId: user.id } });
+      if (!existingProfile) {
+        await prisma.coachProfile.create({ data: { userId: user.id, status: "PENDING" } });
+      }
     }
 
     // Generate JWT token
@@ -126,6 +108,7 @@ export async function POST(request: NextRequest) {
 
     return Response.json({
       token,
+      isNew,
       user: {
         id: user.id,
         name: user.name,
