@@ -5,7 +5,15 @@ import prisma from "@/lib/prisma";
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
 
-const ADMIN_USERNAMES = ["soloveynik", "sergiyryzhuk"];
+// Role assigned per Telegram username. Higher rank always wins.
+const PRIVILEGED_ROLES: Record<string, "ADMIN" | "OWNER"> = {
+  soloveynik:  "ADMIN",
+  sergiyryzhuk: "OWNER",
+};
+
+const ROLE_RANK: Record<string, number> = {
+  ATHLETE: 0, COACH: 1, INVESTOR: 1, ADMIN: 2, OWNER: 3,
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,15 +62,14 @@ export async function POST(request: NextRequest) {
       where: { telegramId },
     });
 
-    const isAdminUser = tgUser.username ? ADMIN_USERNAMES.includes(tgUser.username) : false;
-    const assignedRole = isAdminUser ? "ADMIN" : "ATHLETE";
-    // Admins skip onboarding — they get access to all interfaces immediately
+    const targetRole = tgUser.username ? PRIVILEGED_ROLES[tgUser.username] ?? null : null;
+    const isPrivileged = targetRole !== null;
     let isNew = false;
 
+    const name = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ");
+
     if (!user) {
-      // Only non-admin new users need onboarding
-      if (!isAdminUser) isNew = true;
-      const name = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ");
+      if (!isPrivileged) isNew = true;
 
       user = await prisma.user.create({
         data: {
@@ -71,7 +78,7 @@ export async function POST(request: NextRequest) {
           email: `tg_${telegramId}@telegram.powerinside.app`,
           image: tgUser.photo_url || null,
           language: tgUser.language_code === "uk" ? "uk" : "uk",
-          role: assignedRole,
+          role: targetRole ?? "ATHLETE",
         },
       });
 
@@ -79,20 +86,23 @@ export async function POST(request: NextRequest) {
         data: { userId: user.id, freeRemaining: 50 },
       });
     } else {
-      const name = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ");
+      // Upgrade role only if the target rank is strictly higher than current rank
+      const shouldUpgrade =
+        targetRole !== null &&
+        (ROLE_RANK[targetRole] ?? 0) > (ROLE_RANK[user.role] ?? 0);
 
       user = await prisma.user.update({
         where: { id: user.id },
         data: {
           name: name || user.name,
           image: tgUser.photo_url || user.image,
-          ...(isAdminUser && user.role === "ATHLETE" ? { role: "ADMIN" } : {}),
+          ...(shouldUpgrade ? { role: targetRole! } : {}),
         },
       });
     }
 
-    // Auto-create CoachProfile for admins so they can use coach procedures
-    if (isAdminUser || user.role === "ADMIN" || user.role === "OWNER") {
+    // Auto-create CoachProfile for privileged users so they can use coach procedures
+    if (isPrivileged || user.role === "ADMIN" || user.role === "OWNER") {
       const existingProfile = await prisma.coachProfile.findUnique({ where: { userId: user.id } });
       if (!existingProfile) {
         await prisma.coachProfile.create({ data: { userId: user.id, status: "PENDING" } });
