@@ -14,7 +14,7 @@ function getClient(): Anthropic {
   return _anthropic;
 }
 
-const MODEL = "claude-sonnet-4-20250514";
+const MODEL = "claude-sonnet-4-6";
 const MAX_TOKENS = 4096;
 
 export interface ChatMessage {
