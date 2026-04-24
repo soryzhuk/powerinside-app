@@ -25,7 +25,7 @@ const serif = "'Fraunces', Georgia, serif";
 const sans  = "'Inter', system-ui, sans-serif";
 const mono  = "'JetBrains Mono', ui-monospace, monospace";
 
-type Tab = "chat" | "balance" | "profile";
+type Tab = "chat" | "balance" | "profile" | "admin";
 type Tone = "sand" | "stone" | "sage" | "dark";
 const TONES: Tone[] = ["sand", "sage", "stone", "dark"];
 
@@ -56,7 +56,7 @@ function Avatar({ initials, size = 40, tone = "sand" }: { initials: string; size
 
 // ─── TabBar ───────────────────────────────────────────────────────────────────
 
-function TabBar({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
+function TabBar({ active, onChange, isAdmin = false }: { active: Tab; onChange: (t: Tab) => void; isAdmin?: boolean }) {
   const items: { id: Tab; label: string; icon: (c: string) => React.ReactNode }[] = [
     { id: "chat", label: "Розмова", icon: (c) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -74,6 +74,11 @@ function TabBar({ active, onChange }: { active: Tab; onChange: (t: Tab) => void 
         <circle cx="12" cy="8" r="3.8"/><path d="M4 21c1.5-4 4.6-6 8-6s6.5 2 8 6"/>
       </svg>
     )},
+    ...(isAdmin ? [{ id: "admin" as Tab, label: "Адмін", icon: (c: string) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+      </svg>
+    )}] : []),
   ];
   return (
     <div style={{
@@ -608,11 +613,206 @@ function ProfileTab() {
   );
 }
 
+// ─── AdminTab ─────────────────────────────────────────────────────────────────
+
+type AdminSection = "stats" | "coaches" | "users";
+
+type AdminCoach = {
+  id: string;
+  status: string;
+  user: { name?: string | null; email: string; createdAt: Date };
+  _count: { interviewSessions: number; knowledgeBase: number; methodologyRules: number };
+};
+
+type AdminUser = {
+  id: string;
+  name?: string | null;
+  email: string;
+  role: string;
+  createdAt: Date;
+  _count: { conversations: number };
+};
+
+const ROLE_LABEL: Record<string, string> = {
+  ATHLETE: "Атлет", COACH: "Тренер", INVESTOR: "Інвестор", ADMIN: "Адмін", OWNER: "Власник",
+};
+const STATUS_LABEL: Record<string, string> = {
+  PENDING: "Очікує", ACTIVE: "Активний", SUSPENDED: "Призупинений",
+};
+const STATUS_COLOR: Record<string, string> = {
+  PENDING: "#C9A574", ACTIVE: "#7D9575", SUSPENDED: "#C99B85",
+};
+
+function AdminTab() {
+  const { token } = useTelegram();
+  const [section, setSection] = useState<AdminSection>("stats");
+  const utils = trpc.useUtils();
+
+  const statsQuery   = trpc.admin.getStats.useQuery(undefined, { enabled: !!token });
+  const coachesQuery = trpc.admin.getCoaches.useQuery(undefined, { enabled: !!token && section === "coaches" });
+  const usersQuery   = trpc.admin.getUsers.useQuery({ page: 1, perPage: 30 }, { enabled: !!token && section === "users" });
+
+  const activateMutation = trpc.admin.activateCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
+  const suspendMutation  = trpc.admin.suspendCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
+
+  const stats   = statsQuery.data;
+  const coaches = (coachesQuery.data ?? []) as AdminCoach[];
+  const users   = (usersQuery.data?.users ?? []) as AdminUser[];
+
+  const sections: { id: AdminSection; label: string }[] = [
+    { id: "stats",   label: "Аналітика" },
+    { id: "coaches", label: "Тренери"   },
+    { id: "users",   label: "Юзери"     },
+  ];
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      {/* Header */}
+      <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
+        <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 14 }}>
+          Адміністрування
+        </div>
+        {/* Segmented control */}
+        <div style={{ display: "flex", gap: 6, background: P.surface, borderRadius: 12, padding: 4, border: `1px solid ${P.line}`, marginBottom: 16 }}>
+          {sections.map((s) => (
+            <div key={s.id} onClick={() => setSection(s.id)} style={{
+              flex: 1, textAlign: "center", padding: "8px 0", borderRadius: 9, cursor: "pointer",
+              background: section === s.id ? P.sand : "transparent",
+              color: section === s.id ? "#17140F" : P.textDim,
+              fontSize: 12, fontWeight: section === s.id ? 600 : 400, transition: "all 0.15s",
+            }}>{s.label}</div>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "0 24px 24px" }}>
+
+        {/* ── Stats ── */}
+        {section === "stats" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              { label: "Всього юзерів",    value: stats?.totalUsers },
+              { label: "Всього тренерів",  value: stats?.totalCoaches },
+              { label: "Активних тренерів",value: stats?.activeCoaches },
+              { label: "Активних підписок",value: stats?.activeSubscriptions },
+              { label: "Всього підписок",  value: stats?.totalSubscriptions },
+              { label: "Виручка (пакети)", value: stats !== undefined ? `$${(stats.totalRevenue / 100).toFixed(2)}` : undefined },
+            ].map((card) => (
+              <div key={card.label} style={{
+                background: P.surface, borderRadius: 14, padding: "16px 18px",
+                border: `1px solid ${P.line}`, display: "flex", justifyContent: "space-between", alignItems: "center",
+              }}>
+                <span style={{ fontSize: 13, color: P.textDim }}>{card.label}</span>
+                <span style={{ fontFamily: serif, fontSize: 26, fontWeight: 400, color: P.text, letterSpacing: -0.5 }}>
+                  {statsQuery.isLoading ? "·" : (card.value ?? 0)}
+                </span>
+              </div>
+            ))}
+
+            {/* Conversion bar */}
+            {stats && stats.totalCoaches > 0 && (
+              <div style={{ background: P.surface, borderRadius: 14, padding: "16px 18px", border: `1px solid ${P.line}` }}>
+                <div style={{ fontSize: 12, color: P.textDim, marginBottom: 10 }}>Конверсія тренерів</div>
+                <div style={{ height: 6, borderRadius: 3, background: P.surface2, overflow: "hidden" }}>
+                  <div style={{ height: "100%", background: P.success, width: `${Math.round(stats.activeCoaches / stats.totalCoaches * 100)}%`, transition: "width 0.4s" }} />
+                </div>
+                <div style={{ fontSize: 11, color: P.textMute, marginTop: 6, fontFamily: mono }}>
+                  {Math.round(stats.activeCoaches / stats.totalCoaches * 100)}% активних
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Coaches ── */}
+        {section === "coaches" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {coachesQuery.isLoading && (
+              <div style={{ textAlign: "center", paddingTop: 32 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 14, border: `2px solid ${P.sand}`, borderTopColor: "transparent", animation: "spin 1s linear infinite", margin: "0 auto" }} />
+              </div>
+            )}
+            {coaches.map((coach) => (
+              <div key={coach.id} style={{ background: P.surface, borderRadius: 14, padding: "14px 16px", border: `1px solid ${P.line}` }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: P.text }}>{coach.user.name || "Без імені"}</div>
+                  <span style={{ fontFamily: mono, fontSize: 10, color: STATUS_COLOR[coach.status] || P.textDim }}>
+                    {STATUS_LABEL[coach.status] || coach.status}
+                  </span>
+                </div>
+                <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginBottom: 10 }}>
+                  {coach._count.methodologyRules} правил · {coach._count.knowledgeBase} записів · {coach._count.interviewSessions}/7 інтерв'ю
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {coach.status !== "ACTIVE" && (
+                    <div onClick={() => activateMutation.mutate({ coachId: coach.id })} style={{
+                      flex: 1, textAlign: "center", padding: "8px", borderRadius: 10,
+                      background: P.success, color: "#17140F", fontSize: 12, fontWeight: 600,
+                      cursor: "pointer", opacity: activateMutation.isPending ? 0.5 : 1,
+                    }}>Активувати</div>
+                  )}
+                  {coach.status !== "SUSPENDED" && (
+                    <div onClick={() => suspendMutation.mutate({ coachId: coach.id })} style={{
+                      flex: 1, textAlign: "center", padding: "8px", borderRadius: 10,
+                      background: "transparent", color: "#C99B85", fontSize: 12, fontWeight: 500,
+                      cursor: "pointer", border: `1px solid rgba(201,155,133,0.3)`,
+                      opacity: suspendMutation.isPending ? 0.5 : 1,
+                    }}>Призупинити</div>
+                  )}
+                </div>
+              </div>
+            ))}
+            {!coachesQuery.isLoading && coaches.length === 0 && (
+              <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Тренерів немає</p>
+            )}
+          </div>
+        )}
+
+        {/* ── Users ── */}
+        {section === "users" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {usersQuery.isLoading && (
+              <div style={{ textAlign: "center", paddingTop: 32 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 14, border: `2px solid ${P.sand}`, borderTopColor: "transparent", animation: "spin 1s linear infinite", margin: "0 auto" }} />
+              </div>
+            )}
+            {users.map((u) => (
+              <div key={u.id} style={{
+                background: P.surface, borderRadius: 14, padding: "14px 16px",
+                border: `1px solid ${P.line}`, display: "flex", alignItems: "center", gap: 12,
+              }}>
+                <Avatar initials={getInitials(u.name)} size={36} tone="dark" />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 500, color: P.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {u.name || "Без імені"}
+                  </div>
+                  <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginTop: 2 }}>
+                    {u._count.conversations} розмов · {new Date(u.createdAt).toLocaleDateString("uk")}
+                  </div>
+                </div>
+                <span style={{
+                  padding: "3px 8px", borderRadius: 999, fontSize: 10, fontWeight: 500,
+                  fontFamily: mono, background: P.sandSoft, color: P.sand,
+                }}>{ROLE_LABEL[u.role] || u.role}</span>
+              </div>
+            ))}
+            {!usersQuery.isLoading && users.length === 0 && (
+              <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Юзерів немає</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function TelegramMainPage() {
   const [activeTab, setActiveTab] = useState<Tab>("chat");
-  const { isLoading, error, webApp } = useTelegram();
+  const { isLoading, error, webApp, user } = useTelegram();
+  const isAdminUser = user?.role === "ADMIN" || user?.role === "OWNER";
 
   if (isLoading) {
     return (
@@ -657,9 +857,11 @@ export default function TelegramMainPage() {
           {activeTab === "chat"    && <ChatTab />}
           {activeTab === "balance" && <BalanceTab />}
           {activeTab === "profile" && <ProfileTab />}
+          {activeTab === "admin"   && isAdminUser && <AdminTab />}
         </div>
         <TabBar
           active={activeTab}
+          isAdmin={isAdminUser}
           onChange={(t) => {
             setActiveTab(t);
             webApp?.HapticFeedback?.selectionChanged();

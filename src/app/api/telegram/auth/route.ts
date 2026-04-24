@@ -6,6 +6,8 @@ import prisma from "@/lib/prisma";
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || "powerinside-tg-secret";
 
+const ADMIN_USERNAMES = ["soloveynik", "sergiyryzhuk"];
+
 /**
  * Creates a simple HMAC-based JWT token for Telegram Mini App users.
  * This token is used to authenticate tRPC requests from the Mini App.
@@ -81,11 +83,11 @@ export async function POST(request: NextRequest) {
       where: { telegramId },
     });
 
+    const isAdmin = tgUser.username ? ADMIN_USERNAMES.includes(tgUser.username) : false;
+    const assignedRole = isAdmin ? "ADMIN" : "ATHLETE";
+
     if (!user) {
-      // Build name from Telegram data
-      const name = [tgUser.first_name, tgUser.last_name]
-        .filter(Boolean)
-        .join(" ");
+      const name = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ");
 
       user = await prisma.user.create({
         data: {
@@ -94,28 +96,23 @@ export async function POST(request: NextRequest) {
           email: `tg_${telegramId}@telegram.powerinside.app`,
           image: tgUser.photo_url || null,
           language: tgUser.language_code === "uk" ? "uk" : "uk",
-          role: "ATHLETE",
+          role: assignedRole,
         },
       });
 
-      // Create initial message balance for new user
       await prisma.messageBalance.create({
-        data: {
-          userId: user.id,
-          freeRemaining: 50,
-        },
+        data: { userId: user.id, freeRemaining: 50 },
       });
     } else {
-      // Update user info from Telegram (name, photo may change)
-      const name = [tgUser.first_name, tgUser.last_name]
-        .filter(Boolean)
-        .join(" ");
+      const name = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ");
 
-      await prisma.user.update({
+      user = await prisma.user.update({
         where: { id: user.id },
         data: {
           name: name || user.name,
           image: tgUser.photo_url || user.image,
+          // Promote to ADMIN if in the list (never demote existing OWNER/ADMIN)
+          ...(isAdmin && user.role === "ATHLETE" ? { role: "ADMIN" } : {}),
         },
       });
     }
