@@ -13,15 +13,15 @@ import {
 const features = [
   {
     icon: Brain,
-    title: "AI-коучинг",
+    title: "Коучинг за методикою",
     description:
-      "Персоналізовані тренувальні програми на основі штучного інтелекту та знань реальних тренерів.",
+      "Персоналізовані відповіді на основі знань реальних тренерів — тих, кого ви обрали.",
   },
   {
     icon: BookOpen,
     title: "База знань",
     description:
-      "Тренери завантажують власні методики, AI використовує їх для індивідуальних рекомендацій.",
+      "Тренери проходять глибоке інтерв'ю та завантажують власні методики, які стають основою консультацій.",
   },
   {
     icon: CreditCard,
@@ -43,9 +43,9 @@ const features = [
   },
   {
     icon: Zap,
-    title: "Миттєві відповіді",
+    title: "Відповіді 24/7",
     description:
-      "AI-асистент відповідає 24/7, базуючись на методиках обраного тренера.",
+      "Отримуйте відповіді в будь-який час, базуючись на методиці вашого тренера.",
   },
 ];
 
@@ -90,7 +90,7 @@ export default function LandingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-8">
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-sm text-primary font-medium">
-              AI-powered coaching
+              Методика тренера — у твоїй кишені
             </span>
           </div>
 
@@ -101,7 +101,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted mb-10 leading-relaxed">
-            Персоналізований AI-коучинг на основі методик реальних тренерів.
+            Персоналізовані відповіді на основі методик реальних тренерів.
             Пауерліфтинг, стронгмен, важка атлетика — знайдіть свого тренера та
             досягайте нових висот.
           </p>
@@ -133,8 +133,8 @@ export default function LandingPage() {
               Все для вашого <span className="text-primary">прогресу</span>
             </h2>
             <p className="text-lg text-muted max-w-2xl mx-auto">
-              Ми об&apos;єднуємо досвід найкращих тренерів із можливостями
-              штучного інтелекту.
+              Ми об&apos;єднуємо досвід найкращих тренерів з технологіями,
+              що роблять ці знання доступними 24/7.
             </p>
           </div>
 
@@ -170,8 +170,8 @@ export default function LandingPage() {
               Готові стати сильнішими?
             </h2>
             <p className="text-lg text-muted mb-8 max-w-xl mx-auto">
-              Приєднуйтесь до PowerInside — платформи, де AI та досвід тренерів
-              працюють на ваш результат.
+              Приєднуйтесь до PowerInside — платформи, де досвід тренерів
+              працює на ваш результат цілодобово.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
