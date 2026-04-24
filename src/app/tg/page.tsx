@@ -198,14 +198,14 @@ function OnboardingScreen({ onSelect, isPending }: {
             fontFamily: serif, fontSize: 66, lineHeight: 0.88, color: P.text,
             fontWeight: 400, letterSpacing: -2,
           }}>
-            Inside<br/>
-            <span style={{ fontStyle: "italic", color: P.sand }}>power.</span>
+            Power<span style={{ fontStyle: "italic", color: P.sand }}>Inside</span>
+            <sup style={{ fontSize: 14, fontFamily: sans, fontStyle: "normal", color: P.textMute, verticalAlign: "super", lineHeight: 0 }}>™</sup>
           </div>
           <div style={{
             position: "absolute", left: 24, right: 24, bottom: 20,
             fontSize: 12.5, lineHeight: 1.5, color: P.textDim,
           }}>
-            AI-розмова з методикою тренера. Без шаблонів — тільки те, що він сам би сказав.
+            Розмова з методикою тренера. Без шаблонів — тільки те, що він сам би сказав.
           </div>
         </div>
 
@@ -259,7 +259,7 @@ function OnboardingScreen({ onSelect, isPending }: {
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 15, fontWeight: 600, color: P.text }}>Я тренер</div>
               <div style={{ fontSize: 12, color: P.textDim, marginTop: 2 }}>
-                Проходжу AI-інтерв'ю з 7 раундів — моя методика стає базою для атлетів
+                Проходжу інтерв'ю з 7 раундів — моя методика стає базою для атлетів
               </div>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -291,7 +291,7 @@ function CoachInterviewList({ onSelect, completedRounds }: {
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
         <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 16 }}>
-          AI-Інтерв'ю з методики
+          Інтерв'ю з методики
         </div>
         <div style={{ fontFamily: serif, fontSize: 30, lineHeight: 1.05, fontWeight: 400, letterSpacing: -0.5, color: P.text }}>
           Розкажи, як ти<br/>
@@ -299,7 +299,7 @@ function CoachInterviewList({ onSelect, completedRounds }: {
         </div>
         <div style={{ fontSize: 13, color: P.textDim, marginTop: 8, marginBottom: 16 }}>
           {done === 0
-            ? "7 раундів питань від AI. Твої відповіді — основа методики."
+            ? "7 раундів питань. Твої відповіді — основа методики."
             : done < ROUNDS.length
             ? `${done} з ${ROUNDS.length} раундів завершено. Продовжуй.`
             : "Всі раунди завершено! Методика записана."}
@@ -425,7 +425,7 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 500 }}>{round.label}</div>
           <div style={{ fontSize: 11, color: isCompleted ? P.success : P.textDim, fontFamily: mono }}>
-            {isCompleted ? "✓ Завершено" : "AI-інтерв'ю · Дай розгорнуту відповідь"}
+            {isCompleted ? "✓ Завершено" : "Дай розгорнуту відповідь"}
           </div>
         </div>
         {!isCompleted && hasMessages && (
@@ -447,7 +447,7 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
               {round.desc}
             </div>
             <div style={{ fontSize: 13, color: P.textDim, lineHeight: 1.5 }}>
-              Розкажи докладно — AI задасть уточнюючі питання. Чим більше деталей, тим точніше твоя методика буде представлена атлетам.
+              Розкажи докладно — чим більше деталей, тим точніше твоя методика буде представлена атлетам.
             </div>
           </div>
         )}
@@ -586,7 +586,7 @@ function CoachProfileScreen() {
             Що далі?
           </div>
           <div style={{ fontSize: 12.5, color: P.textDim, lineHeight: 1.6 }}>
-            Після завершення інтерв'ю адміністратор перевірить твою методику і активує профіль. Атлети зможуть задавати тобі питання через AI.
+            Після завершення інтерв'ю адміністратор перевірить твою методику і активує профіль. Після активації атлети зможуть ставити тобі запитання.
           </div>
         </div>
       )}
@@ -748,7 +748,7 @@ function ChatView({ coach, messages, input, onInputChange, onSend, onBack, isPen
           <div style={{ fontSize: 14, fontWeight: 500 }}>{coach.user.name || "Тренер"}</div>
           <div style={{ fontSize: 11, color: P.textDim, display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ width: 5, height: 5, borderRadius: 3, background: P.success, display: "inline-block" }} />
-            AI-методологія · {coach._count.methodologyRules} правил
+            Методологія · {coach._count.methodologyRules} правил
           </div>
         </div>
       </div>
@@ -1212,7 +1212,7 @@ function AdminProfileTab() {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 13.5, fontWeight: 500, color: P.text }}>Режим тренера</div>
-            <div style={{ fontSize: 11.5, color: P.textDim, marginTop: 1 }}>Переглянути AI-інтерв'ю і інтерфейс тренера</div>
+            <div style={{ fontSize: 11.5, color: P.textDim, marginTop: 1 }}>Переглянути інтерфейс тренера та інтерв'ю</div>
           </div>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>
         </div>
