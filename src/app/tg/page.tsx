@@ -1023,8 +1023,9 @@ function AdminTab() {
   const statsQuery   = trpc.admin.getStats.useQuery(undefined, { enabled: !!token });
   const coachesQuery = trpc.admin.getCoaches.useQuery(undefined, { enabled: !!token && section === "coaches" });
   const usersQuery   = trpc.admin.getUsers.useQuery({ page: 1, perPage: 30 }, { enabled: !!token && section === "users" });
-  const activateMutation = trpc.admin.activateCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
-  const suspendMutation  = trpc.admin.suspendCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
+  const activateMutation       = trpc.admin.activateCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
+  const suspendMutation        = trpc.admin.suspendCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
+  const resetInterviewMutation = trpc.admin.resetCoachInterview.useMutation();
   const stats   = statsQuery.data;
   const coaches = (coachesQuery.data ?? []) as AdminCoach[];
   const users   = (usersQuery.data?.users ?? []) as AdminUser[];
@@ -1059,9 +1060,10 @@ function AdminTab() {
                   <span style={{ fontFamily: mono, fontSize: 10, color: STATUS_COLOR[coach.status] || P.textDim }}>{STATUS_LABEL[coach.status] || coach.status}</span>
                 </div>
                 <div style={{ fontFamily: mono, fontSize: 10, color: P.textMute, marginBottom: 10 }}>{coach._count.methodologyRules} правил · {coach._count.knowledgeBase} записів · {coach._count.interviewSessions}/7</div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {coach.status !== "ACTIVE" && <div onClick={() => activateMutation.mutate({ coachId: coach.id })} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: 10, background: P.success, color: "#17140F", fontSize: 12, fontWeight: 600, cursor: "pointer", opacity: activateMutation.isPending ? 0.5 : 1 }}>Активувати</div>}
                   {coach.status !== "SUSPENDED" && <div onClick={() => suspendMutation.mutate({ coachId: coach.id })} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: 10, background: "transparent", color: "#C99B85", fontSize: 12, fontWeight: 500, cursor: "pointer", border: "1px solid rgba(201,155,133,0.3)", opacity: suspendMutation.isPending ? 0.5 : 1 }}>Призупинити</div>}
+                  <div onClick={() => { if (confirm(`Скинути інтерв'ю для ${coach.user.name || coach.user.email}?`)) resetInterviewMutation.mutate({ coachId: coach.id }); }} style={{ width: "100%", textAlign: "center", padding: "8px", borderRadius: 10, background: "transparent", color: P.textDim, fontSize: 12, fontWeight: 500, cursor: "pointer", border: `1px solid ${P.line}`, opacity: resetInterviewMutation.isPending && resetInterviewMutation.variables?.coachId === coach.id ? 0.5 : 1 }}>↺ Скинути інтерв&apos;ю</div>
                 </div>
               </div>
             ))}
