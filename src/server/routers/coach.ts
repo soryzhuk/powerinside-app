@@ -58,7 +58,48 @@ export const coachRouter = router({
   }),
 
   /**
-   * Get or create an interview session for a specific round.
+   * Get or create the unified full interview session.
+   * If the session is new, auto-generates the opening AI message.
+   */
+  getFullInterviewSession: coachProcedure.query(async ({ ctx }) => {
+    const profile = await ctx.prisma.coachProfile.findUnique({
+      where: { userId: ctx.session.user.id },
+    });
+
+    if (!profile) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Coach profile not found." });
+    }
+
+    let session = await ctx.prisma.interviewSession.findUnique({
+      where: {
+        coachId_round: { coachId: profile.id, round: "FULL_INTERVIEW" as InterviewRound },
+      },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+    });
+
+    if (!session) {
+      session = await ctx.prisma.interviewSession.create({
+        data: { coachId: profile.id, round: "FULL_INTERVIEW" as InterviewRound, status: "IN_PROGRESS" },
+        include: { messages: { orderBy: { createdAt: "asc" } } },
+      });
+
+      // Auto-generate the opening message from the AI
+      const opening = await chatWithCoach([], INTERVIEW_SYSTEM_PROMPT);
+      await ctx.prisma.interviewMessage.create({
+        data: { sessionId: session.id, role: "assistant", content: opening },
+      });
+
+      session = await ctx.prisma.interviewSession.findUnique({
+        where: { id: session.id },
+        include: { messages: { orderBy: { createdAt: "asc" } } },
+      }) as NonNullable<typeof session>;
+    }
+
+    return session;
+  }),
+
+  /**
+   * Get or create an interview session for a specific round (legacy).
    */
   getInterviewSession: coachProcedure
     .input(
@@ -122,7 +163,7 @@ export const coachRouter = router({
 
   /**
    * Send a message in an interview session.
-   * Saves the user message, calls Claude AI, saves and returns the assistant response.
+   * Detects [INTERVIEW_COMPLETE] signal and auto-completes the session.
    */
   sendInterviewMessage: coachProcedure
     .input(
@@ -137,67 +178,61 @@ export const coachRouter = router({
       });
 
       if (!profile) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Coach profile not found.",
-        });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Coach profile not found." });
       }
 
       const session = await ctx.prisma.interviewSession.findFirst({
-        where: {
-          id: input.sessionId,
-          coachId: profile.id,
-        },
-        include: {
-          messages: {
-            orderBy: { createdAt: "asc" },
-          },
-        },
+        where: { id: input.sessionId, coachId: profile.id },
+        include: { messages: { orderBy: { createdAt: "asc" } } },
       });
 
       if (!session) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Interview session not found.",
-        });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Interview session not found." });
       }
 
       if (session.status === "COMPLETED") {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "This interview round is already completed.",
-        });
+        throw new TRPCError({ code: "BAD_REQUEST", message: "This interview is already completed." });
       }
 
-      // Save user message
       await ctx.prisma.interviewMessage.create({
-        data: {
-          sessionId: input.sessionId,
-          role: "user",
-          content: input.content,
-        },
+        data: { sessionId: input.sessionId, role: "user", content: input.content },
       });
 
-      // Build message history for Claude
       const history: ChatMessage[] = session.messages.map((m) => ({
         role: m.role as "user" | "assistant",
         content: m.content,
       }));
       history.push({ role: "user", content: input.content });
 
-      // Call Claude AI
-      const aiResponse = await chatWithCoach(history, INTERVIEW_SYSTEM_PROMPT);
+      const rawResponse = await chatWithCoach(history, INTERVIEW_SYSTEM_PROMPT);
 
-      // Save assistant response
+      const COMPLETE_SIGNAL = "[INTERVIEW_COMPLETE]";
+      const isComplete = rawResponse.includes(COMPLETE_SIGNAL);
+      const cleanContent = rawResponse.replace(COMPLETE_SIGNAL, "").trimEnd();
+
       const assistantMessage = await ctx.prisma.interviewMessage.create({
-        data: {
-          sessionId: input.sessionId,
-          role: "assistant",
-          content: aiResponse,
-        },
+        data: { sessionId: input.sessionId, role: "assistant", content: cleanContent },
       });
 
-      return assistantMessage;
+      if (isComplete) {
+        await ctx.prisma.interviewSession.update({
+          where: { id: input.sessionId },
+          data: { status: "COMPLETED" },
+        });
+
+        const user = await ctx.prisma.user.findUnique({
+          where: { id: ctx.session.user.id },
+          select: { email: true, name: true },
+        });
+        if (user) {
+          sendInterviewCompletedEmail({
+            coachEmail: user.email,
+            coachName: user.name ?? "Тренер",
+          }).catch(console.error);
+        }
+      }
+
+      return { message: assistantMessage, isComplete };
     }),
 
   /**

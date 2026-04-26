@@ -376,8 +376,8 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
   );
 
   const sendMutation = trpc.coach.sendInterviewMessage.useMutation({
-    onSuccess: (msg) => {
-      setLocalMessages((prev) => [...prev, { id: msg.id, role: "assistant", content: msg.content }]);
+    onSuccess: (result) => {
+      setLocalMessages((prev) => [...prev, { id: result.message.id, role: "assistant", content: result.message.content }]);
     },
   });
 

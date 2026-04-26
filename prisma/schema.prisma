@@ -42,6 +42,7 @@ enum InterviewRound {
   EXERCISE_SELECTION
   TECHNIQUE_STANDARDS
   LIFESTYLE_RECOVERY
+  FULL_INTERVIEW
 }
 
 enum InterviewSessionStatus {
