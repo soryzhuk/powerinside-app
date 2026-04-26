@@ -8,6 +8,7 @@ import {
   Clock,
   UserCheck,
   UserX,
+  RotateCcw,
 } from "lucide-react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,7 @@ export default function AdminCoachesPage() {
   const suspendMutation = trpc.admin.suspendCoach.useMutation({
     onSuccess: () => utils.admin.getCoaches.invalidate(),
   });
+  const resetInterviewMutation = trpc.admin.resetCoachInterview.useMutation();
 
   const coaches = coachesQuery.data ?? [];
 
@@ -216,6 +218,22 @@ export default function AdminCoachesPage() {
                             Призупинити
                           </Button>
                         )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          loading={
+                            resetInterviewMutation.isPending &&
+                            resetInterviewMutation.variables?.coachId === coach.id
+                          }
+                          onClick={() => {
+                            if (confirm(`Скинути інтерв'ю для ${coach.user.name ?? coach.user.email}? Всі повідомлення будуть видалені.`)) {
+                              resetInterviewMutation.mutate({ coachId: coach.id });
+                            }
+                          }}
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          Скинути інтерв&apos;ю
+                        </Button>
                       </div>
                     </td>
                   </tr>

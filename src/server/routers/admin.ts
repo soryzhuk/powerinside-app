@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, adminProcedure } from "../trpc";
+import type { InterviewRound } from "@/app/generated/prisma/client";
 
 export const adminRouter = router({
   /**
@@ -51,6 +52,18 @@ export const adminRouter = router({
         where: { id: input.coachId },
         data: { status: "ACTIVE" },
       });
+    }),
+
+  /**
+   * Reset the FULL_INTERVIEW session for a coach (deletes session + all messages).
+   */
+  resetCoachInterview: adminProcedure
+    .input(z.object({ coachId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.interviewSession.deleteMany({
+        where: { coachId: input.coachId, round: "FULL_INTERVIEW" as InterviewRound },
+      });
+      return { ok: true };
     }),
 
   /**
