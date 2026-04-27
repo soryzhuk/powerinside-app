@@ -23,10 +23,10 @@ export const PLANS: Record<SubscriptionPlanId, Plan> = {
     name: "Basic",
     price: 30,
     priceInCents: 3000,
-    weeklyMessages: 20,
+    weeklyMessages: 10,
     features: [
       "AI coach chat",
-      "20 messages per week",
+      "10 messages per week",
       "Access to coach's methodology",
     ],
     stripePriceId: process.env.STRIPE_PRICE_BASIC,

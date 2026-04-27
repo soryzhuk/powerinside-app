@@ -9,6 +9,77 @@ import {
   sendInterviewCompletedEmail,
 } from "@/lib/email";
 
+// ── Round Summary parser ─────────────────────────────────────────────────────
+
+const VALID_ROUNDS = [
+  "TARGET_ATHLETE",
+  "LOAD_MANAGEMENT",
+  "AUTOREGULATION",
+  "PROGRESSION_DELOAD",
+  "EXERCISE_SELECTION",
+  "TECHNIQUE_STANDARDS",
+  "LIFESTYLE_RECOVERY",
+] as const;
+
+type RoundName = (typeof VALID_ROUNDS)[number];
+
+interface ParsedRule {
+  title: string;
+  condition: string;
+  signal: string;
+  decision: string;
+  exception: string;
+  alternative: string;
+}
+
+interface ParsedSummary {
+  round: RoundName;
+  insights: string;
+  rules: ParsedRule[];
+  terminology: string[];
+  fingerprint: string;
+  openQuestions: string;
+}
+
+function parseRoundSummary(text: string): ParsedSummary | null {
+  const match = text.match(
+    /\[ROUND_SUMMARY_START:(\w+)\]([\s\S]*?)\[ROUND_SUMMARY_END\]/
+  );
+  if (!match) return null;
+
+  const [, roundRaw, body] = match;
+  const round = roundRaw as RoundName;
+  if (!VALID_ROUNDS.includes(round)) return null;
+
+  const insights = body.match(/INSIGHTS:\s*([\s\S]+?)(?=\nRULES:|\nTERMINOLOGY:)/)?.[1]?.trim() ?? "";
+  const rulesBlock = body.match(/RULES:\n([\s\S]*?)(?=\nTERMINOLOGY:)/)?.[1] ?? "";
+  const terminologyRaw = body.match(/TERMINOLOGY:\s*([\s\S]+?)(?=\nFINGERPRINT:|\nOPEN_QUESTIONS:)/)?.[1]?.trim() ?? "";
+  const fingerprint = body.match(/FINGERPRINT:\s*([\s\S]+?)(?=\nOPEN_QUESTIONS:)/)?.[1]?.trim() ?? "";
+  const openQuestions = body.match(/OPEN_QUESTIONS:\s*([\s\S]+?)$/)?.[1]?.trim() ?? "";
+
+  const terminology = terminologyRaw
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  const rules: ParsedRule[] = [];
+  const ruleBlocks = rulesBlock.split(/(?=- Title:)/);
+  for (const block of ruleBlocks) {
+    const title = block.match(/- Title:\s*(.+)/)?.[1]?.trim();
+    if (!title) continue;
+    rules.push({
+      title,
+      condition: block.match(/Condition:\s*(.+)/)?.[1]?.trim() ?? "",
+      signal:    block.match(/Signal:\s*(.+)/)?.[1]?.trim() ?? "",
+      decision:  block.match(/Decision:\s*(.+)/)?.[1]?.trim() ?? "",
+      exception: block.match(/Exception:\s*(.+)/)?.[1]?.trim() ?? "",
+      alternative: block.match(/Alternative:\s*(.+)/)?.[1]?.trim() ?? "",
+    });
+  }
+
+  return { round, insights, rules, terminology, fingerprint, openQuestions };
+}
+
 const ROUND_LABELS: Record<string, string> = {
   TARGET_ATHLETE: "Цільовий атлет",
   LOAD_MANAGEMENT: "Управління навантаженням",
@@ -138,7 +209,7 @@ export const coachRouter = router({
           messages: {
             orderBy: { createdAt: "asc" },
           },
-          summary: true,
+          summaries: true,
         },
       });
 
@@ -153,7 +224,7 @@ export const coachRouter = router({
             messages: {
               orderBy: { createdAt: "asc" },
             },
-            summary: true,
+            summaries: true,
           },
         });
       }
@@ -208,11 +279,61 @@ export const coachRouter = router({
 
       const COMPLETE_SIGNAL = "[INTERVIEW_COMPLETE]";
       const isComplete = rawResponse.includes(COMPLETE_SIGNAL);
-      const cleanContent = rawResponse.replace(COMPLETE_SIGNAL, "").trimEnd();
+
+      // Remove tags from visible content
+      let cleanContent = rawResponse
+        .replace(COMPLETE_SIGNAL, "")
+        .replace(/\[ROUND_SUMMARY_START:\w+\][\s\S]*?\[ROUND_SUMMARY_END\]/g, "")
+        .trim();
 
       const assistantMessage = await ctx.prisma.interviewMessage.create({
-        data: { sessionId: input.sessionId, role: "assistant", content: cleanContent },
+        data: { sessionId: input.sessionId, role: "assistant", content: rawResponse },
       });
+
+      // Parse and save Round Summary if present
+      const parsedSummary = parseRoundSummary(rawResponse);
+      if (parsedSummary) {
+        // Prisma Json fields require plain objects — serialize arrays through JSON
+        const rulesJson = JSON.parse(JSON.stringify(parsedSummary.rules)) as object[];
+        const terminologyJson = JSON.parse(JSON.stringify(parsedSummary.terminology)) as string[];
+
+        await ctx.prisma.interviewRoundSummary.upsert({
+          where: { sessionId_round: { sessionId: input.sessionId, round: parsedSummary.round as InterviewRound } },
+          update: {
+            insights: parsedSummary.insights,
+            rules: rulesJson,
+            terminology: terminologyJson,
+            fingerprint: parsedSummary.fingerprint,
+            openQuestions: parsedSummary.openQuestions,
+          },
+          create: {
+            sessionId: input.sessionId,
+            round: parsedSummary.round as InterviewRound,
+            insights: parsedSummary.insights,
+            rules: rulesJson,
+            terminology: terminologyJson,
+            fingerprint: parsedSummary.fingerprint,
+            openQuestions: parsedSummary.openQuestions,
+          },
+        });
+
+        // Save individual rules to MethodologyRule table
+        for (const rule of parsedSummary.rules) {
+          await ctx.prisma.methodologyRule.create({
+            data: {
+              coachId: profile.id,
+              round: parsedSummary.round as InterviewRound,
+              title: rule.title,
+              condition: rule.condition || null,
+              signal: rule.signal || null,
+              decision: rule.decision || null,
+              exception: rule.exception || null,
+              alternative: rule.alternative || null,
+              confirmed: false,
+            },
+          });
+        }
+      }
 
       if (isComplete) {
         await ctx.prisma.interviewSession.update({
@@ -232,7 +353,7 @@ export const coachRouter = router({
         }
       }
 
-      return { message: assistantMessage, isComplete };
+      return { message: { ...assistantMessage, content: cleanContent }, isComplete, roundSummary: parsedSummary ?? undefined };
     }),
 
   /**
@@ -274,7 +395,7 @@ export const coachRouter = router({
         where: { id: input.sessionId },
         data: { status: "COMPLETED" },
         include: {
-          summary: true,
+          summaries: true,
         },
       });
 
@@ -286,7 +407,7 @@ export const coachRouter = router({
 
       if (user) {
         const roundLabel = ROUND_LABELS[session.round] ?? session.round;
-        const insights = updated.summary?.insights ?? "Резюме ще формується.";
+        const insights = updated.summaries?.[0]?.insights ?? "Резюме ще формується.";
 
         sendInterviewRoundCompletedEmail({
           coachEmail: user.email,
