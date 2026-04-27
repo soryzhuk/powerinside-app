@@ -33,6 +33,7 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialRole = searchParams.get("role") === "coach" ? "COACH" : "ATHLETE";
+  const refCode = searchParams.get("ref") ?? undefined;
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -62,6 +63,7 @@ function RegisterForm() {
         address: address || undefined,
         language,
         role,
+        referralCode: refCode,
       });
 
       const result = await signIn("credentials", {
@@ -127,6 +129,11 @@ function RegisterForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {refCode && (
+            <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-600 dark:text-green-400">
+              🎁 Вас запросили! Після реєстрації ви отримаєте <strong>5 бонусних повідомлень</strong>.
+            </div>
+          )}
           {error && (
             <div className="p-3 rounded-lg bg-danger/10 border border-danger/20 text-sm text-danger">
               {error}
