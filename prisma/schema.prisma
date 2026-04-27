@@ -116,6 +116,7 @@ model User {
   language      String    @default("uk")
   role          UserRole  @default(ATHLETE)
   telegramId    String?   @unique
+  referralCode  String    @unique @default(cuid())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

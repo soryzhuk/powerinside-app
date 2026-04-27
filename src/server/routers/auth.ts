@@ -19,9 +19,8 @@ export const authRouter = router({
         country: z.string().optional(),
         address: z.string().optional(),
         language: z.string().default("uk"),
-        role: z
-          .enum(["ATHLETE", "COACH", "INVESTOR"])
-          .default("ATHLETE"),
+        role: z.enum(["ATHLETE", "COACH", "INVESTOR"]).default("ATHLETE"),
+        referralCode: z.string().optional(), // code of the referrer
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -36,7 +35,19 @@ export const authRouter = router({
         });
       }
 
+      // Validate referral code before creating user
+      let referrer: { id: string } | null = null;
+      if (input.referralCode && input.role === "ATHLETE") {
+        referrer = await ctx.prisma.user.findUnique({
+          where: { referralCode: input.referralCode },
+          select: { id: true },
+        });
+      }
+
       const passwordHash = await hash(input.password, 12);
+
+      // Welcome bonus: 5 extra purchased messages if referred (ТЗ п.8: 5% welcome)
+      const welcomeBonus = referrer ? 5 : 0;
 
       const user = await ctx.prisma.user.create({
         data: {
@@ -52,28 +63,27 @@ export const authRouter = router({
             create: {
               freeRemaining: 50,
               weeklyRemaining: 0,
-              purchasedRemaining: 0,
+              purchasedRemaining: welcomeBonus,
             },
           },
-          // If registering as COACH, also create a coach profile
           ...(input.role === "COACH"
-            ? {
-                coachProfile: {
-                  create: {
-                    status: "PENDING",
-                  },
-                },
-              }
+            ? { coachProfile: { create: { status: "PENDING" } } }
             : {}),
         },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          createdAt: true,
-        },
+        select: { id: true, email: true, name: true, role: true, createdAt: true },
       });
+
+      // Record referral relationship
+      if (referrer) {
+        await ctx.prisma.referral.create({
+          data: {
+            referrerId: referrer.id,
+            referredId: user.id,
+            bonusAmount: 5, // messages to give referrer on first payment
+            claimed: false,
+          },
+        }).catch(() => {}); // ignore duplicate (referrerId+referredId unique)
+      }
 
       return user;
     }),

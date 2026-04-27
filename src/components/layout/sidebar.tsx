@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   HelpCircle,
   MessagesSquare,
+  Share2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -31,6 +32,7 @@ const navByRole: Record<string, NavItem[]> = {
     { label: "Чат", href: "/chat", icon: MessageCircle },
     { label: "Мультиексперт", href: "/qa", icon: HelpCircle },
     { label: "Баланс", href: "/balance", icon: Wallet },
+    { label: "Реферали", href: "/referral", icon: Share2 },
     { label: "Профіль", href: "/profile", icon: UserCircle },
   ],
   COACH: [

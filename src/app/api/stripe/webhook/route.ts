@@ -37,6 +37,9 @@ export async function POST(req: NextRequest) {
       case "customer.subscription.deleted":
         await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
         break;
+      case "invoice.payment_succeeded":
+        await handleInvoicePaid(event.data.object as Stripe.Invoice);
+        break;
       case "invoice.payment_failed":
         await handlePaymentFailed(event.data.object as Stripe.Invoice);
         break;
@@ -108,21 +111,24 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         where: { userId: coachId },
       });
       if (coachProfile && session.amount_total) {
-        const coachShare = Math.floor(session.amount_total * 0.7);
-        const platformFee = session.amount_total - coachShare;
-        const now = new Date();
+        await createPayoutRecord(coachProfile.id, session.amount_total, "subscription", session.payment_intent as string | undefined);
+      }
+    }
 
-        await prisma.payout.create({
-          data: {
-            coachId: coachProfile.id,
-            amount: coachShare,
-            platformFee,
-            status: "PENDING",
-            sourceType: "subscription",
-            stripePaymentId: session.payment_intent as string | undefined,
-            periodStart: now,
-            periodEnd: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
-          },
+    // Referrer bonus: give 5 purchased messages on referred user's FIRST subscription payment (ТЗ п.8)
+    if (session.mode === "subscription" && userId) {
+      const referral = await prisma.referral.findFirst({
+        where: { referredId: userId, claimed: false },
+      });
+      if (referral) {
+        await prisma.referral.update({
+          where: { id: referral.id },
+          data: { claimed: true },
+        });
+        await prisma.messageBalance.upsert({
+          where: { userId: referral.referrerId },
+          update: { purchasedRemaining: { increment: referral.bonusAmount } },
+          create: { userId: referral.referrerId, freeRemaining: 0, weeklyRemaining: 0, purchasedRemaining: referral.bonusAmount },
         });
       }
     }
@@ -154,6 +160,65 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         amount: pack.priceInCents,
         stripePaymentId: session.payment_intent as string | undefined,
       },
+    });
+  }
+}
+
+async function createPayoutRecord(
+  coachId: string,
+  amountTotal: number,
+  sourceType: string,
+  stripePaymentId: string | undefined
+) {
+  const coachShare = Math.floor(amountTotal * 0.7);
+  const platformFee = amountTotal - coachShare;
+  const now = new Date();
+  await prisma.payout.create({
+    data: {
+      coachId,
+      amount: coachShare,
+      platformFee,
+      status: "PENDING",
+      sourceType,
+      stripePaymentId,
+      periodStart: now,
+      periodEnd: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+}
+
+// Handles recurring subscription renewals — creates payout for coach
+async function handleInvoicePaid(invoice: Stripe.Invoice) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const inv = invoice as any;
+  const subId: string | undefined =
+    typeof inv.subscription === "string"
+      ? inv.subscription
+      : inv.subscription?.id ?? inv.parent?.subscription_details?.subscription ?? undefined;
+  if (!subId) return;
+
+  // Only process renewals (billing_reason = "subscription_cycle"), not initial checkout (handled above)
+  if (inv.billing_reason !== "subscription_cycle") return;
+
+  const sub = await prisma.subscription.findFirst({ where: { stripeSubId: subId } });
+  if (!sub?.coachId) return;
+
+  const coachProfile = await prisma.coachProfile.findUnique({ where: { userId: sub.coachId } });
+  if (!coachProfile) return;
+
+  const amount = inv.amount_paid ?? inv.total ?? 0;
+  if (amount <= 0) return;
+
+  await createPayoutRecord(coachProfile.id, amount, "subscription_renewal", inv.payment_intent ?? undefined);
+
+  // Reset weekly balance for the subscriber
+  const plan = PLANS[sub.plan as SubscriptionPlanId];
+  if (plan) {
+    const weeklyMessages = plan.weeklyMessages === -1 ? 9999 : plan.weeklyMessages;
+    const nextReset = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await prisma.messageBalance.update({
+      where: { userId: sub.userId },
+      data: { weeklyRemaining: weeklyMessages, weekResetAt: nextReset },
     });
   }
 }
