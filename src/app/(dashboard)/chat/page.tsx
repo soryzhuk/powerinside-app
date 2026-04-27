@@ -52,6 +52,10 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
 
+  // Count how many questions are in the input (ТЗ п.2.3)
+  const questionCount = (input.match(/\?/g) ?? []).length;
+  const hasMultipleQuestions = questionCount > 1;
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const balanceQuery = trpc.athlete.getBalance.useQuery();
@@ -236,7 +240,15 @@ export default function ChatPage() {
         </CardBody>
 
         {/* Input */}
-        <div className="border-t border-border p-4">
+        <div className="border-t border-border p-4 space-y-2">
+          {hasMultipleQuestions && (
+            <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-700 dark:text-yellow-400">
+              <span className="shrink-0 mt-0.5">⚠️</span>
+              <span>
+                Ваше повідомлення містить <strong>{questionCount} запитання</strong>. Кожне запитання списує 1 повідомлення з балансу — буде списано <strong>{questionCount}</strong>. Рекомендуємо задавати по одному питанню для точнішої відповіді.
+              </span>
+            </div>
+          )}
           <form onSubmit={handleSend} className="flex items-center gap-3">
             <div className="flex-1">
               <Input

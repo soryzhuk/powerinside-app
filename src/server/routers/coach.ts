@@ -432,6 +432,24 @@ export const coachRouter = router({
     }),
 
   /**
+   * Confirm (or unconfirm) a methodology rule by the coach.
+   * ТЗ: "Методика фіксується лише після апруву тренера"
+   */
+  confirmRule: coachProcedure
+    .input(z.object({ ruleId: z.string(), confirmed: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const profile = await ctx.prisma.coachProfile.findUnique({
+        where: { userId: ctx.session.user.id },
+      });
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Coach profile not found." });
+
+      return ctx.prisma.methodologyRule.update({
+        where: { id: input.ruleId, coachId: profile.id },
+        data: { confirmed: input.confirmed },
+      });
+    }),
+
+  /**
    * Get all knowledge entries for the current coach.
    */
   getKnowledgeBase: coachProcedure.query(async ({ ctx }) => {
