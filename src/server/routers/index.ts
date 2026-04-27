@@ -6,6 +6,7 @@ import { adminRouter } from "./admin";
 import { billingRouter } from "./billing";
 import { qaRouter } from "./qa";
 import { referralRouter } from "./referral";
+import { investorRouter } from "./investor";
 
 export const appRouter = router({
   auth: authRouter,
@@ -15,6 +16,7 @@ export const appRouter = router({
   billing: billingRouter,
   qa: qaRouter,
   referral: referralRouter,
+  investor: investorRouter,
 });
 
 export type AppRouter = typeof appRouter;

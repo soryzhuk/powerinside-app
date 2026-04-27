@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { User, Mail, Phone, Globe, Languages, Shield } from "lucide-react";
+import { User, Mail, Phone, Globe, Languages, Shield, Upload, FileCheck } from "lucide-react";
 import { Card, CardBody, CardHeader, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,29 +37,54 @@ export default function ProfilePage() {
   const [language, setLanguage] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [docUploading, setDocUploading] = useState(false);
+  const [docUploaded, setDocUploaded] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
-  const coachProfileQuery = trpc.coach.getProfile.useQuery(undefined, {
-    enabled: isCoach,
-  });
+  const profileQuery = trpc.auth.getProfile.useQuery();
+  const coachProfileQuery = trpc.coach.getProfile.useQuery(undefined, { enabled: isCoach });
+  const updateMutation = trpc.auth.updateProfile.useMutation();
 
-  // Populate form from session
+  // Populate form from DB
   useEffect(() => {
-    if (session?.user) {
-      setName(session.user.name ?? "");
-      setEmail(session.user.email ?? "");
+    const p = profileQuery.data;
+    if (p) {
+      setName(p.name ?? "");
+      setEmail(p.email);
+      setPhone(p.phone ?? "");
+      setCountry(p.country ?? "");
+      setLanguage(p.language ?? "uk");
     }
-  }, [session]);
+  }, [profileQuery.data]);
 
   const coachProfile = coachProfileQuery.data;
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    // TODO: call trpc mutation to update user profile
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      await updateMutation.mutateAsync({ name, phone: phone || undefined, country: country || undefined, language: language || undefined });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+      profileQuery.refetch();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDocUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setDocUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/coach/upload-doc", { method: "POST", body: fd });
+      if (res.ok) { setDocUploaded(true); coachProfileQuery.refetch(); }
+      else { const d = await res.json(); alert(d.error ?? "Upload failed"); }
+    } finally {
+      setDocUploading(false);
+    }
   }
 
   return (
@@ -266,6 +291,54 @@ export default function ProfilePage() {
                   {coachProfile._count.methodologyRules} правил
                 </p>
               </div>
+            </div>
+
+            {/* Identity document upload (ТЗ п.3.1) */}
+            <div className="mt-4 p-4 rounded-lg border border-border bg-secondary/30">
+              <p className="text-sm font-medium mb-1 flex items-center gap-2">
+                <Shield className="w-4 h-4 text-muted-foreground" />
+                Документ що підтверджує особу
+              </p>
+              <p className="text-xs text-muted-foreground mb-3">
+                Вимагається для верифікації. Формати: JPEG, PNG, PDF. Макс. 10 МБ.
+              </p>
+
+              {coachProfile.identityDoc ? (
+                <div className="flex items-center gap-2 text-sm text-green-400">
+                  <FileCheck className="w-4 h-4" />
+                  Документ завантажено
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="text-xs text-muted-foreground hover:text-foreground underline ml-2"
+                  >
+                    замінити
+                  </button>
+                </div>
+              ) : (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  loading={docUploading}
+                  onClick={() => fileRef.current?.click()}
+                >
+                  <Upload className="w-4 h-4 mr-1" />
+                  {docUploading ? "Завантаження…" : "Завантажити документ"}
+                </Button>
+              )}
+
+              {docUploaded && !coachProfile.identityDoc && (
+                <p className="text-xs text-green-400 mt-1">✓ Документ успішно завантажено</p>
+              )}
+
+              <input
+                ref={fileRef}
+                type="file"
+                className="hidden"
+                accept="image/jpeg,image/png,image/webp,application/pdf"
+                onChange={handleDocUpload}
+              />
             </div>
           </CardBody>
         </Card>

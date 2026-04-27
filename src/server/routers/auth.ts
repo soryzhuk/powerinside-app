@@ -89,6 +89,41 @@ export const authRouter = router({
     }),
 
   /**
+   * Get current user profile (full DB data).
+   */
+  getProfile: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: { id: true, name: true, email: true, phone: true, country: true, address: true, language: true, role: true },
+    });
+  }),
+
+  /**
+   * Update current user profile.
+   */
+  updateProfile: protectedProcedure
+    .input(z.object({
+      name:     z.string().min(1).optional(),
+      phone:    z.string().optional(),
+      country:  z.string().optional(),
+      address:  z.string().optional(),
+      language: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.user.update({
+        where: { id: ctx.session.user.id },
+        data: {
+          ...(input.name     !== undefined && { name: input.name }),
+          ...(input.phone    !== undefined && { phone: input.phone }),
+          ...(input.country  !== undefined && { country: input.country }),
+          ...(input.address  !== undefined && { address: input.address }),
+          ...(input.language !== undefined && { language: input.language }),
+        },
+        select: { id: true, name: true, email: true, phone: true, country: true, address: true, language: true },
+      });
+    }),
+
+  /**
    * Get current session.
    */
   getSession: protectedProcedure.query(async ({ ctx }) => {

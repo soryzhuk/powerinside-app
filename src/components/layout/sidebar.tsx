@@ -17,6 +17,7 @@ import {
   HelpCircle,
   MessagesSquare,
   Share2,
+  TrendingUp,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -54,6 +55,10 @@ const navByRole: Record<string, NavItem[]> = {
     { label: "Користувачі", href: "/admin/users", icon: Users },
     { label: "Тренери", href: "/admin/coaches", icon: ShieldCheck },
     { label: "Аналітика", href: "/admin/analytics", icon: BarChart3 },
+  ],
+  INVESTOR: [
+    { label: "Звіт", href: "/investor", icon: TrendingUp },
+    { label: "Профіль", href: "/profile", icon: UserCircle },
   ],
 };
 
@@ -125,9 +130,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 ? "Атлет"
                 : role === "COACH"
                   ? "Тренер"
-                  : role === "OWNER"
-                    ? "Власник"
-                    : "Адмін"}
+                  : role === "INVESTOR"
+                    ? "Інвестор"
+                    : role === "OWNER"
+                      ? "Власник"
+                      : "Адмін"}
             </p>
           </div>
         </div>

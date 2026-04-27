@@ -96,3 +96,22 @@ const isAdmin = middleware(async ({ ctx, next }) => {
  * Admin procedure — requires ADMIN or OWNER role.
  */
 export const adminProcedure = t.procedure.use(isAdmin);
+
+/**
+ * Middleware: requires INVESTOR, ADMIN, or OWNER role.
+ */
+const isInvestor = middleware(async ({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "You must be logged in." });
+  }
+  const role = ctx.session.user.role;
+  if (role !== "INVESTOR" && role !== "ADMIN" && role !== "OWNER") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Investor access only." });
+  }
+  return next({ ctx: { ...ctx, session: ctx.session } });
+});
+
+/**
+ * Investor procedure — requires INVESTOR, ADMIN, or OWNER role.
+ */
+export const investorProcedure = t.procedure.use(isInvestor);
