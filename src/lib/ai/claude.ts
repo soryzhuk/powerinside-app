@@ -1,20 +1,19 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import {
   INTERVIEW_SYSTEM_PROMPT,
   buildQASystemPrompt,
   SUPPORT_SYSTEM_PROMPT,
 } from "./prompts";
 
-// Lazy initialization to avoid build-time errors when ANTHROPIC_API_KEY is not set
-let _anthropic: Anthropic | null = null;
-function getClient(): Anthropic {
-  if (!_anthropic) {
-    _anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+let _openai: OpenAI | null = null;
+function getClient(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   }
-  return _anthropic;
+  return _openai;
 }
 
-const MODEL = "claude-sonnet-4-6";
+const MODEL = "gpt-4o";
 const MAX_TOKENS = 4096;
 
 export interface ChatMessage {
@@ -22,32 +21,22 @@ export interface ChatMessage {
   content: string;
 }
 
-/**
- * Send messages to Claude for coach interview or general coach interaction.
- * Returns the full response text.
- */
 export async function chatWithCoach(
   messages: ChatMessage[],
   systemPrompt: string = INTERVIEW_SYSTEM_PROMPT
 ): Promise<string> {
-  const response = await getClient().messages.create({
+  const response = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: systemPrompt,
-    messages: messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
+    messages: [
+      { role: "system", content: systemPrompt },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ],
   });
 
-  const textBlock = response.content.find((block) => block.type === "text");
-  return textBlock?.text ?? "";
+  return response.choices[0]?.message?.content ?? "";
 }
 
-/**
- * Send messages to Claude for athlete Q&A based on coach's methodology.
- * Returns the full response text.
- */
 export async function chatWithAthlete(
   messages: ChatMessage[],
   coachContext: { coachName: string; coachRules: string }
@@ -57,71 +46,51 @@ export async function chatWithAthlete(
     coachContext.coachRules
   );
 
-  const response = await getClient().messages.create({
+  const response = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: systemPrompt,
-    messages: messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
+    messages: [
+      { role: "system", content: systemPrompt },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ],
   });
 
-  const textBlock = response.content.find((block) => block.type === "text");
-  return textBlock?.text ?? "";
+  return response.choices[0]?.message?.content ?? "";
 }
 
-/**
- * Send messages to Claude for technical support.
- * Returns the full response text.
- */
 export async function chatSupport(messages: ChatMessage[]): Promise<string> {
-  const response = await getClient().messages.create({
+  const response = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: SUPPORT_SYSTEM_PROMPT,
-    messages: messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
+    messages: [
+      { role: "system", content: SUPPORT_SYSTEM_PROMPT },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ],
   });
 
-  const textBlock = response.content.find((block) => block.type === "text");
-  return textBlock?.text ?? "";
+  return response.choices[0]?.message?.content ?? "";
 }
 
-/**
- * Stream responses from Claude for coach interview.
- * Yields text chunks as they arrive.
- */
 export async function* streamChatWithCoach(
   messages: ChatMessage[],
   systemPrompt: string = INTERVIEW_SYSTEM_PROMPT
 ): AsyncGenerator<string, void, unknown> {
-  const stream = getClient().messages.stream({
+  const stream = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: systemPrompt,
-    messages: messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
+    stream: true,
+    messages: [
+      { role: "system", content: systemPrompt },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ],
   });
 
-  for await (const event of stream) {
-    if (
-      event.type === "content_block_delta" &&
-      event.delta.type === "text_delta"
-    ) {
-      yield event.delta.text;
-    }
+  for await (const chunk of stream) {
+    const text = chunk.choices[0]?.delta?.content;
+    if (text) yield text;
   }
 }
 
-/**
- * Stream responses from Claude for athlete Q&A.
- * Yields text chunks as they arrive.
- */
 export async function* streamChatWithAthlete(
   messages: ChatMessage[],
   coachContext: { coachName: string; coachRules: string }
@@ -131,49 +100,37 @@ export async function* streamChatWithAthlete(
     coachContext.coachRules
   );
 
-  const stream = getClient().messages.stream({
+  const stream = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: systemPrompt,
-    messages: messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
+    stream: true,
+    messages: [
+      { role: "system", content: systemPrompt },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ],
   });
 
-  for await (const event of stream) {
-    if (
-      event.type === "content_block_delta" &&
-      event.delta.type === "text_delta"
-    ) {
-      yield event.delta.text;
-    }
+  for await (const chunk of stream) {
+    const text = chunk.choices[0]?.delta?.content;
+    if (text) yield text;
   }
 }
 
-/**
- * Stream responses from Claude for technical support.
- * Yields text chunks as they arrive.
- */
 export async function* streamChatSupport(
   messages: ChatMessage[]
 ): AsyncGenerator<string, void, unknown> {
-  const stream = getClient().messages.stream({
+  const stream = await getClient().chat.completions.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: SUPPORT_SYSTEM_PROMPT,
-    messages: messages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    })),
+    stream: true,
+    messages: [
+      { role: "system", content: SUPPORT_SYSTEM_PROMPT },
+      ...messages.map((m) => ({ role: m.role, content: m.content })),
+    ],
   });
 
-  for await (const event of stream) {
-    if (
-      event.type === "content_block_delta" &&
-      event.delta.type === "text_delta"
-    ) {
-      yield event.delta.text;
-    }
+  for await (const chunk of stream) {
+    const text = chunk.choices[0]?.delta?.content;
+    if (text) yield text;
   }
 }
