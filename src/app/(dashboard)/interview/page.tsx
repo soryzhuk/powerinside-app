@@ -17,6 +17,7 @@ export default function InterviewPage() {
   const [messages, setMessages] = useState<InterviewMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
@@ -27,6 +28,7 @@ export default function InterviewPage() {
   });
 
   const sendMessageMutation = trpc.coach.sendInterviewMessage.useMutation();
+  const resetMutation = trpc.coach.resetInterview.useMutation();
 
   useEffect(() => {
     if (sessionQuery.data) {
@@ -45,6 +47,29 @@ export default function InterviewPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  async function handleReset() {
+    if (resetting) return;
+    setResetting(true);
+    try {
+      const newSession = await resetMutation.mutateAsync();
+      if (newSession) {
+        setSessionId(newSession.id);
+        setIsComplete(false);
+        setMessages(
+          newSession.messages.map((m) => ({
+            id: m.id,
+            role: m.role as "user" | "assistant",
+            content: m.content,
+          }))
+        );
+      }
+    } catch {
+      // ignore
+    } finally {
+      setResetting(false);
+    }
+  }
 
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
@@ -136,11 +161,20 @@ export default function InterviewPage() {
             </CardBody>
 
             {isComplete ? (
-              <div className="border-t border-border p-4">
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <div className="border-t border-border p-4 flex flex-col items-center gap-3">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <CheckCircle className="w-4 h-4 text-green-400" />
                   <span>Інтерв&apos;ю завершено. Дякуємо за відвертість.</span>
                 </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleReset}
+                  loading={resetting}
+                  disabled={resetting}
+                >
+                  Почати заново
+                </Button>
               </div>
             ) : (
               <div className="border-t border-border p-4">

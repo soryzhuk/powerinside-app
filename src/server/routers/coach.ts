@@ -529,6 +529,43 @@ export const coachRouter = router({
   }),
 
   /**
+   * Reset the full interview session — deletes existing session (cascade) and
+   * creates a fresh one with an opening AI message.
+   */
+  resetInterview: coachProcedure.mutation(async ({ ctx }) => {
+    const profile = await ctx.prisma.coachProfile.findUnique({
+      where: { userId: ctx.session.user.id },
+    });
+
+    if (!profile) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Coach profile not found." });
+    }
+
+    const existing = await ctx.prisma.interviewSession.findUnique({
+      where: { coachId_round: { coachId: profile.id, round: "FULL_INTERVIEW" as InterviewRound } },
+    });
+
+    if (existing) {
+      await ctx.prisma.interviewSession.delete({ where: { id: existing.id } });
+    }
+
+    const session = await ctx.prisma.interviewSession.create({
+      data: { coachId: profile.id, round: "FULL_INTERVIEW" as InterviewRound, status: "IN_PROGRESS" },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+    });
+
+    const opening = await chatWithCoach([], INTERVIEW_SYSTEM_PROMPT);
+    await ctx.prisma.interviewMessage.create({
+      data: { sessionId: session.id, role: "assistant", content: opening },
+    });
+
+    return ctx.prisma.interviewSession.findUnique({
+      where: { id: session.id },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+    });
+  }),
+
+  /**
    * List active coaches (for athletes to choose from).
    */
   listActive: protectedProcedure.query(async ({ ctx }) => {
