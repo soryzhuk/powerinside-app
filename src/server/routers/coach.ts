@@ -93,6 +93,51 @@ const ROUND_LABELS: Record<string, string> = {
 const TOTAL_ROUNDS = 7;
 
 export const coachRouter = router({
+  selectSport: coachProcedure
+    .input(z.object({ sportId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const sport = await ctx.prisma.sport.findUnique({ where: { id: input.sportId } });
+      if (!sport) throw new TRPCError({ code: "NOT_FOUND", message: "Sport not found." });
+      const profile = await ctx.prisma.coachProfile.findUnique({ where: { userId: ctx.session.user.id } });
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Coach profile not found." });
+      return ctx.prisma.coachProfile.update({
+        where: { id: profile.id },
+        data: { sportId: input.sportId, customSport: null, customSportApproved: false },
+      });
+    }),
+
+  proposeCustomSport: coachProcedure
+    .input(z.object({ name: z.string().min(2).max(60) }))
+    .mutation(async ({ ctx, input }) => {
+      const name = input.name.trim();
+      const profile = await ctx.prisma.coachProfile.findUnique({ where: { userId: ctx.session.user.id } });
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Coach profile not found." });
+
+      // check if sport already exists and approved
+      const existing = await ctx.prisma.sport.findUnique({ where: { name } });
+      if (existing?.approved) {
+        await ctx.prisma.coachProfile.update({
+          where: { id: profile.id },
+          data: { sportId: existing.id, customSport: null, customSportApproved: false },
+        });
+        return { approved: true, sportId: existing.id };
+      }
+
+      await ctx.prisma.coachProfile.update({
+        where: { id: profile.id },
+        data: { customSport: name, sportId: null, customSportApproved: false },
+      });
+      return { approved: false };
+    }),
+
+  getSportInfo: coachProcedure.query(async ({ ctx }) => {
+    const profile = await ctx.prisma.coachProfile.findUnique({
+      where: { userId: ctx.session.user.id },
+      select: { sportId: true, customSport: true, customSportApproved: true, sport: { select: { name: true } } },
+    });
+    return profile ?? null;
+  }),
+
   /**
    * Get coach profile for the current user.
    */

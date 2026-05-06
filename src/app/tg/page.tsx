@@ -357,6 +357,22 @@ function CoachInterviewList({ onSelect, completedRounds }: {
 
 type IMsg = { id: string; role: string; content: string };
 
+async function playTTS(text: string) {
+  try {
+    const res = await fetch("/api/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.play();
+    audio.onended = () => URL.revokeObjectURL(url);
+  } catch { /* ignore */ }
+}
+
 function CoachInterviewChat({ roundKey, onBack, onComplete }: {
   roundKey: RoundKey;
   onBack: () => void;
@@ -366,6 +382,11 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
   const [input, setInput] = useState("");
   const [localMessages, setLocalMessages] = useState<IMsg[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [voiceMode, setVoiceMode] = useState(false);
+  const [recording, setRecording] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
 
   const round = ROUNDS.find((r) => r.key === roundKey)!;
@@ -378,6 +399,7 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
   const sendMutation = trpc.coach.sendInterviewMessage.useMutation({
     onSuccess: (result) => {
       setLocalMessages((prev) => [...prev, { id: result.message.id, role: "assistant", content: result.message.content }]);
+      if (voiceMode) playTTS(result.message.content);
     },
   });
 
@@ -398,17 +420,50 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [localMessages.length, sendMutation.isPending]);
 
-  function handleSend() {
-    if (!input.trim() || !sessionId || sendMutation.isPending) return;
+  function sendText(text: string) {
+    if (!text.trim() || !sessionId || sendMutation.isPending) return;
     webApp?.HapticFeedback?.impactOccurred("light");
-    const userMsg: IMsg = { id: Date.now().toString(), role: "user", content: input.trim() };
-    setLocalMessages((prev) => [...prev, userMsg]);
-    sendMutation.mutate({ sessionId, content: input.trim() });
+    setLocalMessages((prev) => [...prev, { id: Date.now().toString(), role: "user", content: text.trim() }]);
+    sendMutation.mutate({ sessionId, content: text.trim() });
     setInput("");
   }
 
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      chunksRef.current = [];
+      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      mr.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        setTranscribing(true);
+        try {
+          const fd = new FormData();
+          fd.append("audio", blob, "audio.webm");
+          const res = await fetch("/api/stt", { method: "POST", body: fd });
+          const data = await res.json() as { text?: string };
+          if (data.text?.trim()) sendText(data.text.trim());
+        } catch { /* ignore */ } finally {
+          setTranscribing(false);
+        }
+      };
+      mr.start();
+      mediaRecorderRef.current = mr;
+      setRecording(true);
+      webApp?.HapticFeedback?.impactOccurred("medium");
+    } catch { /* mic denied */ }
+  }
+
+  function stopRecording() {
+    mediaRecorderRef.current?.stop();
+    mediaRecorderRef.current = null;
+    setRecording(false);
+    webApp?.HapticFeedback?.impactOccurred("light");
+  }
+
   const isCompleted = sessionQuery.data?.status === "COMPLETED";
-  const hasMessages = localMessages.length > 0;
+  const isBusy = sendMutation.isPending || transcribing;
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -428,6 +483,28 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
             {isCompleted ? "✓ Завершено" : "Дай розгорнуту відповідь"}
           </div>
         </div>
+        {/* Voice/Text toggle */}
+        {!isCompleted && (
+          <div onClick={() => setVoiceMode((v) => !v)} style={{
+            display: "flex", alignItems: "center", gap: 5, padding: "5px 10px",
+            borderRadius: 20, cursor: "pointer", flexShrink: 0,
+            background: voiceMode ? P.sandSoft : P.surface,
+            border: `1px solid ${voiceMode ? P.sand : P.line}`,
+          }}>
+            {voiceMode ? (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={P.sand} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+              </svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={P.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            )}
+            <span style={{ fontSize: 10, fontFamily: mono, color: voiceMode ? P.sand : P.textDim, letterSpacing: 0.5 }}>
+              {voiceMode ? "ГОЛОС" : "ТЕКСТ"}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Messages */}
@@ -462,19 +539,22 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
           )
         )}
 
-        {sendMutation.isPending && (
+        {isBusy && (
           <div style={{ alignSelf: "flex-start" }}>
             <div style={{
               background: P.surface, border: `1px solid ${P.line}`,
               padding: "12px 16px", borderRadius: "16px 16px 16px 4px",
               display: "flex", gap: 5, alignItems: "center",
             }}>
-              {[0, 150, 300].map((d) => (
-                <span key={d} style={{
-                  width: 6, height: 6, borderRadius: 3, background: P.textDim,
-                  display: "inline-block", animation: `bounce 1.2s ${d}ms ease-in-out infinite`,
-                }} />
-              ))}
+              {transcribing
+                ? <span style={{ fontSize: 11, color: P.textDim, fontFamily: mono }}>Розпізнаю…</span>
+                : [0, 150, 300].map((d) => (
+                    <span key={d} style={{
+                      width: 6, height: 6, borderRadius: 3, background: P.textDim,
+                      display: "inline-block", animation: `bounce 1.2s ${d}ms ease-in-out infinite`,
+                    }} />
+                  ))
+              }
             </div>
           </div>
         )}
@@ -487,30 +567,156 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
           padding: "10px 16px 14px", borderTop: `1px solid ${P.line}`,
           display: "flex", gap: 10, alignItems: "center", flexShrink: 0,
         }}>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-            placeholder="Відповідай докладно…"
-            style={{
-              flex: 1, background: P.surface, borderRadius: 22, padding: "10px 16px",
-              fontSize: 13.5, color: P.text, border: `1px solid ${P.line}`,
-              outline: "none", fontFamily: sans,
-            }}
-          />
-          <div onClick={handleSend} style={{
-            width: 44, height: 44, borderRadius: 22, flexShrink: 0,
-            background: input.trim() ? P.sand : P.surface,
-            border: input.trim() ? "none" : `1px solid ${P.line}`,
-            display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
-            boxShadow: input.trim() ? "0 4px 12px rgba(201,165,116,0.25)" : "none",
-          }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={input.trim() ? "#17140F" : P.textMute} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-            </svg>
-          </div>
+          {voiceMode ? (
+            /* Voice composer */
+            <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+              <div
+                onPointerDown={startRecording}
+                onPointerUp={stopRecording}
+                onPointerLeave={stopRecording}
+                style={{
+                  width: 72, height: 72, borderRadius: 36, flexShrink: 0,
+                  background: recording ? "#C9A574" : P.surface,
+                  border: `2px solid ${recording ? P.sand : P.line}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", touchAction: "none",
+                  boxShadow: recording ? "0 0 0 8px rgba(201,165,116,0.18)" : "none",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={recording ? "#17140F" : P.textDim} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+                </svg>
+              </div>
+            </div>
+          ) : (
+            /* Text composer */
+            <>
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendText(input); } }}
+                placeholder="Відповідай докладно…"
+                style={{
+                  flex: 1, background: P.surface, borderRadius: 22, padding: "10px 16px",
+                  fontSize: 13.5, color: P.text, border: `1px solid ${P.line}`,
+                  outline: "none", fontFamily: sans,
+                }}
+              />
+              <div onClick={() => sendText(input)} style={{
+                width: 44, height: 44, borderRadius: 22, flexShrink: 0,
+                background: input.trim() ? P.sand : P.surface,
+                border: input.trim() ? "none" : `1px solid ${P.line}`,
+                display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+                boxShadow: input.trim() ? "0 4px 12px rgba(201,165,116,0.25)" : "none",
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={input.trim() ? "#17140F" : P.textMute} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+              </div>
+            </>
+          )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── SportSelectionScreen ─────────────────────────────────────────────────────
+
+function SportSelectionScreen({ onDone }: { onDone: () => void }) {
+  const { token } = useTelegram();
+  const sportsQuery = trpc.sport.list.useQuery(undefined, { enabled: !!token });
+  const selectMutation = trpc.coach.selectSport.useMutation({ onSuccess: onDone });
+  const proposeMutation = trpc.coach.proposeCustomSport.useMutation({
+    onSuccess: (res) => { if (res.approved) onDone(); else setStep("pending"); },
+  });
+  const [step, setStep] = useState<"list" | "custom" | "pending">("list");
+  const [customName, setCustomName] = useState("");
+
+  const sports = sportsQuery.data ?? [];
+
+  if (step === "pending") {
+    return (
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 32px", textAlign: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 20 }}>⏳</div>
+        <div style={{ fontFamily: serif, fontSize: 24, fontWeight: 400, color: P.text, marginBottom: 12 }}>На модерації</div>
+        <div style={{ fontSize: 13.5, color: P.textDim, lineHeight: 1.6 }}>
+          Твій вид спорту відправлено адміністратору. Після схвалення ти отримаєш повідомлення в Telegram і зможеш пройти інтерв&apos;ю.
+        </div>
+      </div>
+    );
+  }
+
+  if (step === "custom") {
+    return (
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "24px 24px" }}>
+        <div onClick={() => setStep("list")} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", marginBottom: 28, color: P.textDim }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={P.textDim} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          <span style={{ fontSize: 13 }}>Назад</span>
+        </div>
+        <div style={{ fontFamily: serif, fontSize: 26, fontWeight: 400, color: P.text, marginBottom: 8 }}>Свій вид спорту</div>
+        <div style={{ fontSize: 13, color: P.textDim, marginBottom: 24, lineHeight: 1.5 }}>Напиши назву — адміністратор розгляне та схвалить.</div>
+        <input
+          value={customName}
+          onChange={(e) => setCustomName(e.target.value)}
+          placeholder="Назва виду спорту…"
+          style={{
+            background: P.surface, borderRadius: 14, padding: "14px 16px",
+            fontSize: 15, color: P.text, border: `1px solid ${P.line}`,
+            outline: "none", fontFamily: sans, marginBottom: 16,
+          }}
+        />
+        <div
+          onClick={() => { if (customName.trim()) proposeMutation.mutate({ name: customName.trim() }); }}
+          style={{
+            background: customName.trim() ? P.sand : P.surface,
+            color: customName.trim() ? "#17140F" : P.textMute,
+            borderRadius: 14, padding: "14px", textAlign: "center",
+            fontSize: 14, fontWeight: 600, cursor: customName.trim() ? "pointer" : "default",
+            border: `1px solid ${customName.trim() ? P.sand : P.line}`,
+            opacity: proposeMutation.isPending ? 0.6 : 1,
+          }}
+        >
+          {proposeMutation.isPending ? "Відправляю…" : "Відправити на модерацію"}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div style={{ padding: "24px 24px 16px", flexShrink: 0 }}>
+        <div style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 8 }}>
+          Powerinside · Крок 2
+        </div>
+        <div style={{ fontFamily: serif, fontSize: 26, fontWeight: 400, color: P.text, marginBottom: 6 }}>Твій вид спорту</div>
+        <div style={{ fontSize: 13, color: P.textDim, lineHeight: 1.5 }}>Обери дисципліну, в якій ти тренуєш атлетів.</div>
+      </div>
+      <div style={{ flex: 1, overflowY: "auto", padding: "0 24px 24px", display: "flex", flexDirection: "column", gap: 8 }}>
+        {sportsQuery.isLoading
+          ? <div style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Завантаження…</div>
+          : sports.map((s) => (
+              <div key={s.id} onClick={() => selectMutation.mutate({ sportId: s.id })} style={{
+                background: P.surface, borderRadius: 14, padding: "16px 18px",
+                border: `1px solid ${P.line}`, cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                opacity: selectMutation.isPending ? 0.6 : 1,
+              }}>
+                <span style={{ fontSize: 15, color: P.text, fontWeight: 500 }}>{s.name}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={P.stone} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
+            ))
+        }
+        <div onClick={() => setStep("custom")} style={{
+          background: "transparent", borderRadius: 14, padding: "16px 18px",
+          border: `1px dashed ${P.line}`, cursor: "pointer",
+          display: "flex", alignItems: "center", gap: 12,
+        }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={P.textDim} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span style={{ fontSize: 14, color: P.textDim }}>Додати свій вид спорту</span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -613,7 +819,51 @@ function CoachInterviewTabContent() {
 }
 
 function CoachPage() {
+  const { token } = useTelegram();
   const [activeTab, setActiveTab] = useState<CoachTab>("interview");
+  const [sportSelected, setSportSelected] = useState<boolean | null>(null);
+  const sportInfoQuery = trpc.coach.getSportInfo.useQuery(undefined, { enabled: !!token });
+
+  useEffect(() => {
+    if (sportInfoQuery.data !== undefined) {
+      const d = sportInfoQuery.data;
+      if (!d) { setSportSelected(false); return; }
+      const hasSport = !!d.sportId || (!!d.customSport && !d.customSportApproved);
+      setSportSelected(hasSport);
+    }
+  }, [sportInfoQuery.data]);
+
+  if (sportInfoQuery.isLoading || sportSelected === null) {
+    return (
+      <div style={{ height: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: P.bg }}>
+        <div style={{ width: 28, height: 28, borderRadius: 14, border: `2px solid ${P.sand}`, borderTopColor: "transparent", animation: "spin 1s linear infinite" }} />
+      </div>
+    );
+  }
+
+  // custom sport pending moderation
+  if (sportInfoQuery.data?.customSport && !sportInfoQuery.data?.customSportApproved && !sportInfoQuery.data?.sportId) {
+    return (
+      <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: P.bg, color: P.text, fontFamily: sans }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 32px", textAlign: "center" }}>
+          <div style={{ fontSize: 48, marginBottom: 20 }}>⏳</div>
+          <div style={{ fontFamily: serif, fontSize: 24, fontWeight: 400, color: P.text, marginBottom: 12 }}>На модерації</div>
+          <div style={{ fontSize: 13.5, color: P.textDim, lineHeight: 1.6 }}>
+            Твій вид спорту <b style={{ color: P.sand }}>{sportInfoQuery.data.customSport}</b> відправлено адміністратору. Після схвалення ти отримаєш повідомлення в Telegram.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!sportSelected) {
+    return (
+      <div style={{ height: "100dvh", display: "flex", flexDirection: "column", background: P.bg, color: P.text, fontFamily: sans, overflow: "hidden" }}>
+        <SportSelectionScreen onDone={() => sportInfoQuery.refetch().then(() => setSportSelected(true))} />
+      </div>
+    );
+  }
+
   return (
     <div style={{ height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -1000,7 +1250,7 @@ function ProfileTab() {
 
 // ─── AdminTab ─────────────────────────────────────────────────────────────────
 
-type AdminSection = "stats" | "coaches" | "users";
+type AdminSection = "stats" | "coaches" | "users" | "sports";
 type AdminCoach = { id: string; status: string; user: { name?: string | null; email: string; createdAt: Date }; _count: { interviewSessions: number; knowledgeBase: number; methodologyRules: number } };
 type AdminUser = { id: string; name?: string | null; email: string; role: string; createdAt: Date; _count: { conversations: number } };
 const ROLE_LABEL: Record<string, string> = { ATHLETE: "Атлет", COACH: "Тренер", INVESTOR: "Інвестор", ADMIN: "Адмін", OWNER: "Власник" };
@@ -1010,17 +1260,31 @@ const STATUS_COLOR: Record<string, string> = { PENDING: "#C9A574", ACTIVE: "#7D9
 function AdminTab() {
   const { token } = useTelegram();
   const [section, setSection] = useState<AdminSection>("stats");
+  const [newSportName, setNewSportName] = useState("");
   const utils = trpc.useUtils();
   const statsQuery   = trpc.admin.getStats.useQuery(undefined, { enabled: !!token });
   const coachesQuery = trpc.admin.getCoaches.useQuery(undefined, { enabled: !!token && section === "coaches" });
   const usersQuery   = trpc.admin.getUsers.useQuery({ page: 1, perPage: 30 }, { enabled: !!token && section === "users" });
+  const sportsQuery  = trpc.sport.list.useQuery(undefined, { enabled: !!token && section === "sports" });
+  const pendingSportsQuery = trpc.sport.listPending.useQuery(undefined, { enabled: !!token && section === "sports" });
   const activateMutation       = trpc.admin.activateCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
   const suspendMutation        = trpc.admin.suspendCoach.useMutation({ onSuccess: () => utils.admin.getCoaches.invalidate() });
   const resetInterviewMutation = trpc.admin.resetCoachInterview.useMutation();
+  const createSportMutation    = trpc.sport.create.useMutation({ onSuccess: () => { utils.sport.list.invalidate(); setNewSportName(""); } });
+  const deleteSportMutation    = trpc.sport.delete.useMutation({ onSuccess: () => utils.sport.list.invalidate() });
+  const approveSportMutation   = trpc.sport.approveCustomSport.useMutation({ onSuccess: () => { utils.sport.listPending.invalidate(); utils.sport.list.invalidate(); } });
+  const rejectSportMutation    = trpc.sport.rejectCustomSport.useMutation({ onSuccess: () => utils.sport.listPending.invalidate() });
   const stats   = statsQuery.data;
   const coaches = (coachesQuery.data ?? []) as AdminCoach[];
   const users   = (usersQuery.data?.users ?? []) as AdminUser[];
-  const sections: { id: AdminSection; label: string }[] = [{ id: "stats", label: "Аналітика" }, { id: "coaches", label: "Тренери" }, { id: "users", label: "Юзери" }];
+  const sports  = sportsQuery.data ?? [];
+  const pendingSports = (pendingSportsQuery.data ?? []) as { id: string; customSport: string | null; user: { name?: string | null } }[];
+  const sections: { id: AdminSection; label: string }[] = [
+    { id: "stats", label: "Аналітика" },
+    { id: "coaches", label: "Тренери" },
+    { id: "users", label: "Юзери" },
+    { id: "sports", label: "Спорти" },
+  ];
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
@@ -1074,6 +1338,59 @@ function AdminTab() {
               </div>
             ))}
             {!usersQuery.isLoading && users.length === 0 && <p style={{ textAlign: "center", color: P.textDim, fontSize: 13, paddingTop: 32 }}>Юзерів немає</p>}
+          </div>
+        )}
+        {section === "sports" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Pending custom sports */}
+            {pendingSports.length > 0 && (
+              <div>
+                <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: "#C9A574", textTransform: "uppercase", marginBottom: 8 }}>
+                  На модерації ({pendingSports.length})
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {pendingSports.map((p) => (
+                    <div key={p.id} style={{ background: P.surface, borderRadius: 14, padding: "14px 16px", border: "1px solid rgba(201,165,116,0.3)" }}>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: P.text, marginBottom: 4 }}>{p.customSport}</div>
+                      <div style={{ fontSize: 11, color: P.textDim, marginBottom: 10 }}>від {p.user.name || "Невідомо"}</div>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <div onClick={() => approveSportMutation.mutate({ coachProfileId: p.id })} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: 10, background: P.success, color: "#17140F", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Схвалити</div>
+                        <div onClick={() => rejectSportMutation.mutate({ coachProfileId: p.id })} style={{ flex: 1, textAlign: "center", padding: "8px", borderRadius: 10, background: "transparent", color: "#C99B85", fontSize: 12, fontWeight: 500, cursor: "pointer", border: "1px solid rgba(201,155,133,0.3)" }}>Відхилити</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Add new sport */}
+            <div>
+              <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 8 }}>Додати вид спорту</div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input
+                  value={newSportName}
+                  onChange={(e) => setNewSportName(e.target.value)}
+                  placeholder="Назва…"
+                  style={{ flex: 1, background: P.surface, borderRadius: 12, padding: "10px 14px", fontSize: 13, color: P.text, border: `1px solid ${P.line}`, outline: "none", fontFamily: sans }}
+                />
+                <div onClick={() => { if (newSportName.trim()) createSportMutation.mutate({ name: newSportName.trim() }); }} style={{ padding: "10px 16px", borderRadius: 12, background: newSportName.trim() ? P.sand : P.surface, color: newSportName.trim() ? "#17140F" : P.textMute, fontSize: 13, fontWeight: 600, cursor: "pointer", border: `1px solid ${newSportName.trim() ? P.sand : P.line}`, flexShrink: 0 }}>
+                  Додати
+                </div>
+              </div>
+            </div>
+            {/* Sports list */}
+            <div>
+              <div style={{ fontFamily: mono, fontSize: 10, letterSpacing: 1.5, color: P.textMute, textTransform: "uppercase", marginBottom: 8 }}>Всі види спорту ({sports.length})</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {sports.map((s) => (
+                  <div key={s.id} style={{ background: P.surface, borderRadius: 12, padding: "12px 16px", border: `1px solid ${P.line}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 13.5, color: P.text }}>{s.name}</span>
+                    <div onClick={() => { if (confirm(`Видалити «${s.name}»?`)) deleteSportMutation.mutate({ id: s.id }); }} style={{ padding: "4px 10px", borderRadius: 8, fontSize: 11, color: "#C99B85", cursor: "pointer", border: "1px solid rgba(201,155,133,0.25)" }}>
+                      Видалити
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>

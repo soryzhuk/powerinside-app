@@ -101,6 +101,19 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+// ─── Sports ───────────────────────────────────────
+
+model Sport {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  approved  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  coaches CoachProfile[]
+
+  @@map("sports")
+}
+
 // ─── Users ────────────────────────────────────────
 
 model User {
@@ -137,21 +150,25 @@ model User {
 // ─── Coach ────────────────────────────────────────
 
 model CoachProfile {
-  id             String      @id @default(cuid())
-  userId         String      @unique
-  status         CoachStatus @default(PENDING)
-  whitelisted    Boolean     @default(false)
-  identityDoc    String?
-  bio            String?
-  specialization String?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                  String      @id @default(cuid())
+  userId              String      @unique
+  status              CoachStatus @default(PENDING)
+  whitelisted         Boolean     @default(false)
+  identityDoc         String?
+  bio                 String?
+  specialization      String?
+  sportId             String?
+  customSport         String?
+  customSportApproved Boolean     @default(false)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sport             Sport?            @relation(fields: [sportId], references: [id], onDelete: SetNull)
   interviewSessions InterviewSession[]
-  knowledgeBase    KnowledgeEntry[]
-  methodologyRules MethodologyRule[]
-  payouts          Payout[]
+  knowledgeBase     KnowledgeEntry[]
+  methodologyRules  MethodologyRule[]
+  payouts           Payout[]
 
   @@map("coach_profiles")
 }
