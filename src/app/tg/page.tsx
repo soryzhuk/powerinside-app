@@ -428,15 +428,6 @@ function CoachInterviewChat({ roundKey, onBack, onComplete }: {
             {isCompleted ? "✓ Завершено" : "Дай розгорнуту відповідь"}
           </div>
         </div>
-        {!isCompleted && hasMessages && (
-          <div onClick={() => !completeMutation.isPending && completeMutation.mutate({ sessionId: sessionId! })} style={{
-            padding: "6px 12px", borderRadius: 10, background: P.sandSoft,
-            color: P.sand, fontSize: 11, fontWeight: 600, cursor: "pointer",
-            fontFamily: mono, letterSpacing: 0.5, flexShrink: 0,
-          }}>
-            Завершити
-          </div>
-        )}
       </div>
 
       {/* Messages */}
