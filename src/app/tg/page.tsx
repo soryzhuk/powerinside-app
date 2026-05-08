@@ -38,13 +38,13 @@ function getInitials(name?: string | null) {
 // ─── ROUNDS config ────────────────────────────────────────────────────────────
 
 const ROUNDS = [
-  { key: "TARGET_ATHLETE",     label: "Цільовий атлет",              desc: "Хто твій ідеальний учень?" },
-  { key: "LOAD_MANAGEMENT",    label: "Управління навантаженням",     desc: "Як плануєш обсяги та інтенсивність?" },
-  { key: "AUTOREGULATION",     label: "Авторегуляція",                desc: "Як адаптуєш план під стан атлета?" },
-  { key: "PROGRESSION_DELOAD", label: "Прогресія та розвантаження",   desc: "Стратегія прогресу та відновлення" },
-  { key: "EXERCISE_SELECTION", label: "Підбір вправ",                 desc: "Критерії вибору та варіації вправ" },
-  { key: "TECHNIQUE_STANDARDS",label: "Стандарти техніки",            desc: "Вимоги до техніки виконання" },
-  { key: "LIFESTYLE_RECOVERY", label: "Спосіб життя та відновлення",  desc: "Сон, харчування, стрес-менеджмент" },
+  { key: "TARGET_ATHLETE",     label: "Цільовий атлет",              desc: "Для кого розроблена система тренувань" },
+  { key: "LOAD_MANAGEMENT",    label: "Управління навантаженням",     desc: "Як підбираються робочі ваги" },
+  { key: "AUTOREGULATION",     label: "Авторегуляція",                desc: "Як тренування змінюється при втомі та недовідновленні" },
+  { key: "PROGRESSION_DELOAD", label: "Прогресія та розвантаження",   desc: "Як зростає навантаження з часом" },
+  { key: "EXERCISE_SELECTION", label: "Підбір вправ",                 desc: "Логіка підбору вправ" },
+  { key: "TECHNIQUE_STANDARDS",label: "Стандарти техніки",            desc: "Технічні стандарти та вимоги" },
+  { key: "LIFESTYLE_RECOVERY", label: "Спосіб життя та відновлення",  desc: "Зовнішні фактори, що впливають на тренування" },
 ] as const;
 
 type RoundKey = (typeof ROUNDS)[number]["key"];
