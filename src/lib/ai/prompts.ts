@@ -373,7 +373,8 @@ Do not mention these tags to the coach. They are invisible system markers.
 
 Inside the tags, use this structure:
 
-INSIGHTS: <short practical explanation of the coach's approach for this topic, including any sport-specific logic identified>
+INSIGHTS: <short practical explanation of the coach's approach for this topic>
+SPORT_INSIGHTS: <important sport-specific logic identified during this round, or "None">
 RULES:
 - Title: <short rule name>
   Condition: <when this rule applies>

@@ -35,6 +35,7 @@ interface ParsedRule {
 interface ParsedSummary {
   round: RoundName;
   insights: string;
+  sportInsights: string;
   rules: ParsedRule[];
   terminology: string[];
   fingerprint: string;
@@ -51,7 +52,8 @@ function parseRoundSummary(text: string): ParsedSummary | null {
   const round = roundRaw as RoundName;
   if (!VALID_ROUNDS.includes(round)) return null;
 
-  const insights = body.match(/INSIGHTS:\s*([\s\S]+?)(?=\nRULES:|\nTERMINOLOGY:)/)?.[1]?.trim() ?? "";
+  const insights = body.match(/INSIGHTS:\s*([\s\S]+?)(?=\nSPORT_INSIGHTS:|\nRULES:|\nTERMINOLOGY:)/)?.[1]?.trim() ?? "";
+  const sportInsights = body.match(/SPORT_INSIGHTS:\s*([\s\S]+?)(?=\nRULES:|\nTERMINOLOGY:)/)?.[1]?.trim() ?? "";
   const rulesBlock = body.match(/RULES:\n([\s\S]*?)(?=\nTERMINOLOGY:)/)?.[1] ?? "";
   const terminologyRaw = body.match(/TERMINOLOGY:\s*([\s\S]+?)(?=\nFINGERPRINT:|\nOPEN_QUESTIONS:)/)?.[1]?.trim() ?? "";
   const fingerprint = body.match(/FINGERPRINT:\s*([\s\S]+?)(?=\nOPEN_QUESTIONS:)/)?.[1]?.trim() ?? "";
@@ -77,7 +79,7 @@ function parseRoundSummary(text: string): ParsedSummary | null {
     });
   }
 
-  return { round, insights, rules, terminology, fingerprint, openQuestions };
+  return { round, insights, sportInsights, rules, terminology, fingerprint, openQuestions };
 }
 
 const ROUND_LABELS: Record<string, string> = {
@@ -346,6 +348,7 @@ export const coachRouter = router({
           where: { sessionId_round: { sessionId: input.sessionId, round: parsedSummary.round as InterviewRound } },
           update: {
             insights: parsedSummary.insights,
+            sportInsights: parsedSummary.sportInsights,
             rules: rulesJson,
             terminology: terminologyJson,
             fingerprint: parsedSummary.fingerprint,
@@ -355,6 +358,7 @@ export const coachRouter = router({
             sessionId: input.sessionId,
             round: parsedSummary.round as InterviewRound,
             insights: parsedSummary.insights,
+            sportInsights: parsedSummary.sportInsights,
             rules: rulesJson,
             terminology: terminologyJson,
             fingerprint: parsedSummary.fingerprint,

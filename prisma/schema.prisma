@@ -204,16 +204,17 @@ model InterviewMessage {
 }
 
 model InterviewRoundSummary {
-  id            String         @id @default(cuid())
-  sessionId     String
-  round         InterviewRound
-  insights      String
-  rules         Json
-  terminology   Json
-  fingerprint   String         @default("")
-  openQuestions String         @default("")
-  confirmed     Boolean        @default(false)
-  createdAt     DateTime       @default(now())
+  id             String         @id @default(cuid())
+  sessionId      String
+  round          InterviewRound
+  insights       String
+  sportInsights  String         @default("")
+  rules          Json
+  terminology    Json
+  fingerprint    String         @default("")
+  openQuestions  String         @default("")
+  confirmed      Boolean        @default(false)
+  createdAt      DateTime       @default(now())
 
   session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
