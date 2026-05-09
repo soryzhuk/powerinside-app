@@ -38,13 +38,13 @@ function getInitials(name?: string | null) {
 // ─── ROUNDS config ────────────────────────────────────────────────────────────
 
 const ROUNDS = [
-  { key: "TARGET_ATHLETE",     label: "Цільовий атлет",              desc: "Для кого розроблена система тренувань" },
-  { key: "LOAD_MANAGEMENT",    label: "Управління навантаженням",     desc: "Як підбираються робочі ваги" },
-  { key: "AUTOREGULATION",     label: "Авторегуляція",                desc: "Як тренування змінюється при втомі та недовідновленні" },
-  { key: "PROGRESSION_DELOAD", label: "Прогресія та розвантаження",   desc: "Як зростає навантаження з часом" },
-  { key: "EXERCISE_SELECTION", label: "Підбір вправ",                 desc: "Логіка підбору вправ" },
-  { key: "TECHNIQUE_STANDARDS",label: "Стандарти техніки",            desc: "Технічні стандарти та вимоги" },
-  { key: "LIFESTYLE_RECOVERY", label: "Спосіб життя та відновлення",  desc: "Зовнішні фактори, що впливають на тренування" },
+  { key: "TARGET_ATHLETE",      label: "Профіль атлета та система",        desc: "Для кого методологія і де вона працює найкраще" },
+  { key: "LOAD_MANAGEMENT",     label: "Логіка призначення навантаження",  desc: "Як обирається та коригується тренувальне навантаження" },
+  { key: "AUTOREGULATION",      label: "Авторегуляція та готовність",      desc: "Як адаптується тренування до стану атлета" },
+  { key: "PROGRESSION_DELOAD",  label: "Архітектура прогресії",            desc: "Як будується довгостроковий прогрес" },
+  { key: "EXERCISE_SELECTION",  label: "Стратегія підбору вправ",          desc: "Як обираються та модифікуються вправи" },
+  { key: "TECHNIQUE_STANDARDS", label: "Технічні стандарти та рух",        desc: "Технічні вимоги та філософія руху" },
+  { key: "LIFESTYLE_RECOVERY",  label: "Екосистема відновлення",           desc: "Нетренувальні фактори, що впливають на результат" },
 ] as const;
 
 type RoundKey = (typeof ROUNDS)[number]["key"];

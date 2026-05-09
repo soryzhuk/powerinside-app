@@ -81,13 +81,13 @@ function parseRoundSummary(text: string): ParsedSummary | null {
 }
 
 const ROUND_LABELS: Record<string, string> = {
-  TARGET_ATHLETE: "Цільовий атлет",
-  LOAD_MANAGEMENT: "Управління навантаженням",
-  AUTOREGULATION: "Авторегуляція",
-  PROGRESSION_DELOAD: "Прогресія та розвантаження",
-  EXERCISE_SELECTION: "Підбір вправ",
-  TECHNIQUE_STANDARDS: "Стандарти техніки",
-  LIFESTYLE_RECOVERY: "Спосіб життя та відновлення",
+  TARGET_ATHLETE:    "Профіль атлета та система",
+  LOAD_MANAGEMENT:   "Логіка призначення навантаження",
+  AUTOREGULATION:    "Авторегуляція та готовність",
+  PROGRESSION_DELOAD:"Архітектура прогресії",
+  EXERCISE_SELECTION:"Стратегія підбору вправ",
+  TECHNIQUE_STANDARDS:"Технічні стандарти та рух",
+  LIFESTYLE_RECOVERY: "Екосистема відновлення",
 };
 
 const TOTAL_ROUNDS = 7;
