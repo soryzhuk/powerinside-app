@@ -1,32 +1,26 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations, useLocale } from "next-intl";
 import { User, Mail, Phone, Globe, Languages, Shield, Upload, FileCheck } from "lucide-react";
 import { Card, CardBody, CardHeader, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
+import { locales, localeNames, type Locale } from "@/i18n/config";
 
-const COUNTRIES = [
-  { value: "UA", label: "Україна" },
-  { value: "US", label: "США" },
-  { value: "GB", label: "Великобританія" },
-  { value: "DE", label: "Німеччина" },
-  { value: "PL", label: "Польща" },
-  { value: "CA", label: "Канада" },
-  { value: "AU", label: "Австралія" },
-  { value: "OTHER", label: "Інша" },
-];
-
-const LANGUAGES = [
-  { value: "uk", label: "Українська" },
-  { value: "en", label: "English" },
-  { value: "ru", label: "Русский" },
-];
+const COUNTRY_CODES = ["UA", "US", "GB", "DE", "PL", "CA", "AU", "OTHER"] as const;
 
 export default function ProfilePage() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const t = useTranslations("profile");
+  const tCountries = useTranslations("countries");
+  const tRoles = useTranslations("roles");
+  const tLang = useTranslations("language");
+  const currentLocale = useLocale() as Locale;
   const role = session?.user?.role;
   const isCoach = role === "COACH";
 
@@ -34,18 +28,18 @@ export default function ProfilePage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("");
-  const [language, setLanguage] = useState("");
+  const [uiLocale, setUiLocale] = useState<Locale>(currentLocale);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [docUploading, setDocUploading] = useState(false);
   const [docUploaded, setDocUploaded] = useState(false);
+  const [, startTransition] = useTransition();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const profileQuery = trpc.auth.getProfile.useQuery();
   const coachProfileQuery = trpc.coach.getProfile.useQuery(undefined, { enabled: isCoach });
   const updateMutation = trpc.auth.updateProfile.useMutation();
 
-  // Populate form from DB
   useEffect(() => {
     const p = profileQuery.data;
     if (p) {
@@ -53,7 +47,9 @@ export default function ProfilePage() {
       setEmail(p.email);
       setPhone(p.phone ?? "");
       setCountry(p.country ?? "");
-      setLanguage(p.language ?? "uk");
+      if (p.language && (locales as readonly string[]).includes(p.language)) {
+        setUiLocale(p.language as Locale);
+      }
     }
   }, [profileQuery.data]);
 
@@ -63,10 +59,23 @@ export default function ProfilePage() {
     e.preventDefault();
     setSaving(true);
     try {
-      await updateMutation.mutateAsync({ name, phone: phone || undefined, country: country || undefined, language: language || undefined });
+      await updateMutation.mutateAsync({
+        name,
+        phone: phone || undefined,
+        country: country || undefined,
+        language: uiLocale,
+      });
+      if (uiLocale !== currentLocale) {
+        await fetch("/api/locale", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ locale: uiLocale }),
+        });
+      }
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
       profileQuery.refetch();
+      startTransition(() => router.refresh());
     } finally {
       setSaving(false);
     }
@@ -81,24 +90,30 @@ export default function ProfilePage() {
       fd.append("file", file);
       const res = await fetch("/api/coach/upload-doc", { method: "POST", body: fd });
       if (res.ok) { setDocUploaded(true); coachProfileQuery.refetch(); }
-      else { const d = await res.json(); alert(d.error ?? "Upload failed"); }
+      else {
+        const d = await res.json();
+        alert(d.error ?? t("coach.uploadFailed"));
+      }
     } finally {
       setDocUploading(false);
     }
   }
 
+  const knownRole = (["ATHLETE", "COACH", "INVESTOR", "ADMIN", "OWNER"] as const).includes(role as never)
+    ? (role as "ATHLETE" | "COACH" | "INVESTOR" | "ADMIN" | "OWNER")
+    : null;
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Мій <span className="text-primary">профіль</span>
+          {t("titleA")} <span className="text-primary">{t("titleB")}</span>
         </h1>
         <p className="text-muted-foreground mt-1">
-          Переглядайте та редагуйте свою інформацію
+          {t("subtitle")}
         </p>
       </div>
 
-      {/* User info */}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
@@ -106,17 +121,11 @@ export default function ProfilePage() {
               <User className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold">Основна інформація</h2>
+              <h2 className="text-lg font-semibold">{t("basicInfo")}</h2>
               <p className="text-sm text-muted-foreground">
-                Роль:{" "}
+                {t("roleLabel")}{" "}
                 <span className="font-medium text-foreground">
-                  {role === "ATHLETE"
-                    ? "Атлет"
-                    : role === "COACH"
-                      ? "Тренер"
-                      : role === "ADMIN"
-                        ? "Адміністратор"
-                        : role ?? "..."}
+                  {knownRole ? tRoles(knownRole) : role ?? "..."}
                 </span>
               </p>
             </div>
@@ -127,7 +136,7 @@ export default function ProfilePage() {
           <CardBody className="space-y-4">
             {saved && (
               <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-sm text-green-400">
-                Профіль успішно оновлено!
+                {t("savedMsg")}
               </div>
             )}
 
@@ -135,10 +144,10 @@ export default function ProfilePage() {
               <User className="w-4 h-4 text-muted-foreground mt-8 shrink-0" />
               <div className="flex-1">
                 <Input
-                  label="Ім'я"
+                  label={t("nameLabel")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ваше ім'я"
+                  placeholder={t("namePlaceholder")}
                 />
               </div>
             </div>
@@ -147,13 +156,13 @@ export default function ProfilePage() {
               <Mail className="w-4 h-4 text-muted-foreground mt-8 shrink-0" />
               <div className="flex-1">
                 <Input
-                  label="Email"
+                  label={t("emailLabel")}
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
                   disabled
-                  helperText="Email неможливо змінити"
+                  helperText={t("emailHelper")}
                 />
               </div>
             </div>
@@ -162,11 +171,11 @@ export default function ProfilePage() {
               <Phone className="w-4 h-4 text-muted-foreground mt-8 shrink-0" />
               <div className="flex-1">
                 <Input
-                  label="Телефон"
+                  label={t("phoneLabel")}
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+380 XX XXX XX XX"
+                  placeholder={t("phonePlaceholder")}
                 />
               </div>
             </div>
@@ -176,17 +185,17 @@ export default function ProfilePage() {
               <div className="flex-1">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-medium text-foreground">
-                    Країна
+                    {t("countryLabel")}
                   </label>
                   <select
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg bg-input border border-border text-foreground text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus"
                   >
-                    <option value="">Оберіть країну</option>
-                    {COUNTRIES.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
+                    <option value="">{t("countryPlaceholder")}</option>
+                    {COUNTRY_CODES.map((code) => (
+                      <option key={code} value={code}>
+                        {tCountries(code)}
                       </option>
                     ))}
                   </select>
@@ -199,17 +208,17 @@ export default function ProfilePage() {
               <div className="flex-1">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-medium text-foreground">
-                    Мова
+                    {t("languageLabel")}
                   </label>
                   <select
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
+                    value={uiLocale}
+                    onChange={(e) => setUiLocale(e.target.value as Locale)}
+                    aria-label={tLang("select")}
                     className="w-full px-3 py-2 rounded-lg bg-input border border-border text-foreground text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus"
                   >
-                    <option value="">Оберіть мову</option>
-                    {LANGUAGES.map((l) => (
-                      <option key={l.value} value={l.value}>
-                        {l.label}
+                    {locales.map((l) => (
+                      <option key={l} value={l}>
+                        {localeNames[l]}
                       </option>
                     ))}
                   </select>
@@ -220,13 +229,12 @@ export default function ProfilePage() {
 
           <CardFooter className="flex justify-end">
             <Button type="submit" loading={saving}>
-              Зберегти зміни
+              {t("save")}
             </Button>
           </CardFooter>
         </form>
       </Card>
 
-      {/* Coach profile details */}
       {isCoach && coachProfile && (
         <Card>
           <CardHeader>
@@ -235,9 +243,9 @@ export default function ProfilePage() {
                 <Shield className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold">Профіль тренера</h2>
+                <h2 className="text-lg font-semibold">{t("coach.title")}</h2>
                 <p className="text-sm text-muted-foreground">
-                  Статус та статистика вашого тренерського профілю
+                  {t("coach.subtitle")}
                 </p>
               </div>
             </div>
@@ -246,7 +254,7 @@ export default function ProfilePage() {
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="p-4 rounded-lg bg-secondary/50 border border-border">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-                  Статус
+                  {t("coach.statusLabel")}
                 </p>
                 <p
                   className={`text-sm font-semibold ${
@@ -258,61 +266,60 @@ export default function ProfilePage() {
                   }`}
                 >
                   {coachProfile.status === "ACTIVE"
-                    ? "Активний"
+                    ? t("coach.active")
                     : coachProfile.status === "PENDING"
-                      ? "Очікує активації"
-                      : "Призупинений"}
+                      ? t("coach.pending")
+                      : t("coach.suspended")}
                 </p>
               </div>
 
               <div className="p-4 rounded-lg bg-secondary/50 border border-border">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-                  Раунди інтерв'ю
+                  {t("coach.roundsLabel")}
                 </p>
                 <p className="text-sm font-semibold">
-                  {coachProfile._count.interviewSessions} / 7 пройдено
+                  {t("coach.roundsValue", { done: coachProfile._count.interviewSessions })}
                 </p>
               </div>
 
               <div className="p-4 rounded-lg bg-secondary/50 border border-border">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-                  База знань
+                  {t("coach.knowledgeLabel")}
                 </p>
                 <p className="text-sm font-semibold">
-                  {coachProfile._count.knowledgeBase} записів
+                  {t("coach.knowledgeValue", { n: coachProfile._count.knowledgeBase })}
                 </p>
               </div>
 
               <div className="p-4 rounded-lg bg-secondary/50 border border-border">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-                  Методологічні правила
+                  {t("coach.rulesLabel")}
                 </p>
                 <p className="text-sm font-semibold">
-                  {coachProfile._count.methodologyRules} правил
+                  {t("coach.rulesValue", { n: coachProfile._count.methodologyRules })}
                 </p>
               </div>
             </div>
 
-            {/* Identity document upload (ТЗ п.3.1) */}
             <div className="mt-4 p-4 rounded-lg border border-border bg-secondary/30">
               <p className="text-sm font-medium mb-1 flex items-center gap-2">
                 <Shield className="w-4 h-4 text-muted-foreground" />
-                Документ що підтверджує особу
+                {t("coach.identityTitle")}
               </p>
               <p className="text-xs text-muted-foreground mb-3">
-                Вимагається для верифікації. Формати: JPEG, PNG, PDF. Макс. 10 МБ.
+                {t("coach.identitySubtitle")}
               </p>
 
               {coachProfile.identityDoc ? (
                 <div className="flex items-center gap-2 text-sm text-green-400">
                   <FileCheck className="w-4 h-4" />
-                  Документ завантажено
+                  {t("coach.uploaded")}
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
                     className="text-xs text-muted-foreground hover:text-foreground underline ml-2"
                   >
-                    замінити
+                    {t("coach.replace")}
                   </button>
                 </div>
               ) : (
@@ -324,12 +331,12 @@ export default function ProfilePage() {
                   onClick={() => fileRef.current?.click()}
                 >
                   <Upload className="w-4 h-4 mr-1" />
-                  {docUploading ? "Завантаження…" : "Завантажити документ"}
+                  {docUploading ? t("coach.uploading") : t("coach.upload")}
                 </Button>
               )}
 
               {docUploaded && !coachProfile.identityDoc && (
-                <p className="text-xs text-green-400 mt-1">✓ Документ успішно завантажено</p>
+                <p className="text-xs text-green-400 mt-1">{t("coach.uploadSuccess")}</p>
               )}
 
               <input

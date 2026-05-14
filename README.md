@@ -5,6 +5,7 @@ AI-платформа для персоналізованого коучингу
 ## Технологічний стек
 
 - **Frontend:** Next.js 16 (App Router), React 19, Tailwind CSS 4
+- **i18n:** next-intl (11 локалей, авто-визначення мови)
 - **Backend:** tRPC, NextAuth v5 (Credentials)
 - **AI:** Claude (Anthropic SDK) — інтерв'ю тренерів, чат зі спортсменами
 - **База даних:** PostgreSQL 17, Prisma 7 (ORM)
@@ -153,3 +154,17 @@ powerinside/
 - Збірка: `pnpm build`
 - Запуск: `pnpm start`
 - Переконайтесь, що `DATABASE_URL`, `NEXTAUTH_SECRET` та інші змінні встановлені у production-оточенні
+
+## Локалізація (i18n)
+
+Інтерфейс перекладено на 11 мов: англійська (en, fallback), іспанська (es), українська (uk), російська (ru), польська (pl), німецька (de), японська (ja), французька (fr), італійська (it), китайська (zh), хінді (hi).
+
+- Файли локалей: `messages/<locale>.json`
+- Конфігурація: `src/i18n/config.ts`, `src/i18n/request.ts`
+- Визначення мови: cookie `POWERINSIDE_LOCALE` → заголовок `Accept-Language` → fallback `en`
+- Зміна мови:
+  - Кнопка-globe у хедері (`src/components/layout/language-switcher.tsx`)
+  - Дропдаун "Мова інтерфейсу" на сторінці `/profile`
+  - API: `POST /api/locale` з тілом `{ "locale": "..." }`
+- У клієнтських компонентах: `const t = useTranslations("namespace"); t("key")`
+- У серверних: `const t = await getTranslations("namespace");`

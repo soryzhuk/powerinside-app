@@ -1,0 +1,725 @@
+{
+  "meta": {
+    "title": "PowerInside — Plataforma para deportes de fuerza",
+    "description": "Coaching con IA, base de conocimientos y suscripciones para powerlifters y atletas de fuerza"
+  },
+  "common": {
+    "loading": "Cargando…",
+    "loadingShort": "Cargando...",
+    "loadingDots": "...",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "send": "Enviar",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Buscar",
+    "yes": "Sí",
+    "no": "No",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "error": "Error",
+    "errorTryAgain": "Se produjo un error. Inténtalo de nuevo.",
+    "retry": "Reintentar",
+    "all": "Todos",
+    "ok": "OK",
+    "close": "Cerrar"
+  },
+  "language": {
+    "label": "Idioma",
+    "select": "Selecciona el idioma"
+  },
+  "nav": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar sesión",
+    "profile": "Perfil",
+    "settings": "Ajustes",
+    "dashboard": "Panel",
+    "chat": "Chat",
+    "multiexpert": "Multi-experto",
+    "balance": "Saldo",
+    "referrals": "Referidos",
+    "interview": "Entrevista",
+    "athletesQuestions": "Preguntas de atletas",
+    "knowledgeBase": "Base de conocimientos",
+    "payouts": "Pagos",
+    "users": "Usuarios",
+    "coaches": "Entrenadores",
+    "analytics": "Analítica",
+    "investorReport": "Informe",
+    "toggleMenu": "Alternar menú"
+  },
+  "landing": {
+    "badge": "La metodología del entrenador — en tu bolsillo",
+    "heroTitleA": "Plataforma para",
+    "heroTitleB": "deportes de fuerza",
+    "heroSubtitle": "Respuestas personalizadas basadas en las metodologías de entrenadores reales. Powerlifting, strongman, halterofilia — encuentra a tu entrenador y alcanza nuevas metas.",
+    "ctaAthleteRole": "Soy atleta",
+    "ctaCoachRole": "Soy entrenador",
+    "featuresTitleA": "Todo para tu",
+    "featuresTitleB": "progreso",
+    "featuresSubtitle": "Combinamos la experiencia de los mejores entrenadores con tecnología que pone ese conocimiento a tu disposición 24/7.",
+    "feature": {
+      "coachingTitle": "Coaching basado en metodología",
+      "coachingDesc": "Respuestas personalizadas basadas en el conocimiento de entrenadores reales — los que tú elegiste.",
+      "knowledgeTitle": "Base de conocimientos",
+      "knowledgeDesc": "Los entrenadores pasan por entrevistas profundas y suben sus propias metodologías, que se convierten en la base de las consultas.",
+      "subscriptionsTitle": "Suscripciones",
+      "subscriptionsDesc": "Sistema flexible de suscripciones con acceso a distintos entrenadores y niveles de consulta.",
+      "trackingTitle": "Seguimiento del progreso",
+      "trackingDesc": "Registra tus métricas de fuerza, analiza tendencias y alcanza nuevos récords.",
+      "verifiedTitle": "Entrenadores verificados",
+      "verifiedDesc": "Cada entrenador pasa por una entrevista y verificación antes de ser admitido en la plataforma.",
+      "support24Title": "Respuestas 24/7",
+      "support24Desc": "Recibe respuestas en cualquier momento, basadas en la metodología de tu entrenador."
+    },
+    "ctaSectionTitle": "¿Listo para ser más fuerte?",
+    "ctaSectionSubtitle": "Únete a PowerInside — una plataforma donde la experiencia de los entrenadores trabaja para tus resultados todo el día.",
+    "startTraining": "Empezar a entrenar",
+    "becomeCoach": "Hazte entrenador",
+    "rights": "Todos los derechos reservados."
+  },
+  "authLogin": {
+    "title": "Inicia sesión en",
+    "subtitle": "Introduce tus datos para iniciar sesión",
+    "passwordLabel": "Contraseña",
+    "submit": "Iniciar sesión",
+    "noAccount": "¿No tienes cuenta?",
+    "signupLink": "Regístrate",
+    "invalidCredentials": "Correo o contraseña inválidos.",
+    "generalError": "Se produjo un error. Inténtalo de nuevo."
+  },
+  "authRegister": {
+    "title": "Regístrate en",
+    "subtitle": "Crea una cuenta para empezar",
+    "athlete": "Atleta",
+    "coach": "Entrenador",
+    "referralBonus": "¡Te han invitado! Tras registrarte recibirás <b>5 mensajes de bonificación</b>.",
+    "postSignInError": "Registro exitoso, pero falló el inicio de sesión. Inicia sesión manualmente.",
+    "generalError": "Error en el registro.",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Juan Pérez",
+    "emailLabel": "Correo electrónico",
+    "phoneLabel": "Teléfono",
+    "phonePlaceholder": "+1 555 555 5555",
+    "addressLabel": "Dirección",
+    "addressPlaceholder": "Calle Mayor 123, Ciudad",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "Al menos 6 caracteres",
+    "countryLabel": "País",
+    "languageLabel": "Idioma",
+    "submit": "Registrarse",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "loginLink": "Iniciar sesión"
+  },
+  "countries": {
+    "UA": "Ucrania",
+    "US": "USA",
+    "GB": "Reino Unido",
+    "DE": "Alemania",
+    "PL": "Polonia",
+    "CA": "Canadá",
+    "AU": "Australia",
+    "OTHER": "Otro",
+    "selectPlaceholder": "Selecciona país"
+  },
+  "roles": {
+    "label": "Rol",
+    "ATHLETE": "Atleta",
+    "COACH": "Entrenador",
+    "INVESTOR": "Inversor",
+    "ADMIN": "Administrador",
+    "OWNER": "Propietario",
+    "defaultUserName": "Usuario"
+  },
+  "coachStatus": {
+    "PENDING": "Pendiente",
+    "ACTIVE": "Activo",
+    "SUSPENDED": "Suspendido",
+    "pendingActivation": "Esperando activación"
+  },
+  "dashboard": {
+    "athleteGreeting": "Hola,",
+    "athleteSubtitle": "Tu coach personal de IA te está esperando",
+    "balanceLabel": "Saldo de mensajes",
+    "balanceBreakdown": "{free} gratis / {weekly} semanales / {purchased} comprados",
+    "conversationsLabel": "Conversaciones",
+    "conversationsSub": "Diálogos activos con IA",
+    "askTitle": "Haz una pregunta",
+    "askSubtitle": "Pregunta a tu coach de IA sobre entrenamiento",
+    "recentTitle": "Conversaciones recientes",
+    "allConversations": "Todas las conversaciones",
+    "emptyConversations": "Aún no tienes conversaciones. ¡Inicia un chat con tu coach de IA!",
+    "newConversation": "Nueva conversación",
+    "coachStatusLine": "Estado:",
+    "interviewCard": "Entrevista",
+    "interviewSub": "Rondas completadas",
+    "knowledgeCard": "Base de conocimientos",
+    "knowledgeSub": "Entradas en la base de conocimientos",
+    "rulesCard": "Reglas",
+    "rulesSub": "Reglas de la metodología",
+    "continueTitle": "Continuar entrevista",
+    "continueSub": "Completa las 7 rondas para activar el coach de IA",
+    "goto": "Ir",
+    "adminTitle": "Admin",
+    "adminPanelLine": "panel",
+    "adminSubtitle": "Resumen de la plataforma",
+    "totalUsers": "Total de usuarios",
+    "coaches": "Entrenadores",
+    "activeTotal": "Activos / Total",
+    "revenue": "Ingresos",
+    "subscriptionsInfo": "Suscripciones: {active} activas / {total} totales",
+    "manageCoachesTitle": "Gestionar entrenadores",
+    "manageCoachesSub": "Ver, activar y suspender entrenadores",
+    "manageCoachesAction": "Ver"
+  },
+  "balance": {
+    "titleA": "Saldo de",
+    "titleB": "mensajes",
+    "subtitle": "Gestiona tu saldo y compra paquetes de mensajes",
+    "successMsg": "✓ ¡Pago realizado con éxito! Tu saldo se ha actualizado.",
+    "canceledMsg": "Pago cancelado.",
+    "free": "Gratis",
+    "weekly": "Semanales",
+    "purchased": "Comprados",
+    "totalLabel": "Saldo total",
+    "totalUnit": "mensajes disponibles",
+    "subscription": "Suscripción",
+    "active": "Activa",
+    "perMonth": "/ mes",
+    "nextBilling": "Próximo cargo: {date}",
+    "subscriptionActiveLabel": "Suscripción activa",
+    "basicTitle": "Básico — $30 / mes",
+    "feature": {
+      "weekly20": "20 mensajes por semana",
+      "aiChat": "Chat de IA con el entrenador",
+      "access": "Acceso a la metodología",
+      "noExpiry": "Nunca caducan",
+      "anyCoach": "Cualquier entrenador",
+      "instant": "Respuestas instantáneas"
+    },
+    "subscribeBasic": "Suscribirse al plan Básico",
+    "packsTitle": "Paquetes de mensajes",
+    "popular": "Más popular",
+    "messages": "mensajes",
+    "perMessage": "{price} / mensaje",
+    "buy": "Comprar"
+  },
+  "chat": {
+    "coachLabel": "Entrenador:",
+    "noCoaches": "No hay entrenadores disponibles",
+    "messagesCount": "{count} mensajes",
+    "emptyTitle": "Inicia una conversación con el coach de IA",
+    "emptySubtitle": "Elige un entrenador y haz tu primera pregunta sobre entrenamiento, técnica o nutrición.",
+    "multipleQuestionsWarning": "Tu mensaje contiene <b>{count} preguntas</b>. Cada pregunta consume 1 mensaje de tu saldo — se descontarán <b>{count}</b>. Recomendamos hacer una pregunta a la vez para una respuesta más precisa.",
+    "inputPlaceholder": "Escribe tu pregunta…",
+    "errorSend": "No se pudo enviar el mensaje",
+    "errorPrefix": "Error: {message}"
+  },
+  "interview": {
+    "completed": "Entrevista completada. Gracias por tu sinceridad.",
+    "startOver": "Empezar de nuevo",
+    "inputPlaceholder": "Responde con detalle…",
+    "errorPrefix": "Error: {message}",
+    "errorSend": "No se pudo enviar"
+  },
+  "knowledge": {
+    "titleA": "Base de",
+    "titleB": "conocimientos",
+    "subtitle": "Reglas de la metodología extraídas de tu entrevista. Confirma las que reflejen con precisión tu sistema — solo las reglas confirmadas son usadas por la IA al responder a los atletas.",
+    "entriesLabel": "Entradas",
+    "totalRules": "Total de reglas",
+    "confirmedLabel": "Confirmadas",
+    "rulesHeader": "Reglas de la metodología",
+    "rulesHint": "Pulsa ⭕ junto a una regla para confirmarla. Expande la regla para ver sus detalles.",
+    "loading": "Cargando…",
+    "emptyRules": "Las reglas aparecerán después de completar la entrevista",
+    "entriesHeader": "Entradas de la base de conocimientos",
+    "approved": "✓ aprobada",
+    "rule": {
+      "condition": "Condición:",
+      "signal": "Señal:",
+      "decision": "Decisión:",
+      "exception": "Excepción:",
+      "alternative": "Alternativa:",
+      "confirm": "Confirmar regla",
+      "unconfirm": "Cancelar confirmación"
+    },
+    "rounds": {
+      "TARGET_ATHLETE": "Atleta objetivo",
+      "LOAD_MANAGEMENT": "Gestión de la carga",
+      "AUTOREGULATION": "Autorregulación",
+      "PROGRESSION_DELOAD": "Progresión y descarga",
+      "EXERCISE_SELECTION": "Selección de ejercicios",
+      "TECHNIQUE_STANDARDS": "Estándares técnicos",
+      "LIFESTYLE_RECOVERY": "Estilo de vida y recuperación"
+    }
+  },
+  "expertQa": {
+    "titleA": "Preguntas",
+    "titleB": "de atletas",
+    "subtitle": "Responde las preguntas de los atletas y enriquece la base de conocimientos",
+    "pendingTitle": "Pendientes de respuesta",
+    "loading": "Cargando…",
+    "noNew": "No hay preguntas nuevas",
+    "answerPlaceholder": "Tu respuesta…",
+    "reply": "Responder",
+    "answeredTitle": "Respuestas enviadas",
+    "bestSelected": "★ Marcada como la mejor por el atleta",
+    "empty": "Aún no hay preguntas de atletas",
+    "athleteFallback": "Atleta"
+  },
+  "qa": {
+    "titleA": "Respuestas",
+    "titleB": "multi-experto",
+    "subtitle": "Pregunta a varios entrenadores a la vez y elige la mejor respuesta",
+    "newQuestion": "Nueva pregunta",
+    "questionLabel": "Tu pregunta",
+    "questionPlaceholder": "Describe tu pregunta con detalle — cuanto más precisa, mejores serán las respuestas…",
+    "chooseCoachesLabel": "Elige entrenadores (hasta 5)",
+    "selectedCount": "({count} seleccionados)",
+    "loading": "Cargando…",
+    "noActiveCoaches": "Aún no hay entrenadores activos",
+    "submit": "Enviar pregunta",
+    "myQuestions": "Mis preguntas",
+    "emptyMy": "Aún no tienes preguntas. ¡Haz la primera!",
+    "answersCount": "{answered}/{total} respuestas",
+    "best": "Mejor",
+    "selectBest": "Marcar como la mejor",
+    "pendingAnswer": "Esperando respuesta…",
+    "genericError": "Error",
+    "coachFallback": "Entrenador"
+  },
+  "referral": {
+    "loading": "Cargando…",
+    "title": "Programa de referidos",
+    "subtitle": "Invita a nuevos atletas — recibe <b>5 mensajes de bonificación</b> cuando se suscriban. Ellos reciben <b>5 mensajes de bienvenida</b> solo por unirse con tu enlace.",
+    "yourLink": "Tu enlace de referido",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "codeLabel": "Código:",
+    "stats": {
+      "totalReferred": "Total de referidos",
+      "bonusEarned": "Mensajes de bonificación ganados",
+      "pending": "Pendientes (aún no suscritos)"
+    },
+    "list": {
+      "title": "Atletas referidos",
+      "joined": "Se unió el {date}",
+      "earned": "+{n} mensajes ganados",
+      "pendingSub": "Suscripción pendiente"
+    },
+    "how": {
+      "title": "Cómo funciona",
+      "step1": "Comparte tu enlace de referido con un nuevo atleta.",
+      "step2": "Se registra y recibe 5 mensajes de bonificación de inmediato.",
+      "step3": "Cuando compra su primera suscripción, tú recibes 5 mensajes de bonificación.",
+      "step4": "Los mensajes de bonificación nunca caducan y permanecen en tu saldo."
+    }
+  },
+  "payouts": {
+    "titleA": "Mis",
+    "titleB": "pagos",
+    "subtitle": "El 70% de cada suscripción de atleta se acredita a tu cuenta",
+    "pendingLabel": "Pago pendiente",
+    "totalPaid": "Total pagado",
+    "modelTitle": "Modelo financiero:",
+    "modelDescription": "70% de la suscripción del atleta para ti, 30% para la plataforma.",
+    "schedule": "Los pagos se realizan el 1 y el 15 de cada mes.",
+    "min": "El monto mínimo de pago es $250.",
+    "historyTitle": "Historial de pagos",
+    "loading": "Cargando…",
+    "empty": "Aún no hay pagos. Aparecerán tras la primera suscripción de un atleta.",
+    "subscription": "Suscripción",
+    "pack": "Paquete",
+    "platformFee": "Plataforma: {fee}",
+    "status": {
+      "PENDING": "Pendiente",
+      "PROCESSING": "Procesando",
+      "COMPLETED": "Pagado",
+      "FAILED": "Fallido"
+    }
+  },
+  "investor": {
+    "titleA": "Informe",
+    "titleB": "para inversor",
+    "subtitle": "Analítica de la plataforma — solo lectura. Pagos a inversores trimestrales (netos).",
+    "metrics": {
+      "totalUsers": "Total de usuarios",
+      "athletesSub": "{n} atletas",
+      "activeCoaches": "Entrenadores activos",
+      "ofTotalCoaches": "de {total} totales",
+      "activeSubs": "Suscripciones activas",
+      "ofTotalSubs": "de {total} totales",
+      "mrr": "MRR (estimado)",
+      "mrrSub": "según las suscripciones activas",
+      "packsRevenue": "Ingresos (paquetes)",
+      "packsRevenueSub": "compras únicas de mensajes",
+      "pendingPayouts": "Pagos pendientes",
+      "pendingPayoutsSub": "en cola para entrenadores"
+    },
+    "quarterly": {
+      "title": "Informe trimestral (últimos 3 meses)",
+      "coachPayouts": "Pagos a entrenadores",
+      "platformRevenue": "Ingresos de la plataforma (30%)",
+      "transactions": "Número de transacciones",
+      "totalTurnover": "Facturación total"
+    },
+    "conversion": {
+      "title": "Conversión",
+      "coachesActive": "Entrenadores activos",
+      "subsActive": "Suscripciones activas",
+      "note": "Los inversores reciben pagos trimestralmente (netos). El derecho a reclamar surge con ≥51% de participación acumulada (T.S. p.10)."
+    }
+  },
+  "profile": {
+    "titleA": "Mi",
+    "titleB": "perfil",
+    "subtitle": "Visualiza y edita tu información",
+    "basicInfo": "Información básica",
+    "roleLabel": "Rol:",
+    "savedMsg": "¡Perfil actualizado con éxito!",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Tu nombre",
+    "emailLabel": "Correo electrónico",
+    "emailHelper": "El correo no se puede cambiar",
+    "phoneLabel": "Teléfono",
+    "phonePlaceholder": "+1 555 555 5555",
+    "countryLabel": "País",
+    "countryPlaceholder": "Selecciona país",
+    "languageLabel": "Idioma de la interfaz",
+    "languagePlaceholder": "Selecciona idioma",
+    "save": "Guardar cambios",
+    "coach": {
+      "title": "Perfil de entrenador",
+      "subtitle": "Estado y estadísticas de tu perfil de entrenador",
+      "statusLabel": "Estado",
+      "active": "Activo",
+      "pending": "Esperando activación",
+      "suspended": "Suspendido",
+      "roundsLabel": "Rondas de entrevista",
+      "roundsValue": "{done} / 7 completadas",
+      "knowledgeLabel": "Base de conocimientos",
+      "knowledgeValue": "{n} entradas",
+      "rulesLabel": "Reglas de la metodología",
+      "rulesValue": "{n} reglas",
+      "identityTitle": "Documento de identidad",
+      "identitySubtitle": "Requerido para la verificación. Formatos: JPEG, PNG, PDF. Máx 10 MB.",
+      "uploaded": "Documento subido",
+      "replace": "reemplazar",
+      "upload": "Subir documento",
+      "uploading": "Subiendo…",
+      "uploadSuccess": "✓ Documento subido con éxito",
+      "uploadFailed": "Error al subir"
+    }
+  },
+  "adminCoaches": {
+    "titleA": "Gestionar",
+    "titleB": "entrenadores",
+    "subtitle": "{n} entrenadores en la plataforma",
+    "searchPlaceholder": "Buscar por nombre o correo…",
+    "table": {
+      "coach": "Entrenador",
+      "status": "Estado",
+      "interview": "Entrevista",
+      "knowledge": "Base de conocimientos",
+      "rules": "Reglas",
+      "registered": "Se unió",
+      "actions": "Acciones"
+    },
+    "notFound": "No se encontraron entrenadores",
+    "noName": "Sin nombre",
+    "activate": "Activar",
+    "suspend": "Suspender",
+    "resetInterview": "Reiniciar entrevista",
+    "resetConfirm": "¿Reiniciar la entrevista de {who}? Todos los mensajes se eliminarán."
+  },
+  "adminUsers": {
+    "titleA": "Gestionar",
+    "titleB": "usuarios",
+    "subtitle": "{n} usuarios en la plataforma",
+    "searchPlaceholder": "Buscar por nombre o correo…",
+    "table": {
+      "user": "Usuario",
+      "role": "Rol",
+      "country": "País",
+      "conversations": "Conversaciones",
+      "registered": "Se unió"
+    },
+    "loading": "Cargando…",
+    "notFound": "No se encontraron usuarios",
+    "noName": "Sin nombre",
+    "page": "Página {page} de {total}",
+    "prev": "← Anterior",
+    "next": "Siguiente →"
+  },
+  "adminAnalytics": {
+    "titleA": "Analítica de",
+    "titleB": "la plataforma",
+    "subtitle": "Estadísticas generales",
+    "cards": {
+      "totalUsers": "Total de usuarios",
+      "totalCoaches": "Total de entrenadores",
+      "activeCoaches": "Entrenadores activos",
+      "activeSubs": "Suscripciones activas",
+      "totalSubs": "Total de suscripciones",
+      "revenue": "Ingresos (paquetes)"
+    },
+    "coachConversion": "Conversión de entrenadores",
+    "totalCoachesRow": "Total de entrenadores",
+    "activeRow": "Activos",
+    "noCoaches": "Sin entrenadores",
+    "percentActive": "{pct}% activos",
+    "subscriptionsTitle": "Suscripciones",
+    "totalSubsRow": "Total de suscripciones",
+    "noSubs": "Sin suscripciones",
+    "loading": "Cargando…"
+  },
+  "tg": {
+    "meta": {
+      "title": "PowerInside — Telegram",
+      "description": "PowerInside Mini App para Telegram"
+    },
+    "common": {
+      "loading": "Cargando…",
+      "back": "Atrás",
+      "errorTitle": "Error de autorización",
+      "tryAgain": "Error. Inténtalo de nuevo."
+    },
+    "tabs": {
+      "chat": "Chat",
+      "balance": "Saldo",
+      "profile": "Perfil",
+      "admin": "Admin",
+      "interview": "Entrevista"
+    },
+    "tabsCoach": {
+      "interview": "Entrevista",
+      "profile": "Perfil"
+    },
+    "athleteTabs": {
+      "chat": "Conversación",
+      "balance": "Saldo",
+      "profile": "Perfil",
+      "admin": "Admin"
+    },
+    "onboarding": {
+      "topLabel": "PowerInside · Est 2026",
+      "frameNumber": "N° 001",
+      "frameMid": "— METODOLOGÍA —",
+      "frameInf": "∞",
+      "tagline": "Una conversación con la metodología del entrenador. Sin plantillas — solo lo que él diría.",
+      "selectRole": "— Elige tu rol",
+      "imAthlete": "Soy atleta",
+      "athleteSub": "Hago preguntas a los entrenadores y recibo respuestas desde su metodología",
+      "imCoach": "Soy entrenador",
+      "coachSub": "Paso por una entrevista de 7 rondas — mi metodología se convierte en la base para los atletas",
+      "saving": "Guardando elección…",
+      "supportNote": "La elección puede cambiarse a través de soporte"
+    },
+    "interview": {
+      "header": "Entrevista de metodología",
+      "headlineA": "Cuéntanos cómo",
+      "headlineB": "entrenas.",
+      "empty": "7 rondas de preguntas. Tus respuestas — la base de la metodología.",
+      "inProgress": "{done} de {total} rondas completadas. Sigue adelante.",
+      "allDone": "¡Todas las rondas completadas! Metodología registrada.",
+      "roundCounter": "{done} / {total} rondas · {pct}%",
+      "rounds": {
+        "TARGET_ATHLETE": {
+          "label": "Perfil del atleta y sistema",
+          "desc": "Para quién es la metodología y dónde funciona mejor"
+        },
+        "LOAD_MANAGEMENT": {
+          "label": "Lógica de asignación de carga",
+          "desc": "Cómo se elige y se ajusta la carga de entrenamiento"
+        },
+        "AUTOREGULATION": {
+          "label": "Autorregulación y disposición",
+          "desc": "Cómo se adapta el entrenamiento al estado del atleta"
+        },
+        "PROGRESSION_DELOAD": {
+          "label": "Arquitectura de la progresión",
+          "desc": "Cómo se construye el progreso a largo plazo"
+        },
+        "EXERCISE_SELECTION": {
+          "label": "Estrategia de selección de ejercicios",
+          "desc": "Cómo se eligen y modifican los ejercicios"
+        },
+        "TECHNIQUE_STANDARDS": {
+          "label": "Estándares técnicos y movimiento",
+          "desc": "Requisitos técnicos y filosofía del movimiento"
+        },
+        "LIFESTYLE_RECOVERY": {
+          "label": "Ecosistema de recuperación",
+          "desc": "Factores ajenos al entrenamiento que afectan los resultados"
+        }
+      },
+      "completedBadge": "✓ Completada",
+      "answerInDetail": "Da una respuesta detallada",
+      "voice": "VOZ",
+      "text": "TEXTO",
+      "answerInstructions": "Responde con detalle — cuanto más detalles, mejor se representará tu metodología ante los atletas.",
+      "transcribing": "Transcribiendo…",
+      "inputPlaceholder": "Responde con detalle…"
+    },
+    "sport": {
+      "moderationTitle": "En moderación",
+      "moderationSub": "Tu deporte se ha enviado al administrador. Tras la aprobación recibirás una notificación en Telegram y podrás hacer la entrevista.",
+      "customNameTitle": "Deporte personalizado",
+      "customNameSub": "Escribe el nombre — el administrador lo revisará y aprobará.",
+      "customPlaceholder": "Nombre del deporte…",
+      "submitting": "Enviando…",
+      "submitForModeration": "Enviar a moderación",
+      "step2Label": "PowerInside · Paso 2",
+      "yourSport": "Tu deporte",
+      "chooseDiscipline": "Elige la disciplina en la que entrenas atletas.",
+      "loading": "Cargando…",
+      "addCustom": "Añadir tu propio deporte",
+      "moderationWithName": "Tu deporte <b>{name}</b> se ha enviado al administrador. Recibirás una notificación en Telegram una vez aprobado."
+    },
+    "coachProfile": {
+      "header": "Perfil de entrenador",
+      "activeBadge": "● ACTIVO",
+      "pendingBadge": "● ESPERANDO ACTIVACIÓN",
+      "stats": {
+        "rules": "Reglas",
+        "entries": "Entradas",
+        "rounds": "/ 7 rondas"
+      },
+      "whatNextTitle": "¿Qué sigue?",
+      "whatNextDesc": "Una vez completada la entrevista, el administrador revisará tu metodología y activará tu perfil. Una vez activado, los atletas podrán hacerte preguntas.",
+      "footer": "POWERINSIDE · COACH · V 0.1"
+    },
+    "coaches": {
+      "library": "Biblioteca de entrenadores",
+      "headlineA": "Elige con quién",
+      "headlineB": "hablar.",
+      "loading": "Cargando...",
+      "count": "{n} metodologías activas.",
+      "noCoaches": "Aún no hay entrenadores activos.",
+      "recommended": "⸻ RECOMENDADOS",
+      "coachFallback": "Entrenador",
+      "rulesCount": "{n} reglas",
+      "entriesCount": "{n} entradas"
+    },
+    "chatView": {
+      "headerStatus": "Metodología · {n} reglas",
+      "emptyHeadlineA": "Pregunta lo que llevas",
+      "emptyHeadlineB": "tiempo dudando.",
+      "emptySub": "Respondo como lo haría mi entrenador. Mis reglas — su metodología.",
+      "noMessages": "No hay suficientes mensajes. Recarga tu saldo.",
+      "inputPlaceholder": "Pregunta al entrenador…",
+      "prompts": {
+        "p1": "Arma un calentamiento antes de sentadillas",
+        "p2": "¿Debería entrenar con dolor de espalda?",
+        "p3": "¿Cómo comer el día de la competición?",
+        "p4": "Explica qué es la autorregulación",
+        "q1": "¿Cuántas series?",
+        "q2": "¿Qué comer después?",
+        "q3": "Otra pregunta"
+      }
+    },
+    "balance": {
+      "header": "Saldo",
+      "totalSub": "mensajes al entrenador",
+      "totalLabel": "TOTAL / RESTANTE",
+      "free": "● {n} gratis",
+      "weekly": "● {n} semanales",
+      "purchased": "● {n} comprados",
+      "subActive": "activa",
+      "subInactive": "inactiva",
+      "renews": "Se renueva el {date} · $30",
+      "packsTitle": "— Paquetes de mensajes",
+      "perHundred": "≈ {rate} / 100 mensajes",
+      "pack50": "Para calentar",
+      "pack200": "Popular",
+      "pack500": "Mejor valor"
+    },
+    "profile": {
+      "header": "Perfil",
+      "athlete": "Atleta",
+      "settings": "— Ajustes",
+      "subscription": "Suscripción",
+      "none": "Ninguna",
+      "notifications": "Notificaciones",
+      "enabled": "Activadas",
+      "language": "Idioma",
+      "support": "Contactar soporte",
+      "logout": "Cerrar sesión",
+      "footer": "POWERINSIDE · V 0.1 · TELEGRAM MINI APP"
+    },
+    "admin": {
+      "header": "Administración",
+      "sections": {
+        "stats": "Analítica",
+        "coaches": "Entrenadores",
+        "users": "Usuarios",
+        "sports": "Deportes"
+      },
+      "stats": {
+        "totalUsers": "Total de usuarios",
+        "totalCoaches": "Total de entrenadores",
+        "activeCoaches": "Entrenadores activos",
+        "activeSubs": "Suscripciones activas",
+        "totalSubs": "Total de suscripciones",
+        "revenue": "Ingresos (paquetes)"
+      },
+      "coaches": {
+        "noName": "Sin nombre",
+        "activate": "Activar",
+        "suspend": "Suspender",
+        "resetInterview": "↺ Reiniciar entrevista",
+        "empty": "Sin entrenadores",
+        "stats": "{rules} reglas · {entries} entradas · {rounds}/7",
+        "resetConfirm": "¿Reiniciar la entrevista de {who}?"
+      },
+      "users": {
+        "noName": "Sin nombre",
+        "conversations": "{n} conversaciones · {date}",
+        "empty": "Sin usuarios"
+      },
+      "sports": {
+        "pending": "Pendientes de moderación ({n})",
+        "from": "de {who}",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "addTitle": "Añadir un deporte",
+        "addPlaceholder": "Nombre…",
+        "add": "Añadir",
+        "allTitle": "Todos los deportes ({n})",
+        "delete": "Eliminar",
+        "deleteConfirm": "¿Eliminar \"{name}\"?",
+        "unknown": "Desconocido"
+      },
+      "status": {
+        "PENDING": "Pendiente",
+        "ACTIVE": "Activo",
+        "SUSPENDED": "Suspendido"
+      },
+      "roles": {
+        "ATHLETE": "Atleta",
+        "COACH": "Entrenador",
+        "INVESTOR": "Inversor",
+        "ADMIN": "Administrador",
+        "OWNER": "Propietario"
+      }
+    },
+    "adminProfile": {
+      "header": "Perfil de administrador",
+      "badge": "● ADMIN",
+      "previewTitle": "— Vista previa de la interfaz",
+      "athleteMode": "Modo atleta",
+      "athleteSub": "Vista previa de la interfaz del atleta",
+      "coachMode": "Modo entrenador",
+      "coachSub": "Vista previa de la interfaz del entrenador y la entrevista",
+      "previewAthlete": "VISTA PREVIA: MODO ATLETA",
+      "previewCoach": "VISTA PREVIA: MODO ENTRENADOR",
+      "footer": "POWERINSIDE · ADMIN · V 0.1"
+    }
+  }
+}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import {
   LayoutDashboard,
   MessageCircle,
@@ -22,43 +23,43 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   href: string;
   icon: LucideIcon;
 }
 
 const navByRole: Record<string, NavItem[]> = {
   ATHLETE: [
-    { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Чат", href: "/chat", icon: MessageCircle },
-    { label: "Мультиексперт", href: "/qa", icon: HelpCircle },
-    { label: "Баланс", href: "/balance", icon: Wallet },
-    { label: "Реферали", href: "/referral", icon: Share2 },
-    { label: "Профіль", href: "/profile", icon: UserCircle },
+    { labelKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { labelKey: "chat", href: "/chat", icon: MessageCircle },
+    { labelKey: "multiexpert", href: "/qa", icon: HelpCircle },
+    { labelKey: "balance", href: "/balance", icon: Wallet },
+    { labelKey: "referrals", href: "/referral", icon: Share2 },
+    { labelKey: "profile", href: "/profile", icon: UserCircle },
   ],
   COACH: [
-    { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Інтерв'ю", href: "/interview", icon: ClipboardList },
-    { label: "Питання атлетів", href: "/expert-qa", icon: MessagesSquare },
-    { label: "База знань", href: "/knowledge", icon: BookOpen },
-    { label: "Виплати", href: "/payouts", icon: Banknote },
-    { label: "Профіль", href: "/profile", icon: UserCircle },
+    { labelKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { labelKey: "interview", href: "/interview", icon: ClipboardList },
+    { labelKey: "athletesQuestions", href: "/expert-qa", icon: MessagesSquare },
+    { labelKey: "knowledgeBase", href: "/knowledge", icon: BookOpen },
+    { labelKey: "payouts", href: "/payouts", icon: Banknote },
+    { labelKey: "profile", href: "/profile", icon: UserCircle },
   ],
   ADMIN: [
-    { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Користувачі", href: "/admin/users", icon: Users },
-    { label: "Тренери", href: "/admin/coaches", icon: ShieldCheck },
-    { label: "Аналітика", href: "/admin/analytics", icon: BarChart3 },
+    { labelKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { labelKey: "users", href: "/admin/users", icon: Users },
+    { labelKey: "coaches", href: "/admin/coaches", icon: ShieldCheck },
+    { labelKey: "analytics", href: "/admin/analytics", icon: BarChart3 },
   ],
   OWNER: [
-    { label: "Дашборд", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Користувачі", href: "/admin/users", icon: Users },
-    { label: "Тренери", href: "/admin/coaches", icon: ShieldCheck },
-    { label: "Аналітика", href: "/admin/analytics", icon: BarChart3 },
+    { labelKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { labelKey: "users", href: "/admin/users", icon: Users },
+    { labelKey: "coaches", href: "/admin/coaches", icon: ShieldCheck },
+    { labelKey: "analytics", href: "/admin/analytics", icon: BarChart3 },
   ],
   INVESTOR: [
-    { label: "Звіт", href: "/investor", icon: TrendingUp },
-    { label: "Профіль", href: "/profile", icon: UserCircle },
+    { labelKey: "investorReport", href: "/investor", icon: TrendingUp },
+    { labelKey: "profile", href: "/profile", icon: UserCircle },
   ],
 };
 
@@ -70,9 +71,14 @@ interface SidebarProps {
 export function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const tNav = useTranslations("nav");
+  const tRoles = useTranslations("roles");
 
   const role = (session?.user as { role?: string })?.role || "ATHLETE";
   const items = navByRole[role] || navByRole.ATHLETE;
+  const roleKey = (["ATHLETE", "COACH", "INVESTOR", "OWNER", "ADMIN"] as const).includes(role as never)
+    ? (role as "ATHLETE" | "COACH" | "INVESTOR" | "OWNER" | "ADMIN")
+    : "ATHLETE";
 
   return (
     <>
@@ -116,7 +122,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 `}
               >
                 <Icon className="w-5 h-5 shrink-0" />
-                {item.label}
+                {tNav(item.labelKey)}
               </Link>
             );
           })}
@@ -124,17 +130,9 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
           <div className="px-3 py-2 rounded-lg bg-secondary/50">
-            <p className="text-xs text-muted-foreground">Роль</p>
+            <p className="text-xs text-muted-foreground">{tRoles("label")}</p>
             <p className="text-sm font-medium text-primary capitalize">
-              {role === "ATHLETE"
-                ? "Атлет"
-                : role === "COACH"
-                  ? "Тренер"
-                  : role === "INVESTOR"
-                    ? "Інвестор"
-                    : role === "OWNER"
-                      ? "Власник"
-                      : "Адмін"}
+              {tRoles(roleKey)}
             </p>
           </div>
         </div>

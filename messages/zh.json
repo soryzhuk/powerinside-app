@@ -1,0 +1,725 @@
+{
+  "meta": {
+    "title": "PowerInside — 力量运动平台",
+    "description": "为力量举运动员和力量型运动员提供AI教练、知识库和订阅服务"
+  },
+  "common": {
+    "loading": "加载中…",
+    "loadingShort": "加载中...",
+    "loadingDots": "...",
+    "back": "返回",
+    "next": "下一步",
+    "save": "保存",
+    "cancel": "取消",
+    "send": "发送",
+    "copy": "复制",
+    "copied": "已复制!",
+    "delete": "删除",
+    "edit": "编辑",
+    "search": "搜索",
+    "yes": "是",
+    "no": "否",
+    "active": "活跃",
+    "inactive": "非活跃",
+    "error": "错误",
+    "errorTryAgain": "发生错误。请重试。",
+    "retry": "重试",
+    "all": "全部",
+    "ok": "确定",
+    "close": "关闭"
+  },
+  "language": {
+    "label": "语言",
+    "select": "选择语言"
+  },
+  "nav": {
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出",
+    "profile": "个人资料",
+    "settings": "设置",
+    "dashboard": "仪表板",
+    "chat": "聊天",
+    "multiexpert": "多专家",
+    "balance": "余额",
+    "referrals": "推荐",
+    "interview": "访谈",
+    "athletesQuestions": "运动员问题",
+    "knowledgeBase": "知识库",
+    "payouts": "支付",
+    "users": "用户",
+    "coaches": "教练",
+    "analytics": "分析",
+    "investorReport": "报告",
+    "toggleMenu": "切换菜单"
+  },
+  "landing": {
+    "badge": "教练方法论 — 装进您的口袋",
+    "heroTitleA": "力量运动",
+    "heroTitleB": "平台",
+    "heroSubtitle": "基于真实教练方法论的个性化回答。力量举、大力士、举重 — 找到您的教练,达到新高度。",
+    "ctaAthleteRole": "我是运动员",
+    "ctaCoachRole": "我是教练",
+    "featuresTitleA": "助您",
+    "featuresTitleB": "进步的一切",
+    "featuresSubtitle": "我们将顶级教练的经验与让这些知识全天候可用的技术相结合。",
+    "feature": {
+      "coachingTitle": "基于方法论的教练",
+      "coachingDesc": "基于您所选择的真实教练知识的个性化回答。",
+      "knowledgeTitle": "知识库",
+      "knowledgeDesc": "教练们经过深度访谈并上传自己的方法论,这些方法论成为咨询的基础。",
+      "subscriptionsTitle": "订阅",
+      "subscriptionsDesc": "灵活的订阅系统,可访问不同教练和咨询级别。",
+      "trackingTitle": "进度跟踪",
+      "trackingDesc": "跟踪力量指标,分析趋势,创造新纪录。",
+      "verifiedTitle": "认证教练",
+      "verifiedDesc": "每位教练在加入平台前都需通过访谈和验证。",
+      "support24Title": "24/7 答疑",
+      "support24Desc": "随时获得基于您教练方法论的回答。"
+    },
+    "ctaSectionTitle": "准备好变得更强了吗?",
+    "ctaSectionSubtitle": "加入 PowerInside — 一个教练经验全天候为您的成果服务的平台。",
+    "startTraining": "开始训练",
+    "becomeCoach": "成为教练",
+    "rights": "版权所有。"
+  },
+  "authLogin": {
+    "title": "登录到",
+    "subtitle": "输入您的信息进行登录",
+    "passwordLabel": "密码",
+    "submit": "登录",
+    "noAccount": "没有账户?",
+    "signupLink": "注册",
+    "invalidCredentials": "邮箱或密码无效。",
+    "generalError": "发生错误。请重试。"
+  },
+  "authRegister": {
+    "title": "注册到",
+    "subtitle": "创建账户开始使用",
+    "athlete": "运动员",
+    "coach": "教练",
+    "referralBonus": "您已被邀请!注册后您将获得 <b>5 条奖励消息</b>。",
+    "postSignInError": "注册成功,但登录失败。请手动登录。",
+    "generalError": "注册失败。",
+    "nameLabel": "姓名",
+    "namePlaceholder": "张三",
+    "emailLabel": "邮箱",
+    "phoneLabel": "电话",
+    "phonePlaceholder": "+86 138 0000 0000",
+    "addressLabel": "地址",
+    "addressPlaceholder": "主要街道 123 号,城市",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "至少 6 个字符",
+    "countryLabel": "国家",
+    "languageLabel": "语言",
+    "submit": "注册",
+    "hasAccount": "已有账户?",
+    "loginLink": "登录"
+  },
+  "countries": {
+    "UA": "乌克兰",
+    "US": "USA",
+    "GB": "英国",
+    "DE": "德国",
+    "PL": "波兰",
+    "CA": "加拿大",
+    "AU": "澳大利亚",
+    "OTHER": "其他",
+    "selectPlaceholder": "选择国家"
+  },
+  "roles": {
+    "label": "角色",
+    "ATHLETE": "运动员",
+    "COACH": "教练",
+    "INVESTOR": "投资者",
+    "ADMIN": "管理员",
+    "OWNER": "所有者",
+    "defaultUserName": "用户"
+  },
+  "coachStatus": {
+    "PENDING": "待处理",
+    "ACTIVE": "活跃",
+    "SUSPENDED": "已暂停",
+    "pendingActivation": "等待激活"
+  },
+  "dashboard": {
+    "athleteGreeting": "你好,",
+    "athleteSubtitle": "您的私人 AI 教练正在等您",
+    "balanceLabel": "消息余额",
+    "balanceBreakdown": "{free} 免费 / {weekly} 每周 / {purchased} 购买",
+    "conversationsLabel": "对话",
+    "conversationsSub": "活跃的 AI 对话",
+    "askTitle": "提问",
+    "askSubtitle": "向您的 AI 教练咨询训练问题",
+    "recentTitle": "最近对话",
+    "allConversations": "所有对话",
+    "emptyConversations": "您还没有对话。开始与 AI 教练聊天吧!",
+    "newConversation": "新对话",
+    "coachStatusLine": "状态:",
+    "interviewCard": "访谈",
+    "interviewSub": "完成的回合",
+    "knowledgeCard": "知识库",
+    "knowledgeSub": "知识库条目",
+    "rulesCard": "规则",
+    "rulesSub": "方法论规则",
+    "continueTitle": "继续访谈",
+    "continueSub": "完成全部 7 回合以激活 AI 教练",
+    "goto": "前往",
+    "adminTitle": "管理",
+    "adminPanelLine": "面板",
+    "adminSubtitle": "平台概览",
+    "totalUsers": "用户总数",
+    "coaches": "教练",
+    "activeTotal": "活跃 / 总计",
+    "revenue": "收入",
+    "subscriptionsInfo": "订阅:{active} 活跃 / {total} 总计",
+    "manageCoachesTitle": "管理教练",
+    "manageCoachesSub": "查看、激活和暂停教练",
+    "manageCoachesAction": "查看"
+  },
+  "balance": {
+    "titleA": "消息",
+    "titleB": "余额",
+    "subtitle": "管理您的余额并购买消息包",
+    "successMsg": "✓ 支付成功!您的余额已更新。",
+    "canceledMsg": "支付已取消。",
+    "free": "免费",
+    "weekly": "每周",
+    "purchased": "已购买",
+    "totalLabel": "总余额",
+    "totalUnit": "条消息可用",
+    "subscription": "订阅",
+    "active": "活跃",
+    "perMonth": "/ 月",
+    "nextBilling": "下次扣款:{date}",
+    "subscriptionActiveLabel": "订阅有效",
+    "basicTitle": "Basic — $30 / 月",
+    "feature": {
+      "weekly20": "每周 20 条消息",
+      "aiChat": "与教练 AI 聊天",
+      "access": "访问方法论",
+      "noExpiry": "永不过期",
+      "anyCoach": "任何教练",
+      "instant": "即时回答"
+    },
+    "subscribeBasic": "订阅 Basic",
+    "packsTitle": "消息包",
+    "popular": "最受欢迎",
+    "messages": "条消息",
+    "perMessage": "{price} / 条",
+    "buy": "购买"
+  },
+  "chat": {
+    "coachLabel": "教练:",
+    "noCoaches": "没有可用教练",
+    "messagesCount": "{count} 条消息",
+    "emptyTitle": "开始与 AI 教练对话",
+    "emptySubtitle": "选择一位教练,提出您关于训练、技术或营养的第一个问题。",
+    "multipleQuestionsWarning": "您的消息包含 <b>{count} 个问题</b>。每个问题从余额中扣除 1 条消息 — 将扣除 <b>{count}</b>。建议一次提一个问题以获得更准确的回答。",
+    "inputPlaceholder": "输入您的问题…",
+    "errorSend": "消息发送失败",
+    "errorPrefix": "错误:{message}"
+  },
+  "interview": {
+    "completed": "访谈已完成。感谢您的坦诚。",
+    "startOver": "重新开始",
+    "inputPlaceholder": "请详细回答…",
+    "errorPrefix": "错误:{message}",
+    "errorSend": "发送失败"
+  },
+  "knowledge": {
+    "titleA": "知识",
+    "titleB": "库",
+    "subtitle": "来自您访谈的方法论规则。请确认那些准确反映您体系的规则 — AI 仅使用已确认的规则回答运动员。",
+    "entriesLabel": "条目",
+    "totalRules": "规则总数",
+    "confirmedLabel": "已确认",
+    "rulesHeader": "方法论规则",
+    "rulesHint": "点击规则旁的 ⭕ 进行确认。展开规则可查看详细信息。",
+    "loading": "加载中…",
+    "emptyRules": "完成访谈后规则将显示",
+    "entriesHeader": "知识库条目",
+    "approved": "✓ 已批准",
+    "rule": {
+      "condition": "条件:",
+      "signal": "信号:",
+      "decision": "决策:",
+      "exception": "例外:",
+      "alternative": "替代:",
+      "confirm": "确认规则",
+      "unconfirm": "取消确认"
+    },
+    "rounds": {
+      "TARGET_ATHLETE": "目标运动员",
+      "LOAD_MANAGEMENT": "负荷管理",
+      "AUTOREGULATION": "自我调节",
+      "PROGRESSION_DELOAD": "进步与减载",
+      "EXERCISE_SELECTION": "动作选择",
+      "TECHNIQUE_STANDARDS": "技术标准",
+      "LIFESTYLE_RECOVERY": "生活方式与恢复"
+    }
+  },
+  "expertQa": {
+    "titleA": "运动员",
+    "titleB": "问题",
+    "subtitle": "回答运动员的问题,丰富知识库",
+    "pendingTitle": "等待回复",
+    "loading": "加载中…",
+    "noNew": "没有新问题",
+    "answerPlaceholder": "您的回答…",
+    "reply": "回复",
+    "answeredTitle": "已发送的回复",
+    "bestSelected": "★ 被运动员选为最佳答案",
+    "empty": "暂无运动员问题",
+    "athleteFallback": "运动员"
+  },
+  "qa": {
+    "titleA": "多专家",
+    "titleB": "答案",
+    "subtitle": "同时向多位教练提问并选择最佳答案",
+    "newQuestion": "新问题",
+    "questionLabel": "您的问题",
+    "questionPlaceholder": "详细描述您的问题 — 越精确,答案越好…",
+    "chooseCoachesLabel": "选择教练(最多 5 位)",
+    "selectedCount": "(已选 {count})",
+    "loading": "加载中…",
+    "noActiveCoaches": "暂无活跃教练",
+    "submit": "发送问题",
+    "myQuestions": "我的问题",
+    "emptyMy": "您还没有问题。提出第一个吧!",
+    "answersCount": "{answered}/{total} 个回答",
+    "best": "最佳",
+    "selectBest": "标记为最佳",
+    "pendingAnswer": "等待回复…",
+    "genericError": "错误",
+    "coachFallback": "教练"
+  },
+  "referral": {
+    "loading": "加载中…",
+    "title": "推荐计划",
+    "subtitle": "邀请新运动员 — 当他们订阅时,您将获得 <b>5 条奖励消息</b>。他们仅通过您的链接注册即可获得 <b>5 条欢迎消息</b>。",
+    "yourLink": "您的推荐链接",
+    "copy": "复制",
+    "copied": "已复制!",
+    "codeLabel": "代码:",
+    "stats": {
+      "totalReferred": "已推荐总数",
+      "bonusEarned": "已获得奖励消息",
+      "pending": "待处理(尚未订阅)"
+    },
+    "list": {
+      "title": "已推荐的运动员",
+      "joined": "于 {date} 加入",
+      "earned": "+{n} 条消息已获得",
+      "pendingSub": "等待订阅"
+    },
+    "how": {
+      "title": "运作方式",
+      "step1": "与新运动员分享您的推荐链接。",
+      "step2": "他们注册后立即获得 5 条奖励消息。",
+      "step3": "当他们购买首个订阅时,您将获得 5 条奖励消息。",
+      "step4": "奖励消息永不过期,保留在您的余额中。"
+    }
+  },
+  "payouts": {
+    "titleA": "我的",
+    "titleB": "支付",
+    "subtitle": "每位运动员订阅的 70% 将记入您的账户",
+    "pendingLabel": "待处理支付",
+    "totalPaid": "已支付总额",
+    "modelTitle": "财务模型:",
+    "modelDescription": "运动员订阅的 70% 归您,30% 归平台。",
+    "schedule": "支付于每月 1 日和 15 日进行。",
+    "min": "最低支付金额为 $250。",
+    "historyTitle": "支付历史",
+    "loading": "加载中…",
+    "empty": "暂无支付。首位运动员订阅后将显示。",
+    "subscription": "订阅",
+    "pack": "包",
+    "platformFee": "平台:{fee}",
+    "status": {
+      "PENDING": "待处理",
+      "PROCESSING": "处理中",
+      "COMPLETED": "已支付",
+      "FAILED": "失败"
+    }
+  },
+  "investor": {
+    "titleA": "投资者",
+    "titleB": "报告",
+    "subtitle": "平台分析 — 仅供查看。投资者支付按季度(净额)。",
+    "metrics": {
+      "totalUsers": "用户总数",
+      "athletesSub": "{n} 位运动员",
+      "activeCoaches": "活跃教练",
+      "ofTotalCoaches": "总计 {total} 位",
+      "activeSubs": "活跃订阅",
+      "ofTotalSubs": "总计 {total} 个",
+      "mrr": "MRR(估算)",
+      "mrrSub": "基于活跃订阅",
+      "packsRevenue": "收入(消息包)",
+      "packsRevenueSub": "一次性消息购买",
+      "pendingPayouts": "待处理支付",
+      "pendingPayoutsSub": "教练队列"
+    },
+    "quarterly": {
+      "title": "季度报告(最近 3 个月)",
+      "coachPayouts": "教练支付",
+      "platformRevenue": "平台收入(30%)",
+      "transactions": "交易数量",
+      "totalTurnover": "总流水"
+    },
+    "conversion": {
+      "title": "转化",
+      "coachesActive": "教练活跃",
+      "subsActive": "订阅活跃",
+      "note": "投资者按季度获得支付(净额)。累积份额 ≥51% 时产生请求权(T.S. p.10)。"
+    }
+  },
+  "profile": {
+    "titleA": "我的",
+    "titleB": "个人资料",
+    "subtitle": "查看和编辑您的信息",
+    "basicInfo": "基本信息",
+    "roleLabel": "角色:",
+    "savedMsg": "个人资料更新成功!",
+    "nameLabel": "姓名",
+    "namePlaceholder": "您的姓名",
+    "emailLabel": "邮箱",
+    "emailHelper": "邮箱无法更改",
+    "phoneLabel": "电话",
+    "phonePlaceholder": "+86 138 0000 0000",
+    "countryLabel": "国家",
+    "countryPlaceholder": "选择国家",
+    "languageLabel": "界面语言",
+    "languagePlaceholder": "选择语言",
+    "save": "保存更改",
+    "coach": {
+      "title": "教练资料",
+      "subtitle": "您的教练资料的状态和统计",
+      "statusLabel": "状态",
+      "active": "活跃",
+      "pending": "等待激活",
+      "suspended": "已暂停",
+      "roundsLabel": "访谈回合",
+      "roundsValue": "{done} / 7 已完成",
+      "knowledgeLabel": "知识库",
+      "knowledgeValue": "{n} 个条目",
+      "rulesLabel": "方法论规则",
+      "rulesValue": "{n} 条规则",
+      "identityTitle": "身份证件",
+      "identitySubtitle": "验证所需。格式:JPEG、PNG、PDF。最大 10 MB。",
+      "uploaded": "证件已上传",
+      "replace": "替换",
+      "upload": "上传证件",
+      "uploading": "上传中…",
+      "uploadSuccess": "✓ 证件上传成功",
+      "uploadFailed": "上传失败"
+    }
+  },
+  "adminCoaches": {
+    "titleA": "管理",
+    "titleB": "教练",
+    "subtitle": "平台上有 {n} 位教练",
+    "searchPlaceholder": "按姓名或邮箱搜索…",
+    "table": {
+      "coach": "教练",
+      "status": "状态",
+      "interview": "访谈",
+      "knowledge": "知识库",
+      "rules": "规则",
+      "registered": "加入时间",
+      "actions": "操作"
+    },
+    "notFound": "未找到教练",
+    "noName": "无名",
+    "activate": "激活",
+    "suspend": "暂停",
+    "resetInterview": "重置访谈",
+    "resetConfirm": "重置 {who} 的访谈?所有消息将被删除。"
+  },
+  "adminUsers": {
+    "titleA": "管理",
+    "titleB": "用户",
+    "subtitle": "平台上有 {n} 位用户",
+    "searchPlaceholder": "按姓名或邮箱搜索…",
+    "table": {
+      "user": "用户",
+      "role": "角色",
+      "country": "国家",
+      "conversations": "对话",
+      "registered": "加入时间"
+    },
+    "loading": "加载中…",
+    "notFound": "未找到用户",
+    "noName": "无名",
+    "page": "第 {page} 页,共 {total} 页",
+    "prev": "← 上一页",
+    "next": "下一页 →"
+  },
+  "adminAnalytics": {
+    "titleA": "平台",
+    "titleB": "分析",
+    "subtitle": "总体统计",
+    "cards": {
+      "totalUsers": "用户总数",
+      "totalCoaches": "教练总数",
+      "activeCoaches": "活跃教练",
+      "activeSubs": "活跃订阅",
+      "totalSubs": "订阅总数",
+      "revenue": "收入(消息包)"
+    },
+    "coachConversion": "教练转化",
+    "totalCoachesRow": "教练总数",
+    "activeRow": "活跃",
+    "noCoaches": "无教练",
+    "percentActive": "{pct}% 活跃",
+    "subscriptionsTitle": "订阅",
+    "totalSubsRow": "订阅总数",
+    "noSubs": "无订阅",
+    "loading": "加载中…"
+  },
+  "tg": {
+    "meta": {
+      "title": "PowerInside — Telegram",
+      "description": "用于 Telegram 的 PowerInside Mini App"
+    },
+    "common": {
+      "loading": "加载中…",
+      "back": "返回",
+      "errorTitle": "授权错误",
+      "tryAgain": "错误。请重试。"
+    },
+    "tabs": {
+      "chat": "聊天",
+      "balance": "余额",
+      "profile": "个人资料",
+      "admin": "管理",
+      "interview": "访谈"
+    },
+    "tabsCoach": {
+      "interview": "访谈",
+      "profile": "个人资料"
+    },
+    "athleteTabs": {
+      "chat": "对话",
+      "balance": "余额",
+      "profile": "个人资料",
+      "admin": "管理"
+    },
+    "onboarding": {
+      "topLabel": "PowerInside · Est 2026",
+      "frameNumber": "N° 001",
+      "frameMid": "— 方法论 —",
+      "frameInf": "∞",
+      "tagline": "与教练方法论的对话。没有模板 — 只有他会说的话。",
+      "selectRole": "— 选择您的角色",
+      "imAthlete": "我是运动员",
+      "athleteSub": "我向教练提问,并从他们的方法论中获得回答",
+      "imCoach": "我是教练",
+      "coachSub": "我经过 7 回合访谈 — 我的方法论成为运动员的基础",
+      "saving": "保存选择中…",
+      "supportNote": "选择可通过支持更改"
+    },
+    "interview": {
+      "header": "方法论访谈",
+      "headlineA": "告诉我们您",
+      "headlineB": "如何指导。",
+      "empty": "7 回合问题。您的回答 — 方法论的基础。",
+      "inProgress": "{total} 回合中已完成 {done}。继续。",
+      "allDone": "所有回合已完成!方法论已记录。",
+      "roundCounter": "{done} / {total} 回合 · {pct}%",
+      "rounds": {
+        "TARGET_ATHLETE": {
+          "label": "运动员画像与体系",
+          "desc": "方法论适用于谁,以及在哪里效果最好"
+        },
+        "LOAD_MANAGEMENT": {
+          "label": "负荷分配逻辑",
+          "desc": "训练负荷如何选择和调整"
+        },
+        "AUTOREGULATION": {
+          "label": "自我调节与状态",
+          "desc": "训练如何适应运动员的状态"
+        },
+        "PROGRESSION_DELOAD": {
+          "label": "进步架构",
+          "desc": "如何构建长期进步"
+        },
+        "EXERCISE_SELECTION": {
+          "label": "动作选择策略",
+          "desc": "如何选择和修改动作"
+        },
+        "TECHNIQUE_STANDARDS": {
+          "label": "技术标准与动作",
+          "desc": "技术要求和动作哲学"
+        },
+        "LIFESTYLE_RECOVERY": {
+          "label": "恢复生态",
+          "desc": "影响结果的非训练因素"
+        }
+      },
+      "completedBadge": "✓ 已完成",
+      "answerInDetail": "请详细回答",
+      "voice": "语音",
+      "text": "文本",
+      "answerInstructions": "请详细回答 — 细节越多,您的方法论越能准确呈现给运动员。",
+      "transcribing": "转录中…",
+      "inputPlaceholder": "请详细回答…"
+    },
+    "sport": {
+      "moderationTitle": "审核中",
+      "moderationSub": "您的运动项目已提交给管理员。批准后,您将收到 Telegram 通知,并可以参加访谈。",
+      "customNameTitle": "自定义运动项目",
+      "customNameSub": "输入名称 — 管理员将审核并批准。",
+      "customPlaceholder": "运动项目名称…",
+      "submitting": "提交中…",
+      "submitForModeration": "提交审核",
+      "step2Label": "PowerInside · 步骤 2",
+      "yourSport": "您的运动项目",
+      "chooseDiscipline": "选择您指导运动员的项目。",
+      "loading": "加载中…",
+      "addCustom": "添加自己的运动项目",
+      "moderationWithName": "您的运动项目 <b>{name}</b> 已提交给管理员。批准后您将收到 Telegram 通知。"
+    },
+    "coachProfile": {
+      "header": "教练资料",
+      "activeBadge": "● 活跃",
+      "pendingBadge": "● 等待激活",
+      "stats": {
+        "rules": "规则",
+        "entries": "条目",
+        "rounds": "/ 7 回合"
+      },
+      "whatNextTitle": "下一步?",
+      "whatNextDesc": "访谈完成后,管理员将审核您的方法论并激活您的资料。激活后,运动员可以向您提问。",
+      "footer": "POWERINSIDE · COACH · V 0.1"
+    },
+    "coaches": {
+      "library": "教练库",
+      "headlineA": "选择您要",
+      "headlineB": "对话的对象。",
+      "loading": "加载中...",
+      "count": "{n} 个活跃方法论。",
+      "noCoaches": "暂无活跃教练。",
+      "recommended": "⸻ 推荐",
+      "coachFallback": "教练",
+      "rulesCount": "{n} 条规则",
+      "entriesCount": "{n} 个条目"
+    },
+    "chatView": {
+      "headerStatus": "方法论 · {n} 条规则",
+      "emptyHeadlineA": "问出您长期",
+      "emptyHeadlineB": "犹豫的问题。",
+      "emptySub": "我按我的教练的方式回答。我的规则 — 他的方法论。",
+      "noMessages": "消息不足。请充值余额。",
+      "inputPlaceholder": "向教练提问…",
+      "prompts": {
+        "p1": "深蹲前的热身怎么安排",
+        "p2": "背痛时该不该训练?",
+        "p3": "比赛日如何饮食?",
+        "p4": "解释什么是自我调节",
+        "q1": "多少组?",
+        "q2": "之后吃什么?",
+        "q3": "另一个问题"
+      }
+    },
+    "balance": {
+      "header": "余额",
+      "totalSub": "条发给教练的消息",
+      "totalLabel": "总计 / 剩余",
+      "free": "● {n} 免费",
+      "weekly": "● {n} 每周",
+      "purchased": "● {n} 已购",
+      "subActive": "活跃",
+      "subInactive": "非活跃",
+      "renews": "{date} 续费 · $30",
+      "packsTitle": "— 消息包",
+      "perHundred": "≈ {rate} / 100 条消息",
+      "pack50": "热身用",
+      "pack200": "热门",
+      "pack500": "最超值"
+    },
+    "profile": {
+      "header": "个人资料",
+      "athlete": "运动员",
+      "settings": "— 设置",
+      "subscription": "订阅",
+      "none": "无",
+      "notifications": "通知",
+      "enabled": "已启用",
+      "language": "语言",
+      "support": "联系支持",
+      "logout": "退出登录",
+      "footer": "POWERINSIDE · V 0.1 · TELEGRAM MINI APP"
+    },
+    "admin": {
+      "header": "管理",
+      "sections": {
+        "stats": "分析",
+        "coaches": "教练",
+        "users": "用户",
+        "sports": "运动项目"
+      },
+      "stats": {
+        "totalUsers": "用户总数",
+        "totalCoaches": "教练总数",
+        "activeCoaches": "活跃教练",
+        "activeSubs": "活跃订阅",
+        "totalSubs": "订阅总数",
+        "revenue": "收入(消息包)"
+      },
+      "coaches": {
+        "noName": "无名",
+        "activate": "激活",
+        "suspend": "暂停",
+        "resetInterview": "↺ 重置访谈",
+        "empty": "无教练",
+        "stats": "{rules} 条规则 · {entries} 个条目 · {rounds}/7",
+        "resetConfirm": "重置 {who} 的访谈?"
+      },
+      "users": {
+        "noName": "无名",
+        "conversations": "{n} 个对话 · {date}",
+        "empty": "无用户"
+      },
+      "sports": {
+        "pending": "待审核 ({n})",
+        "from": "来自 {who}",
+        "approve": "批准",
+        "reject": "拒绝",
+        "addTitle": "添加运动项目",
+        "addPlaceholder": "名称…",
+        "add": "添加",
+        "allTitle": "所有运动项目 ({n})",
+        "delete": "删除",
+        "deleteConfirm": "删除「{name}」?",
+        "unknown": "未知"
+      },
+      "status": {
+        "PENDING": "待处理",
+        "ACTIVE": "活跃",
+        "SUSPENDED": "已暂停"
+      },
+      "roles": {
+        "ATHLETE": "运动员",
+        "COACH": "教练",
+        "INVESTOR": "投资者",
+        "ADMIN": "管理员",
+        "OWNER": "所有者"
+      }
+    },
+    "adminProfile": {
+      "header": "管理员资料",
+      "badge": "● 管理员",
+      "previewTitle": "— 界面预览",
+      "athleteMode": "运动员模式",
+      "athleteSub": "预览运动员界面",
+      "coachMode": "教练模式",
+      "coachSub": "预览教练界面和访谈",
+      "previewAthlete": "预览:运动员模式",
+      "previewCoach": "预览:教练模式",
+      "footer": "POWERINSIDE · ADMIN · V 0.1"
+    }
+  }
+}

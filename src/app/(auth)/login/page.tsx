@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Dumbbell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { Card, CardBody } from "@/components/ui/card";
 
 export default function LoginPage() {
   const router = useRouter();
+  const t = useTranslations("authLogin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,13 +31,13 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError("Невірний email або пароль.");
+        setError(t("invalidCredentials"));
       } else {
         router.push("/dashboard");
         router.refresh();
       }
     } catch {
-      setError("Сталася помилка. Спробуйте ще раз.");
+      setError(t("generalError"));
     } finally {
       setLoading(false);
     }
@@ -49,10 +51,10 @@ export default function LoginPage() {
             <Dumbbell className="w-8 h-8 text-primary" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Увійти до <span className="text-primary">PowerInside</span>
+            {t("title")} <span className="text-primary">PowerInside</span>
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Введіть свої дані для входу
+            {t("subtitle")}
           </p>
         </div>
 
@@ -74,7 +76,7 @@ export default function LoginPage() {
           />
 
           <Input
-            label="Пароль"
+            label={t("passwordLabel")}
             type="password"
             placeholder="••••••••"
             value={password}
@@ -90,17 +92,17 @@ export default function LoginPage() {
             loading={loading}
             className="mt-2"
           >
-            Увійти
+            {t("submit")}
           </Button>
         </form>
 
         <p className="text-sm text-center text-muted-foreground mt-6">
-          Немає акаунту?{" "}
+          {t("noAccount")}{" "}
           <Link
             href="/register"
             className="text-primary hover:underline font-medium"
           >
-            Зареєструватись
+            {t("signupLink")}
           </Link>
         </p>
       </CardBody>

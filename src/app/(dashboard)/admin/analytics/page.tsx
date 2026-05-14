@@ -1,65 +1,32 @@
 "use client";
 
 import { Users, UserCheck, Crown, ShoppingCart, TrendingUp, Activity } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 
 export default function AdminAnalyticsPage() {
+  const t = useTranslations("adminAnalytics");
+  const tCommon = useTranslations("common");
   const statsQuery = trpc.admin.getStats.useQuery();
   const stats = statsQuery.data;
 
   const cards = [
-    {
-      label: "Всього користувачів",
-      value: stats?.totalUsers,
-      icon: Users,
-      color: "text-blue-400",
-      bg: "bg-blue-400/10",
-    },
-    {
-      label: "Всього тренерів",
-      value: stats?.totalCoaches,
-      icon: UserCheck,
-      color: "text-green-400",
-      bg: "bg-green-400/10",
-    },
-    {
-      label: "Активних тренерів",
-      value: stats?.activeCoaches,
-      icon: Activity,
-      color: "text-primary",
-      bg: "bg-primary/10",
-    },
-    {
-      label: "Активних підписок",
-      value: stats?.activeSubscriptions,
-      icon: Crown,
-      color: "text-yellow-400",
-      bg: "bg-yellow-400/10",
-    },
-    {
-      label: "Всього підписок",
-      value: stats?.totalSubscriptions,
-      icon: TrendingUp,
-      color: "text-purple-400",
-      bg: "bg-purple-400/10",
-    },
-    {
-      label: "Виручка (пакети)",
-      value: stats !== undefined ? `$${(stats.totalRevenue / 100).toFixed(2)}` : undefined,
-      icon: ShoppingCart,
-      color: "text-green-400",
-      bg: "bg-green-400/10",
-    },
+    { label: t("cards.totalUsers"), value: stats?.totalUsers, icon: Users, color: "text-blue-400", bg: "bg-blue-400/10" },
+    { label: t("cards.totalCoaches"), value: stats?.totalCoaches, icon: UserCheck, color: "text-green-400", bg: "bg-green-400/10" },
+    { label: t("cards.activeCoaches"), value: stats?.activeCoaches, icon: Activity, color: "text-primary", bg: "bg-primary/10" },
+    { label: t("cards.activeSubs"), value: stats?.activeSubscriptions, icon: Crown, color: "text-yellow-400", bg: "bg-yellow-400/10" },
+    { label: t("cards.totalSubs"), value: stats?.totalSubscriptions, icon: TrendingUp, color: "text-purple-400", bg: "bg-purple-400/10" },
+    { label: t("cards.revenue"), value: stats !== undefined ? `$${(stats.totalRevenue / 100).toFixed(2)}` : undefined, icon: ShoppingCart, color: "text-green-400", bg: "bg-green-400/10" },
   ];
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Аналітика <span className="text-primary">платформи</span>
+          {t("titleA")} <span className="text-primary">{t("titleB")}</span>
         </h1>
-        <p className="text-muted-foreground mt-1">Загальна статистика</p>
+        <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -74,7 +41,7 @@ export default function AdminAnalyticsPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">{card.label}</p>
                   <p className="text-2xl font-bold mt-0.5">
-                    {statsQuery.isLoading ? "..." : (card.value ?? 0)}
+                    {statsQuery.isLoading ? tCommon("loadingDots") : (card.value ?? 0)}
                   </p>
                 </div>
               </CardBody>
@@ -86,17 +53,17 @@ export default function AdminAnalyticsPage() {
       <div className="grid sm:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <h2 className="text-base font-semibold">Конверсія тренерів</h2>
+            <h2 className="text-base font-semibold">{t("coachConversion")}</h2>
           </CardHeader>
           <CardBody>
             {stats ? (
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Всього тренерів</span>
+                  <span className="text-muted-foreground">{t("totalCoachesRow")}</span>
                   <span>{stats.totalCoaches}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Активних</span>
+                  <span className="text-muted-foreground">{t("activeRow")}</span>
                   <span className="text-green-400">{stats.activeCoaches}</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2">
@@ -111,29 +78,29 @@ export default function AdminAnalyticsPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {stats.totalCoaches
-                    ? `${Math.round((stats.activeCoaches / stats.totalCoaches) * 100)}% активних`
-                    : "Немає тренерів"}
+                    ? t("percentActive", { pct: Math.round((stats.activeCoaches / stats.totalCoaches) * 100) })
+                    : t("noCoaches")}
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Завантаження...</p>
+              <p className="text-sm text-muted-foreground">{t("loading")}</p>
             )}
           </CardBody>
         </Card>
 
         <Card>
           <CardHeader>
-            <h2 className="text-base font-semibold">Підписки</h2>
+            <h2 className="text-base font-semibold">{t("subscriptionsTitle")}</h2>
           </CardHeader>
           <CardBody>
             {stats ? (
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Всього підписок</span>
+                  <span className="text-muted-foreground">{t("totalSubsRow")}</span>
                   <span>{stats.totalSubscriptions}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Активних</span>
+                  <span className="text-muted-foreground">{t("activeRow")}</span>
                   <span className="text-primary">{stats.activeSubscriptions}</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-2">
@@ -148,12 +115,12 @@ export default function AdminAnalyticsPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {stats.totalSubscriptions
-                    ? `${Math.round((stats.activeSubscriptions / stats.totalSubscriptions) * 100)}% активних`
-                    : "Немає підписок"}
+                    ? t("percentActive", { pct: Math.round((stats.activeSubscriptions / stats.totalSubscriptions) * 100) })
+                    : t("noSubs")}
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">Завантаження...</p>
+              <p className="text-sm text-muted-foreground">{t("loading")}</p>
             )}
           </CardBody>
         </Card>

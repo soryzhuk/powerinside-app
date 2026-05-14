@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Send, CheckCircle } from "lucide-react";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,8 @@ interface InterviewMessage {
 }
 
 export default function InterviewPage() {
+  const t = useTranslations("interview");
+  const tCommon = useTranslations("common");
   const [messages, setMessages] = useState<InterviewMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -104,13 +107,13 @@ export default function InterviewPage() {
         setIsComplete(true);
       }
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Помилка при відправці";
+      const errorMessage = err instanceof Error ? err.message : t("errorSend");
       setMessages((prev) => [
         ...prev,
         {
           id: `error-${Date.now()}`,
           role: "assistant",
-          content: `Помилка: ${errorMessage}`,
+          content: t("errorPrefix", { message: errorMessage }),
         },
       ]);
     } finally {
@@ -164,7 +167,7 @@ export default function InterviewPage() {
               <div className="border-t border-border p-4 flex flex-col items-center gap-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <CheckCircle className="w-4 h-4 text-green-400" />
-                  <span>Інтерв&apos;ю завершено. Дякуємо за відвертість.</span>
+                  <span>{t("completed")}</span>
                 </div>
                 <Button
                   variant="outline"
@@ -173,7 +176,7 @@ export default function InterviewPage() {
                   loading={resetting}
                   disabled={resetting}
                 >
-                  Почати заново
+                  {t("startOver")}
                 </Button>
               </div>
             ) : (
@@ -181,7 +184,7 @@ export default function InterviewPage() {
                 <form onSubmit={handleSend} className="flex items-center gap-3">
                   <div className="flex-1">
                     <Input
-                      placeholder="Відповідай докладно..."
+                      placeholder={t("inputPlaceholder")}
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       disabled={sending || !sessionId}
@@ -191,6 +194,7 @@ export default function InterviewPage() {
                     type="submit"
                     disabled={!input.trim() || !sessionId || sending}
                     loading={sending}
+                    aria-label={tCommon("send")}
                   >
                     <Send className="w-4 h-4" />
                   </Button>

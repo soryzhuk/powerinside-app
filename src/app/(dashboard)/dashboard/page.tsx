@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
 import {
   MessageSquare,
   Users,
@@ -17,6 +18,9 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 
 function AthleteDashboard({ userName }: { userName: string }) {
+  const t = useTranslations("dashboard");
+  const tCommon = useTranslations("common");
+  const locale = useLocale();
   const balanceQuery = trpc.athlete.getBalance.useQuery();
   const conversationsQuery = trpc.athlete.getConversations.useQuery();
 
@@ -27,10 +31,10 @@ function AthleteDashboard({ userName }: { userName: string }) {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Привіт, <span className="text-primary">{userName}</span>!
+          {t("athleteGreeting")} <span className="text-primary">{userName}</span>!
         </h1>
         <p className="text-muted-foreground mt-1">
-          Ваш персональний AI-тренер чекає на вас
+          {t("athleteSubtitle")}
         </p>
       </div>
 
@@ -42,14 +46,18 @@ function AthleteDashboard({ userName }: { userName: string }) {
               <MessageSquare className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Баланс повідомлень</p>
+              <p className="text-sm text-muted-foreground">{t("balanceLabel")}</p>
               <p className="text-2xl font-bold mt-0.5">
-                {balance?.total ?? "..."}
+                {balance?.total ?? tCommon("loadingDots")}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 {balance
-                  ? `${balance.freeRemaining} безкоштовних / ${balance.weeklyRemaining} тижневих / ${balance.purchasedRemaining} куплених`
-                  : "Завантаження..."}
+                  ? t("balanceBreakdown", {
+                      free: balance.freeRemaining,
+                      weekly: balance.weeklyRemaining,
+                      purchased: balance.purchasedRemaining,
+                    })
+                  : tCommon("loading")}
               </p>
             </div>
           </CardBody>
@@ -62,12 +70,12 @@ function AthleteDashboard({ userName }: { userName: string }) {
               <BookOpen className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Розмови</p>
+              <p className="text-sm text-muted-foreground">{t("conversationsLabel")}</p>
               <p className="text-2xl font-bold mt-0.5">
                 {conversations.length}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Активних діалогів з AI
+                {t("conversationsSub")}
               </p>
             </div>
           </CardBody>
@@ -80,9 +88,9 @@ function AthleteDashboard({ userName }: { userName: string }) {
               <Dumbbell className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium">Задати питання</p>
+              <p className="text-sm font-medium">{t("askTitle")}</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Запитайте AI-тренера про тренування
+                {t("askSubtitle")}
               </p>
             </div>
             <Link href="/chat">
@@ -98,10 +106,10 @@ function AthleteDashboard({ userName }: { userName: string }) {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Останні розмови</h2>
+            <h2 className="text-lg font-semibold">{t("recentTitle")}</h2>
             <Link href="/chat">
               <Button variant="ghost" size="sm">
-                Всі розмови
+                {t("allConversations")}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
@@ -110,7 +118,7 @@ function AthleteDashboard({ userName }: { userName: string }) {
         <CardBody>
           {conversations.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
-              У вас ще немає розмов. Почніть діалог з AI-тренером!
+              {t("emptyConversations")}
             </p>
           ) : (
             <div className="space-y-3">
@@ -123,10 +131,10 @@ function AthleteDashboard({ userName }: { userName: string }) {
                   <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm truncate">
-                      {conv.messages[0]?.content ?? "Нова розмова"}
+                      {conv.messages[0]?.content ?? t("newConversation")}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {new Date(conv.updatedAt).toLocaleDateString("uk")}
+                      {new Date(conv.updatedAt).toLocaleDateString(locale)}
                     </p>
                   </div>
                 </Link>
@@ -140,6 +148,9 @@ function AthleteDashboard({ userName }: { userName: string }) {
 }
 
 function CoachDashboard({ userName }: { userName: string }) {
+  const t = useTranslations("dashboard");
+  const tCommon = useTranslations("common");
+  const tStatus = useTranslations("coachStatus");
   const profileQuery = trpc.coach.getProfile.useQuery();
   const knowledgeQuery = trpc.coach.getKnowledgeBase.useQuery();
   const rulesQuery = trpc.coach.getRules.useQuery();
@@ -148,14 +159,18 @@ function CoachDashboard({ userName }: { userName: string }) {
   const knowledgeCount = knowledgeQuery.data?.length ?? 0;
   const rulesCount = rulesQuery.data?.length ?? 0;
 
+  const statusLabel = profile?.status
+    ? tStatus(profile.status as "PENDING" | "ACTIVE" | "SUSPENDED")
+    : tCommon("loadingDots");
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Привіт, <span className="text-primary">{userName}</span>!
+          {t("athleteGreeting")} <span className="text-primary">{userName}</span>!
         </h1>
         <p className="text-muted-foreground mt-1">
-          Статус:{" "}
+          {t("coachStatusLine")}{" "}
           <span
             className={
               profile?.status === "ACTIVE"
@@ -165,7 +180,7 @@ function CoachDashboard({ userName }: { userName: string }) {
                   : "text-danger"
             }
           >
-            {profile?.status ?? "..."}
+            {statusLabel}
           </span>
         </p>
       </div>
@@ -178,7 +193,7 @@ function CoachDashboard({ userName }: { userName: string }) {
               <ClipboardList className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Інтерв'ю</p>
+              <p className="text-sm text-muted-foreground">{t("interviewCard")}</p>
               <p className="text-2xl font-bold mt-0.5">
                 {profile?._count.interviewSessions ?? 0}
                 <span className="text-base font-normal text-muted-foreground">
@@ -186,7 +201,7 @@ function CoachDashboard({ userName }: { userName: string }) {
                 </span>
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Раундів пройдено
+                {t("interviewSub")}
               </p>
             </div>
           </CardBody>
@@ -199,10 +214,10 @@ function CoachDashboard({ userName }: { userName: string }) {
               <BookOpen className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">База знань</p>
+              <p className="text-sm text-muted-foreground">{t("knowledgeCard")}</p>
               <p className="text-2xl font-bold mt-0.5">{knowledgeCount}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Записів у базі знань
+                {t("knowledgeSub")}
               </p>
             </div>
           </CardBody>
@@ -215,10 +230,10 @@ function CoachDashboard({ userName }: { userName: string }) {
               <CreditCard className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Правила</p>
+              <p className="text-sm text-muted-foreground">{t("rulesCard")}</p>
               <p className="text-2xl font-bold mt-0.5">{rulesCount}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Методологічних правил
+                {t("rulesSub")}
               </p>
             </div>
           </CardBody>
@@ -228,14 +243,14 @@ function CoachDashboard({ userName }: { userName: string }) {
       <Card>
         <CardBody className="flex items-center gap-4">
           <div className="flex-1">
-            <h3 className="font-semibold">Продовжити інтерв'ю</h3>
+            <h3 className="font-semibold">{t("continueTitle")}</h3>
             <p className="text-sm text-muted-foreground mt-0.5">
-              Пройдіть всі 7 раундів, щоб активувати AI-тренера
+              {t("continueSub")}
             </p>
           </div>
           <Link href="/interview">
             <Button>
-              Перейти
+              {t("goto")}
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
@@ -246,6 +261,8 @@ function CoachDashboard({ userName }: { userName: string }) {
 }
 
 function AdminDashboard() {
+  const t = useTranslations("dashboard");
+  const tCommon = useTranslations("common");
   const statsQuery = trpc.admin.getStats.useQuery();
   const stats = statsQuery.data;
 
@@ -253,9 +270,9 @@ function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Панель <span className="text-primary">адміністратора</span>
+          {t("adminTitle")} <span className="text-primary">{t("adminPanelLine")}</span>
         </h1>
-        <p className="text-muted-foreground mt-1">Загальна статистика платформи</p>
+        <p className="text-muted-foreground mt-1">{t("adminSubtitle")}</p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -265,9 +282,9 @@ function AdminDashboard() {
               <Users className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Всього користувачів</p>
+              <p className="text-sm text-muted-foreground">{t("totalUsers")}</p>
               <p className="text-2xl font-bold mt-0.5">
-                {stats?.totalUsers ?? "..."}
+                {stats?.totalUsers ?? tCommon("loadingDots")}
               </p>
             </div>
           </CardBody>
@@ -279,15 +296,15 @@ function AdminDashboard() {
               <Dumbbell className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Тренери</p>
+              <p className="text-sm text-muted-foreground">{t("coaches")}</p>
               <p className="text-2xl font-bold mt-0.5">
-                {stats?.activeCoaches ?? "..."}{" "}
+                {stats?.activeCoaches ?? tCommon("loadingDots")}{" "}
                 <span className="text-base font-normal text-muted-foreground">
-                  / {stats?.totalCoaches ?? "..."}
+                  / {stats?.totalCoaches ?? tCommon("loadingDots")}
                 </span>
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Активних / Всього
+                {t("activeTotal")}
               </p>
             </div>
           </CardBody>
@@ -299,13 +316,17 @@ function AdminDashboard() {
               <DollarSign className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Дохід</p>
+              <p className="text-sm text-muted-foreground">{t("revenue")}</p>
               <p className="text-2xl font-bold mt-0.5">
-                ${stats?.totalRevenue ?? "..."}
+                ${stats?.totalRevenue ?? tCommon("loadingDots")}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Підписок: {stats?.activeSubscriptions ?? "..."} активних /{" "}
-                {stats?.totalSubscriptions ?? "..."} всього
+                {stats
+                  ? t("subscriptionsInfo", {
+                      active: stats.activeSubscriptions,
+                      total: stats.totalSubscriptions,
+                    })
+                  : tCommon("loading")}
               </p>
             </div>
           </CardBody>
@@ -315,14 +336,14 @@ function AdminDashboard() {
       <Card>
         <CardBody className="flex items-center gap-4">
           <div className="flex-1">
-            <h3 className="font-semibold">Управління тренерами</h3>
+            <h3 className="font-semibold">{t("manageCoachesTitle")}</h3>
             <p className="text-sm text-muted-foreground mt-0.5">
-              Переглядайте, активуйте та призупиняйте тренерів
+              {t("manageCoachesSub")}
             </p>
           </div>
           <Link href="/admin/coaches">
             <Button>
-              Переглянути
+              {t("manageCoachesAction")}
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
@@ -334,8 +355,9 @@ function AdminDashboard() {
 
 export default function DashboardPage() {
   const { data: session } = useSession();
+  const tRoles = useTranslations("roles");
   const role = session?.user?.role;
-  const name = session?.user?.name ?? "Користувач";
+  const name = session?.user?.name ?? tRoles("defaultUserName");
 
   if (role === "ADMIN" || role === "OWNER") {
     return <AdminDashboard />;

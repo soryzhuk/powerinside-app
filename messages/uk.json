@@ -1,0 +1,725 @@
+{
+  "meta": {
+    "title": "PowerInside — Платформа для силових видів спорту",
+    "description": "AI-коучинг, база знань та підписки для пауерліфтерів і силових атлетів"
+  },
+  "common": {
+    "loading": "Завантаження…",
+    "loadingShort": "Завантаження...",
+    "loadingDots": "...",
+    "back": "Назад",
+    "next": "Далі",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "send": "Надіслати",
+    "copy": "Копіювати",
+    "copied": "Скопійовано!",
+    "delete": "Видалити",
+    "edit": "Редагувати",
+    "search": "Пошук",
+    "yes": "Так",
+    "no": "Ні",
+    "active": "Активний",
+    "inactive": "Неактивний",
+    "error": "Помилка",
+    "errorTryAgain": "Сталася помилка. Спробуйте ще раз.",
+    "retry": "Повторити",
+    "all": "Всі",
+    "ok": "OK",
+    "close": "Закрити"
+  },
+  "language": {
+    "label": "Мова",
+    "select": "Оберіть мову"
+  },
+  "nav": {
+    "login": "Увійти",
+    "register": "Реєстрація",
+    "logout": "Вийти",
+    "profile": "Профіль",
+    "settings": "Налаштування",
+    "dashboard": "Дашборд",
+    "chat": "Чат",
+    "multiexpert": "Мультиексперт",
+    "balance": "Баланс",
+    "referrals": "Реферали",
+    "interview": "Інтерв'ю",
+    "athletesQuestions": "Питання атлетів",
+    "knowledgeBase": "База знань",
+    "payouts": "Виплати",
+    "users": "Користувачі",
+    "coaches": "Тренери",
+    "analytics": "Аналітика",
+    "investorReport": "Звіт",
+    "toggleMenu": "Меню"
+  },
+  "landing": {
+    "badge": "Методика тренера — у твоїй кишені",
+    "heroTitleA": "Платформа для",
+    "heroTitleB": "силових видів спорту",
+    "heroSubtitle": "Персоналізовані відповіді на основі методик реальних тренерів. Пауерліфтинг, стронгмен, важка атлетика — знайдіть свого тренера та досягайте нових висот.",
+    "ctaAthleteRole": "Я — атлет",
+    "ctaCoachRole": "Я — тренер",
+    "featuresTitleA": "Все для вашого",
+    "featuresTitleB": "прогресу",
+    "featuresSubtitle": "Ми об'єднуємо досвід найкращих тренерів з технологіями, що роблять ці знання доступними 24/7.",
+    "feature": {
+      "coachingTitle": "Коучинг за методикою",
+      "coachingDesc": "Персоналізовані відповіді на основі знань реальних тренерів — тих, кого ви обрали.",
+      "knowledgeTitle": "База знань",
+      "knowledgeDesc": "Тренери проходять глибоке інтерв'ю та завантажують власні методики, які стають основою консультацій.",
+      "subscriptionsTitle": "Підписки",
+      "subscriptionsDesc": "Гнучка система підписок із доступом до різних тренерів та рівнів консультацій.",
+      "trackingTitle": "Трекінг прогресу",
+      "trackingDesc": "Відстежуйте силові показники, аналізуйте динаміку та досягайте нових рекордів.",
+      "verifiedTitle": "Верифіковані тренери",
+      "verifiedDesc": "Кожен тренер проходить інтерв'ю та верифікацію перед допуском на платформу.",
+      "support24Title": "Відповіді 24/7",
+      "support24Desc": "Отримуйте відповіді в будь-який час, базуючись на методиці вашого тренера."
+    },
+    "ctaSectionTitle": "Готові стати сильнішими?",
+    "ctaSectionSubtitle": "Приєднуйтесь до PowerInside — платформи, де досвід тренерів працює на ваш результат цілодобово.",
+    "startTraining": "Почати тренуватись",
+    "becomeCoach": "Стати тренером",
+    "rights": "Всі права захищені."
+  },
+  "authLogin": {
+    "title": "Увійти до",
+    "subtitle": "Введіть свої дані для входу",
+    "passwordLabel": "Пароль",
+    "submit": "Увійти",
+    "noAccount": "Немає акаунту?",
+    "signupLink": "Зареєструватись",
+    "invalidCredentials": "Невірний email або пароль.",
+    "generalError": "Сталася помилка. Спробуйте ще раз."
+  },
+  "authRegister": {
+    "title": "Реєстрація в",
+    "subtitle": "Створіть акаунт, щоб почати",
+    "athlete": "Атлет",
+    "coach": "Тренер",
+    "referralBonus": "Вас запросили! Після реєстрації ви отримаєте <b>5 бонусних повідомлень</b>.",
+    "postSignInError": "Реєстрація успішна, але не вдалось увійти. Спробуйте увійти вручну.",
+    "generalError": "Сталася помилка при реєстрації.",
+    "nameLabel": "Ім'я",
+    "namePlaceholder": "Іван Петренко",
+    "emailLabel": "Email",
+    "phoneLabel": "Телефон",
+    "phonePlaceholder": "+380 XX XXX XX XX",
+    "addressLabel": "Поштова адреса",
+    "addressPlaceholder": "вул. Шевченка, 1, м. Київ",
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "Мінімум 6 символів",
+    "countryLabel": "Країна",
+    "languageLabel": "Мова",
+    "submit": "Зареєструватись",
+    "hasAccount": "Вже є акаунт?",
+    "loginLink": "Увійти"
+  },
+  "countries": {
+    "UA": "Україна",
+    "US": "США",
+    "GB": "Великобританія",
+    "DE": "Німеччина",
+    "PL": "Польща",
+    "CA": "Канада",
+    "AU": "Австралія",
+    "OTHER": "Інша",
+    "selectPlaceholder": "Оберіть країну"
+  },
+  "roles": {
+    "label": "Роль",
+    "ATHLETE": "Атлет",
+    "COACH": "Тренер",
+    "INVESTOR": "Інвестор",
+    "ADMIN": "Адмін",
+    "OWNER": "Власник",
+    "defaultUserName": "Користувач"
+  },
+  "coachStatus": {
+    "PENDING": "Очікує",
+    "ACTIVE": "Активний",
+    "SUSPENDED": "Призупинений",
+    "pendingActivation": "Очікує активації"
+  },
+  "dashboard": {
+    "athleteGreeting": "Привіт,",
+    "athleteSubtitle": "Ваш персональний AI-тренер чекає на вас",
+    "balanceLabel": "Баланс повідомлень",
+    "balanceBreakdown": "{free} безкоштовних / {weekly} тижневих / {purchased} куплених",
+    "conversationsLabel": "Розмови",
+    "conversationsSub": "Активних діалогів з AI",
+    "askTitle": "Задати питання",
+    "askSubtitle": "Запитайте AI-тренера про тренування",
+    "recentTitle": "Останні розмови",
+    "allConversations": "Всі розмови",
+    "emptyConversations": "У вас ще немає розмов. Почніть діалог з AI-тренером!",
+    "newConversation": "Нова розмова",
+    "coachStatusLine": "Статус:",
+    "interviewCard": "Інтерв'ю",
+    "interviewSub": "Раундів пройдено",
+    "knowledgeCard": "База знань",
+    "knowledgeSub": "Записів у базі знань",
+    "rulesCard": "Правила",
+    "rulesSub": "Методологічних правил",
+    "continueTitle": "Продовжити інтерв'ю",
+    "continueSub": "Пройдіть всі 7 раундів, щоб активувати AI-тренера",
+    "goto": "Перейти",
+    "adminTitle": "Панель",
+    "adminPanelLine": "адміністратора",
+    "adminSubtitle": "Загальна статистика платформи",
+    "totalUsers": "Всього користувачів",
+    "coaches": "Тренери",
+    "activeTotal": "Активних / Всього",
+    "revenue": "Дохід",
+    "subscriptionsInfo": "Підписок: {active} активних / {total} всього",
+    "manageCoachesTitle": "Управління тренерами",
+    "manageCoachesSub": "Переглядайте, активуйте та призупиняйте тренерів",
+    "manageCoachesAction": "Переглянути"
+  },
+  "balance": {
+    "titleA": "Баланс",
+    "titleB": "повідомлень",
+    "subtitle": "Управляйте своїм балансом та купуйте пакети повідомлень",
+    "successMsg": "✓ Оплата успішна! Ваш баланс оновлено.",
+    "canceledMsg": "Оплату скасовано.",
+    "free": "Безкоштовні",
+    "weekly": "Тижневі",
+    "purchased": "Куплені",
+    "totalLabel": "Загальний баланс",
+    "totalUnit": "повідомлень доступно",
+    "subscription": "Підписка",
+    "active": "Активна",
+    "perMonth": "/ місяць",
+    "nextBilling": "Наступне списання: {date}",
+    "subscriptionActiveLabel": "Підписка активна",
+    "basicTitle": "Basic — $30 / місяць",
+    "feature": {
+      "weekly20": "20 повідомлень на тиждень",
+      "aiChat": "AI-чат з тренером",
+      "access": "Доступ до методики",
+      "noExpiry": "Без терміну дії",
+      "anyCoach": "Будь-який тренер",
+      "instant": "Миттєві відповіді"
+    },
+    "subscribeBasic": "Підключити Basic",
+    "packsTitle": "Пакети повідомлень",
+    "popular": "Найпопулярніший",
+    "messages": "повідомлень",
+    "perMessage": "{price} / повідомлення",
+    "buy": "Купити"
+  },
+  "chat": {
+    "coachLabel": "Тренер:",
+    "noCoaches": "Немає доступних тренерів",
+    "messagesCount": "{count} повідомлень",
+    "emptyTitle": "Почніть розмову з AI-тренером",
+    "emptySubtitle": "Оберіть тренера та задайте своє перше питання про тренування, техніку або харчування.",
+    "multipleQuestionsWarning": "Ваше повідомлення містить <b>{count} запитання</b>. Кожне запитання списує 1 повідомлення з балансу — буде списано <b>{count}</b>. Рекомендуємо задавати по одному питанню для точнішої відповіді.",
+    "inputPlaceholder": "Введіть ваше питання...",
+    "errorSend": "Помилка при відправці повідомлення",
+    "errorPrefix": "Помилка: {message}"
+  },
+  "interview": {
+    "completed": "Інтерв'ю завершено. Дякуємо за відвертість.",
+    "startOver": "Почати заново",
+    "inputPlaceholder": "Відповідай докладно...",
+    "errorPrefix": "Помилка: {message}",
+    "errorSend": "Помилка при відправці"
+  },
+  "knowledge": {
+    "titleA": "База",
+    "titleB": "знань",
+    "subtitle": "Правила методики з інтерв'ю. Підтвердіть ті, що точно відображають вашу систему — тільки підтверджені правила використовуються AI для відповідей атлетам.",
+    "entriesLabel": "Записів",
+    "totalRules": "Всього правил",
+    "confirmedLabel": "Підтверджено",
+    "rulesHeader": "Правила методики",
+    "rulesHint": "Натисніть ⭕ поруч з правилом щоб підтвердити його. Розгорніть правило щоб побачити деталі.",
+    "loading": "Завантаження…",
+    "emptyRules": "Правила з'являться після проходження інтерв'ю",
+    "entriesHeader": "Записи бази знань",
+    "approved": "✓ підтверджено",
+    "rule": {
+      "condition": "Умова:",
+      "signal": "Сигнал:",
+      "decision": "Рішення:",
+      "exception": "Виняток:",
+      "alternative": "Альтернатива:",
+      "confirm": "Підтвердити правило",
+      "unconfirm": "Скасувати підтвердження"
+    },
+    "rounds": {
+      "TARGET_ATHLETE": "Цільовий атлет",
+      "LOAD_MANAGEMENT": "Управління навантаженням",
+      "AUTOREGULATION": "Авторегуляція",
+      "PROGRESSION_DELOAD": "Прогресія та розвантаження",
+      "EXERCISE_SELECTION": "Підбір вправ",
+      "TECHNIQUE_STANDARDS": "Стандарти техніки",
+      "LIFESTYLE_RECOVERY": "Спосіб життя та відновлення"
+    }
+  },
+  "expertQa": {
+    "titleA": "Запитання",
+    "titleB": "атлетів",
+    "subtitle": "Відповідайте на питання атлетів та поповнюйте базу знань",
+    "pendingTitle": "Очікують відповіді",
+    "loading": "Завантаження...",
+    "noNew": "Немає нових запитань",
+    "answerPlaceholder": "Ваша відповідь...",
+    "reply": "Відповісти",
+    "answeredTitle": "Відповіді надіслано",
+    "bestSelected": "★ Обрана найкращою атлетом",
+    "empty": "Поки немає запитань до вас від атлетів",
+    "athleteFallback": "Атлет"
+  },
+  "qa": {
+    "titleA": "Мультиекспертні",
+    "titleB": "відповіді",
+    "subtitle": "Задайте питання одразу кільком тренерам і оберіть найкращу відповідь",
+    "newQuestion": "Нове запитання",
+    "questionLabel": "Ваше запитання",
+    "questionPlaceholder": "Опишіть своє питання детально — чим точніше, тим кращі відповіді...",
+    "chooseCoachesLabel": "Оберіть тренерів (до 5)",
+    "selectedCount": "({count} обрано)",
+    "loading": "Завантаження...",
+    "noActiveCoaches": "Поки немає активних тренерів",
+    "submit": "Надіслати питання",
+    "myQuestions": "Мої запитання",
+    "emptyMy": "У вас ще немає запитань. Задайте перше!",
+    "answersCount": "{answered}/{total} відповідей",
+    "best": "Найкраща",
+    "selectBest": "Обрати найкращою",
+    "pendingAnswer": "Очікує відповіді...",
+    "genericError": "Помилка",
+    "coachFallback": "Тренер"
+  },
+  "referral": {
+    "loading": "Завантаження…",
+    "title": "Реферальна програма",
+    "subtitle": "Запрошуй нових атлетів — отримай <b>5 бонусних повідомлень</b>, коли вони оформлять підписку. Вони отримають <b>5 вітальних повідомлень</b> за реєстрацію за твоїм посиланням.",
+    "yourLink": "Твоє реферальне посилання",
+    "copy": "Копіювати",
+    "copied": "Скопійовано!",
+    "codeLabel": "Код:",
+    "stats": {
+      "totalReferred": "Запрошено всього",
+      "bonusEarned": "Зароблено бонусних повідомлень",
+      "pending": "Очікують (ще не підписались)"
+    },
+    "list": {
+      "title": "Запрошені атлети",
+      "joined": "Приєднався {date}",
+      "earned": "+{n} повідомлень зароблено",
+      "pendingSub": "Чекаємо підписки"
+    },
+    "how": {
+      "title": "Як це працює",
+      "step1": "Поділись посиланням з новим атлетом.",
+      "step2": "Він реєструється і одразу отримує 5 бонусних повідомлень.",
+      "step3": "Коли він купить першу підписку, ти отримаєш 5 бонусних повідомлень.",
+      "step4": "Бонусні повідомлення не згорають і залишаються на балансі."
+    }
+  },
+  "payouts": {
+    "titleA": "Мої",
+    "titleB": "виплати",
+    "subtitle": "70% від кожної підписки атлета зараховується на ваш рахунок",
+    "pendingLabel": "Очікує виплати",
+    "totalPaid": "Всього виплачено",
+    "modelTitle": "Фінансова модель:",
+    "modelDescription": "70% від підписки атлета — вам, 30% — платформі.",
+    "schedule": "Виплати проводяться 1 та 15 числа кожного місяця.",
+    "min": "Мінімальна сума для виплати — $250.",
+    "historyTitle": "Історія виплат",
+    "loading": "Завантаження...",
+    "empty": "Виплат ще немає. Вони з'являться після першої підписки атлета.",
+    "subscription": "Підписка",
+    "pack": "Пакет",
+    "platformFee": "Платформа: {fee}",
+    "status": {
+      "PENDING": "Очікує",
+      "PROCESSING": "Обробляється",
+      "COMPLETED": "Виплачено",
+      "FAILED": "Помилка"
+    }
+  },
+  "investor": {
+    "titleA": "Звіт",
+    "titleB": "інвестора",
+    "subtitle": "Аналітика платформи — тільки для перегляду. Виплати інвесторам щоквартально (net).",
+    "metrics": {
+      "totalUsers": "Всього користувачів",
+      "athletesSub": "{n} атлетів",
+      "activeCoaches": "Активних тренерів",
+      "ofTotalCoaches": "з {total} всього",
+      "activeSubs": "Активних підписок",
+      "ofTotalSubs": "з {total} всього",
+      "mrr": "MRR (оцінка)",
+      "mrrSub": "на основі активних підписок",
+      "packsRevenue": "Виручка (пакети)",
+      "packsRevenueSub": "разові покупки повідомлень",
+      "pendingPayouts": "Незакриті виплати",
+      "pendingPayoutsSub": "тренерам в черзі"
+    },
+    "quarterly": {
+      "title": "Квартальний звіт (останні 3 міс.)",
+      "coachPayouts": "Виплат тренерам",
+      "platformRevenue": "Дохід платформи (30%)",
+      "transactions": "Кількість транзакцій",
+      "totalTurnover": "Загальний обіг"
+    },
+    "conversion": {
+      "title": "Конверсія",
+      "coachesActive": "Тренери активні",
+      "subsActive": "Підписки активні",
+      "note": "Інвестори отримують виплати щоквартально (net). Право вимоги виникає при ≥51% сукупної частки (ТЗ п.10)."
+    }
+  },
+  "profile": {
+    "titleA": "Мій",
+    "titleB": "профіль",
+    "subtitle": "Переглядайте та редагуйте свою інформацію",
+    "basicInfo": "Основна інформація",
+    "roleLabel": "Роль:",
+    "savedMsg": "Профіль успішно оновлено!",
+    "nameLabel": "Ім'я",
+    "namePlaceholder": "Ваше ім'я",
+    "emailLabel": "Email",
+    "emailHelper": "Email неможливо змінити",
+    "phoneLabel": "Телефон",
+    "phonePlaceholder": "+380 XX XXX XX XX",
+    "countryLabel": "Країна",
+    "countryPlaceholder": "Оберіть країну",
+    "languageLabel": "Мова інтерфейсу",
+    "languagePlaceholder": "Оберіть мову",
+    "save": "Зберегти зміни",
+    "coach": {
+      "title": "Профіль тренера",
+      "subtitle": "Статус та статистика вашого тренерського профілю",
+      "statusLabel": "Статус",
+      "active": "Активний",
+      "pending": "Очікує активації",
+      "suspended": "Призупинений",
+      "roundsLabel": "Раунди інтерв'ю",
+      "roundsValue": "{done} / 7 пройдено",
+      "knowledgeLabel": "База знань",
+      "knowledgeValue": "{n} записів",
+      "rulesLabel": "Методологічні правила",
+      "rulesValue": "{n} правил",
+      "identityTitle": "Документ що підтверджує особу",
+      "identitySubtitle": "Вимагається для верифікації. Формати: JPEG, PNG, PDF. Макс. 10 МБ.",
+      "uploaded": "Документ завантажено",
+      "replace": "замінити",
+      "upload": "Завантажити документ",
+      "uploading": "Завантаження…",
+      "uploadSuccess": "✓ Документ успішно завантажено",
+      "uploadFailed": "Помилка завантаження"
+    }
+  },
+  "adminCoaches": {
+    "titleA": "Управління",
+    "titleB": "тренерами",
+    "subtitle": "{n} тренерів на платформі",
+    "searchPlaceholder": "Пошук за ім'ям або email...",
+    "table": {
+      "coach": "Тренер",
+      "status": "Статус",
+      "interview": "Інтерв'ю",
+      "knowledge": "База знань",
+      "rules": "Правила",
+      "registered": "Реєстрація",
+      "actions": "Дії"
+    },
+    "notFound": "Тренерів не знайдено",
+    "noName": "Без імені",
+    "activate": "Активувати",
+    "suspend": "Призупинити",
+    "resetInterview": "Скинути інтерв'ю",
+    "resetConfirm": "Скинути інтерв'ю для {who}? Всі повідомлення будуть видалені."
+  },
+  "adminUsers": {
+    "titleA": "Управління",
+    "titleB": "користувачами",
+    "subtitle": "{n} користувачів на платформі",
+    "searchPlaceholder": "Пошук за ім'ям або email...",
+    "table": {
+      "user": "Користувач",
+      "role": "Роль",
+      "country": "Країна",
+      "conversations": "Розмови",
+      "registered": "Реєстрація"
+    },
+    "loading": "Завантаження...",
+    "notFound": "Користувачів не знайдено",
+    "noName": "Без імені",
+    "page": "Сторінка {page} з {total}",
+    "prev": "← Назад",
+    "next": "Далі →"
+  },
+  "adminAnalytics": {
+    "titleA": "Аналітика",
+    "titleB": "платформи",
+    "subtitle": "Загальна статистика",
+    "cards": {
+      "totalUsers": "Всього користувачів",
+      "totalCoaches": "Всього тренерів",
+      "activeCoaches": "Активних тренерів",
+      "activeSubs": "Активних підписок",
+      "totalSubs": "Всього підписок",
+      "revenue": "Виручка (пакети)"
+    },
+    "coachConversion": "Конверсія тренерів",
+    "totalCoachesRow": "Всього тренерів",
+    "activeRow": "Активних",
+    "noCoaches": "Немає тренерів",
+    "percentActive": "{pct}% активних",
+    "subscriptionsTitle": "Підписки",
+    "totalSubsRow": "Всього підписок",
+    "noSubs": "Немає підписок",
+    "loading": "Завантаження..."
+  },
+  "tg": {
+    "meta": {
+      "title": "PowerInside — Telegram",
+      "description": "PowerInside Mini App для Telegram"
+    },
+    "common": {
+      "loading": "Завантаження…",
+      "back": "Назад",
+      "errorTitle": "Помилка авторизації",
+      "tryAgain": "Помилка. Спробуй ще раз."
+    },
+    "tabs": {
+      "chat": "Чат",
+      "balance": "Баланс",
+      "profile": "Профіль",
+      "admin": "Адмін",
+      "interview": "Інтерв'ю"
+    },
+    "tabsCoach": {
+      "interview": "Інтерв'ю",
+      "profile": "Профіль"
+    },
+    "athleteTabs": {
+      "chat": "Розмова",
+      "balance": "Баланс",
+      "profile": "Профіль",
+      "admin": "Адмін"
+    },
+    "onboarding": {
+      "topLabel": "Powerinside · Est 2026",
+      "frameNumber": "N° 001",
+      "frameMid": "— METHODOLOGY —",
+      "frameInf": "∞",
+      "tagline": "Розмова з методикою тренера. Без шаблонів — тільки те, що він сам би сказав.",
+      "selectRole": "— Обери свою роль",
+      "imAthlete": "Я атлет",
+      "athleteSub": "Задаю питання тренерам і отримую відповіді з їх методики",
+      "imCoach": "Я тренер",
+      "coachSub": "Проходжу інтерв'ю з 7 раундів — моя методика стає базою для атлетів",
+      "saving": "Зберігаємо вибір…",
+      "supportNote": "Вибір можна змінити через підтримку"
+    },
+    "interview": {
+      "header": "Інтерв'ю з методики",
+      "headlineA": "Розкажи, як ти",
+      "headlineB": "тренуєш.",
+      "empty": "7 раундів питань. Твої відповіді — основа методики.",
+      "inProgress": "{done} з {total} раундів завершено. Продовжуй.",
+      "allDone": "Всі раунди завершено! Методика записана.",
+      "roundCounter": "{done} / {total} раундів · {pct}%",
+      "rounds": {
+        "TARGET_ATHLETE": {
+          "label": "Профіль атлета та система",
+          "desc": "Для кого методологія і де вона працює найкраще"
+        },
+        "LOAD_MANAGEMENT": {
+          "label": "Логіка призначення навантаження",
+          "desc": "Як обирається та коригується тренувальне навантаження"
+        },
+        "AUTOREGULATION": {
+          "label": "Авторегуляція та готовність",
+          "desc": "Як адаптується тренування до стану атлета"
+        },
+        "PROGRESSION_DELOAD": {
+          "label": "Архітектура прогресії",
+          "desc": "Як будується довгостроковий прогрес"
+        },
+        "EXERCISE_SELECTION": {
+          "label": "Стратегія підбору вправ",
+          "desc": "Як обираються та модифікуються вправи"
+        },
+        "TECHNIQUE_STANDARDS": {
+          "label": "Технічні стандарти та рух",
+          "desc": "Технічні вимоги та філософія руху"
+        },
+        "LIFESTYLE_RECOVERY": {
+          "label": "Екосистема відновлення",
+          "desc": "Нетренувальні фактори, що впливають на результат"
+        }
+      },
+      "completedBadge": "✓ Завершено",
+      "answerInDetail": "Дай розгорнуту відповідь",
+      "voice": "ГОЛОС",
+      "text": "ТЕКСТ",
+      "answerInstructions": "Розкажи докладно — чим більше деталей, тим точніше твоя методика буде представлена атлетам.",
+      "transcribing": "Розпізнаю…",
+      "inputPlaceholder": "Відповідай докладно…"
+    },
+    "sport": {
+      "moderationTitle": "На модерації",
+      "moderationSub": "Твій вид спорту відправлено адміністратору. Після схвалення ти отримаєш повідомлення в Telegram і зможеш пройти інтерв'ю.",
+      "customNameTitle": "Свій вид спорту",
+      "customNameSub": "Напиши назву — адміністратор розгляне та схвалить.",
+      "customPlaceholder": "Назва виду спорту…",
+      "submitting": "Відправляю…",
+      "submitForModeration": "Відправити на модерацію",
+      "step2Label": "Powerinside · Крок 2",
+      "yourSport": "Твій вид спорту",
+      "chooseDiscipline": "Обери дисципліну, в якій ти тренуєш атлетів.",
+      "loading": "Завантаження…",
+      "addCustom": "Додати свій вид спорту",
+      "moderationWithName": "Твій вид спорту <b>{name}</b> відправлено адміністратору. Після схвалення ти отримаєш повідомлення в Telegram."
+    },
+    "coachProfile": {
+      "header": "Профіль тренера",
+      "activeBadge": "● АКТИВНИЙ",
+      "pendingBadge": "● ОЧІКУЄ АКТИВАЦІЇ",
+      "stats": {
+        "rules": "Правил",
+        "entries": "Записів",
+        "rounds": "/ 7 раундів"
+      },
+      "whatNextTitle": "Що далі?",
+      "whatNextDesc": "Після завершення інтерв'ю адміністратор перевірить твою методику і активує профіль. Після активації атлети зможуть ставити тобі запитання.",
+      "footer": "POWERINSIDE · ТРЕНЕР · V 0.1"
+    },
+    "coaches": {
+      "library": "Бібліотека тренерів",
+      "headlineA": "Обери, з ким",
+      "headlineB": "говорити.",
+      "loading": "Завантаження...",
+      "count": "{n} активних методологій.",
+      "noCoaches": "Активних тренерів поки немає.",
+      "recommended": "⸻ РЕКОМЕНДОВАНО",
+      "coachFallback": "Тренер",
+      "rulesCount": "{n} правил",
+      "entriesCount": "{n} записів"
+    },
+    "chatView": {
+      "headerStatus": "Методологія · {n} правил",
+      "emptyHeadlineA": "Спитай те, що давно",
+      "emptyHeadlineB": "не наважувався.",
+      "emptySub": "Я відповідаю так, як мій тренер. Мої правила — його методика.",
+      "noMessages": "Недостатньо повідомлень. Поповніть баланс.",
+      "inputPlaceholder": "Запитай тренера…",
+      "prompts": {
+        "p1": "Склади розминку перед присідом",
+        "p2": "Чи варто тренуватись при болю в спині?",
+        "p3": "Як харчуватись у день змагань?",
+        "p4": "Поясни, що таке авторегуляція",
+        "q1": "Скільки підходів?",
+        "q2": "Що їсти після?",
+        "q3": "Ще питання"
+      }
+    },
+    "balance": {
+      "header": "Баланс",
+      "totalSub": "повідомлень до тренера",
+      "totalLabel": "ВСЬОГО / ЗАЛИШОК",
+      "free": "● {n} безкоштовних",
+      "weekly": "● {n} тижневих",
+      "purchased": "● {n} куплених",
+      "subActive": "активна",
+      "subInactive": "неактивна",
+      "renews": "Продовжиться {date} · $30",
+      "packsTitle": "— Пакети повідомлень",
+      "perHundred": "≈ {rate} / 100 повідомл.",
+      "pack50": "Для розминки",
+      "pack200": "Популярний",
+      "pack500": "Найвигідніше"
+    },
+    "profile": {
+      "header": "Профіль",
+      "athlete": "Спортсмен",
+      "settings": "— Налаштування",
+      "subscription": "Підписка",
+      "none": "Немає",
+      "notifications": "Сповіщення",
+      "enabled": "Увімкнено",
+      "language": "Мова",
+      "support": "Зв'язатись з підтримкою",
+      "logout": "Вийти з акаунту",
+      "footer": "POWERINSIDE · V 0.1 · TELEGRAM MINI APP"
+    },
+    "admin": {
+      "header": "Адміністрування",
+      "sections": {
+        "stats": "Аналітика",
+        "coaches": "Тренери",
+        "users": "Юзери",
+        "sports": "Спорти"
+      },
+      "stats": {
+        "totalUsers": "Всього юзерів",
+        "totalCoaches": "Всього тренерів",
+        "activeCoaches": "Активних тренерів",
+        "activeSubs": "Активних підписок",
+        "totalSubs": "Всього підписок",
+        "revenue": "Виручка (пакети)"
+      },
+      "coaches": {
+        "noName": "Без імені",
+        "activate": "Активувати",
+        "suspend": "Призупинити",
+        "resetInterview": "↺ Скинути інтерв'ю",
+        "empty": "Тренерів немає",
+        "stats": "{rules} правил · {entries} записів · {rounds}/7",
+        "resetConfirm": "Скинути інтерв'ю для {who}?"
+      },
+      "users": {
+        "noName": "Без імені",
+        "conversations": "{n} розмов · {date}",
+        "empty": "Юзерів немає"
+      },
+      "sports": {
+        "pending": "На модерації ({n})",
+        "from": "від {who}",
+        "approve": "Схвалити",
+        "reject": "Відхилити",
+        "addTitle": "Додати вид спорту",
+        "addPlaceholder": "Назва…",
+        "add": "Додати",
+        "allTitle": "Всі види спорту ({n})",
+        "delete": "Видалити",
+        "deleteConfirm": "Видалити «{name}»?",
+        "unknown": "Невідомо"
+      },
+      "status": {
+        "PENDING": "Очікує",
+        "ACTIVE": "Активний",
+        "SUSPENDED": "Призупинений"
+      },
+      "roles": {
+        "ATHLETE": "Атлет",
+        "COACH": "Тренер",
+        "INVESTOR": "Інвестор",
+        "ADMIN": "Адмін",
+        "OWNER": "Власник"
+      }
+    },
+    "adminProfile": {
+      "header": "Профіль адміна",
+      "badge": "● АДМІН",
+      "previewTitle": "— Перегляд інтерфейсів",
+      "athleteMode": "Режим атлета",
+      "athleteSub": "Переглянути як виглядає інтерфейс атлета",
+      "coachMode": "Режим тренера",
+      "coachSub": "Переглянути інтерфейс тренера та інтерв'ю",
+      "previewAthlete": "PREVIEW: РЕЖИМ АТЛЕТА",
+      "previewCoach": "PREVIEW: РЕЖИМ ТРЕНЕРА",
+      "footer": "POWERINSIDE · ADMIN · V 0.1"
+    }
+  }
+}

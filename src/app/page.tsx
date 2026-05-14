@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import {
   Dumbbell,
   Brain,
@@ -10,46 +13,18 @@ import {
   Target,
 } from "lucide-react";
 
-const features = [
-  {
-    icon: Brain,
-    title: "Коучинг за методикою",
-    description:
-      "Персоналізовані відповіді на основі знань реальних тренерів — тих, кого ви обрали.",
-  },
-  {
-    icon: BookOpen,
-    title: "База знань",
-    description:
-      "Тренери проходять глибоке інтерв'ю та завантажують власні методики, які стають основою консультацій.",
-  },
-  {
-    icon: CreditCard,
-    title: "Підписки",
-    description:
-      "Гнучка система підписок із доступом до різних тренерів та рівнів консультацій.",
-  },
-  {
-    icon: Target,
-    title: "Трекінг прогресу",
-    description:
-      "Відстежуйте силові показники, аналізуйте динаміку та досягайте нових рекордів.",
-  },
-  {
-    icon: Shield,
-    title: "Верифіковані тренери",
-    description:
-      "Кожен тренер проходить інтерв'ю та верифікацію перед допуском на платформу.",
-  },
-  {
-    icon: Zap,
-    title: "Відповіді 24/7",
-    description:
-      "Отримуйте відповіді в будь-який час, базуючись на методиці вашого тренера.",
-  },
-];
-
 export default function LandingPage() {
+  const t = useTranslations("landing");
+  const tNav = useTranslations("nav");
+  const features = [
+    { icon: Brain, title: t("feature.coachingTitle"), description: t("feature.coachingDesc") },
+    { icon: BookOpen, title: t("feature.knowledgeTitle"), description: t("feature.knowledgeDesc") },
+    { icon: CreditCard, title: t("feature.subscriptionsTitle"), description: t("feature.subscriptionsDesc") },
+    { icon: Target, title: t("feature.trackingTitle"), description: t("feature.trackingDesc") },
+    { icon: Shield, title: t("feature.verifiedTitle"), description: t("feature.verifiedDesc") },
+    { icon: Zap, title: t("feature.support24Title"), description: t("feature.support24Desc") },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -69,13 +44,13 @@ export default function LandingPage() {
               href="/login"
               className="text-sm text-muted hover:text-foreground transition-colors"
             >
-              Увійти
+              {tNav("login")}
             </Link>
             <Link
               href="/register"
               className="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors"
             >
-              Реєстрація
+              {tNav("register")}
             </Link>
           </nav>
         </div>
@@ -90,20 +65,18 @@ export default function LandingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-8">
             <Zap className="w-4 h-4 text-primary" />
             <span className="text-sm text-primary font-medium">
-              Методика тренера — у твоїй кишені
+              {t("badge")}
             </span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-tight mb-6">
-            Платформа для
+            {t("heroTitleA")}
             <br />
-            <span className="text-primary">силових видів спорту</span>
+            <span className="text-primary">{t("heroTitleB")}</span>
           </h1>
 
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-muted mb-10 leading-relaxed">
-            Персоналізовані відповіді на основі методик реальних тренерів.
-            Пауерліфтинг, стронгмен, важка атлетика — знайдіть свого тренера та
-            досягайте нових висот.
+            {t("heroSubtitle")}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -111,14 +84,14 @@ export default function LandingPage() {
               href="/register?role=athlete"
               className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white font-semibold text-base hover:bg-primary-hover shadow-lg shadow-primary/25 transition-all duration-200 hover:shadow-xl hover:shadow-primary/30"
             >
-              Я — атлет
+              {t("ctaAthleteRole")}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link
               href="/register?role=coach"
               className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-secondary text-foreground font-semibold text-base hover:bg-secondary-hover border border-border transition-all duration-200"
             >
-              Я — тренер
+              {t("ctaCoachRole")}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
@@ -130,11 +103,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-              Все для вашого <span className="text-primary">прогресу</span>
+              {t("featuresTitleA")} <span className="text-primary">{t("featuresTitleB")}</span>
             </h2>
             <p className="text-lg text-muted max-w-2xl mx-auto">
-              Ми об&apos;єднуємо досвід найкращих тренерів з технологіями,
-              що роблять ці знання доступними 24/7.
+              {t("featuresSubtitle")}
             </p>
           </div>
 
@@ -167,24 +139,23 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="p-8 sm:p-12 rounded-2xl bg-gradient-to-br from-primary/10 via-card to-primary/5 border border-primary/20">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-              Готові стати сильнішими?
+              {t("ctaSectionTitle")}
             </h2>
             <p className="text-lg text-muted mb-8 max-w-xl mx-auto">
-              Приєднуйтесь до PowerInside — платформи, де досвід тренерів
-              працює на ваш результат цілодобово.
+              {t("ctaSectionSubtitle")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/register?role=athlete"
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white font-semibold hover:bg-primary-hover shadow-lg shadow-primary/25 transition-all duration-200"
               >
-                Почати тренуватись
+                {t("startTraining")}
               </Link>
               <Link
                 href="/register?role=coach"
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-secondary text-foreground font-semibold hover:bg-secondary-hover border border-border transition-all duration-200"
               >
-                Стати тренером
+                {t("becomeCoach")}
               </Link>
             </div>
           </div>
@@ -201,7 +172,7 @@ export default function LandingPage() {
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} PowerInside. Всі права захищені.
+            &copy; {new Date().getFullYear()} PowerInside. {t("rights")}
           </p>
         </div>
       </footer>

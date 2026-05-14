@@ -2,23 +2,24 @@
 
 import { BookOpen, ListChecks, Brain, ChevronDown, ChevronUp, CheckCircle2, Circle } from "lucide-react";
 import { useState } from "react";
-import { Card, CardBody, CardHeader } from "@/components/ui/card";
+import { useTranslations, useLocale } from "next-intl";
+import { Card, CardBody } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 
-const ROUND_LABELS: Record<string, string> = {
-  TARGET_ATHLETE: "Цільовий атлет",
-  LOAD_MANAGEMENT: "Управління навантаженням",
-  AUTOREGULATION: "Авторегуляція",
-  PROGRESSION_DELOAD: "Прогресія та розвантаження",
-  EXERCISE_SELECTION: "Підбір вправ",
-  TECHNIQUE_STANDARDS: "Стандарти техніки",
-  LIFESTYLE_RECOVERY: "Спосіб життя та відновлення",
-};
+type RoundKey =
+  | "TARGET_ATHLETE"
+  | "LOAD_MANAGEMENT"
+  | "AUTOREGULATION"
+  | "PROGRESSION_DELOAD"
+  | "EXERCISE_SELECTION"
+  | "TECHNIQUE_STANDARDS"
+  | "LIFESTYLE_RECOVERY";
 
 function RuleRow({ rule, onToggle }: {
   rule: { id: string; title: string; condition?: string | null; signal?: string | null; decision?: string | null; exception?: string | null; alternative?: string | null; confirmed: boolean };
   onToggle: (id: string, confirmed: boolean) => void;
 }) {
+  const t = useTranslations("knowledge");
   const [open, setOpen] = useState(false);
   return (
     <div className={`rounded-lg border transition-colors ${rule.confirmed ? "border-green-500/40 bg-green-500/5" : "border-border/50 bg-secondary/30"}`}>
@@ -26,7 +27,7 @@ function RuleRow({ rule, onToggle }: {
         <button
           onClick={() => onToggle(rule.id, !rule.confirmed)}
           className="shrink-0 text-muted-foreground hover:text-green-500 transition-colors"
-          title={rule.confirmed ? "Скасувати підтвердження" : "Підтвердити правило"}
+          title={rule.confirmed ? t("rule.unconfirm") : t("rule.confirm")}
         >
           {rule.confirmed
             ? <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -42,11 +43,11 @@ function RuleRow({ rule, onToggle }: {
 
       {open && (
         <div className="px-4 pb-3 space-y-1.5 border-t border-border/30 pt-2">
-          {rule.condition   && <p className="text-xs"><span className="text-muted-foreground font-medium">Умова:</span> {rule.condition}</p>}
-          {rule.signal      && <p className="text-xs"><span className="text-muted-foreground font-medium">Сигнал:</span> {rule.signal}</p>}
-          {rule.decision    && <p className="text-xs"><span className="text-muted-foreground font-medium">Рішення:</span> {rule.decision}</p>}
-          {rule.exception   && <p className="text-xs"><span className="text-muted-foreground font-medium">Виняток:</span> {rule.exception}</p>}
-          {rule.alternative && <p className="text-xs"><span className="text-muted-foreground font-medium">Альтернатива:</span> {rule.alternative}</p>}
+          {rule.condition   && <p className="text-xs"><span className="text-muted-foreground font-medium">{t("rule.condition")}</span> {rule.condition}</p>}
+          {rule.signal      && <p className="text-xs"><span className="text-muted-foreground font-medium">{t("rule.signal")}</span> {rule.signal}</p>}
+          {rule.decision    && <p className="text-xs"><span className="text-muted-foreground font-medium">{t("rule.decision")}</span> {rule.decision}</p>}
+          {rule.exception   && <p className="text-xs"><span className="text-muted-foreground font-medium">{t("rule.exception")}</span> {rule.exception}</p>}
+          {rule.alternative && <p className="text-xs"><span className="text-muted-foreground font-medium">{t("rule.alternative")}</span> {rule.alternative}</p>}
         </div>
       )}
     </div>
@@ -54,6 +55,8 @@ function RuleRow({ rule, onToggle }: {
 }
 
 export default function KnowledgePage() {
+  const t = useTranslations("knowledge");
+  const locale = useLocale();
   const utils = trpc.useUtils();
   const knowledgeQuery = trpc.coach.getKnowledgeBase.useQuery();
   const rulesQuery = trpc.coach.getRules.useQuery();
@@ -86,14 +89,13 @@ export default function KnowledgePage() {
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          База <span className="text-primary">знань</span>
+          {t("titleA")} <span className="text-primary">{t("titleB")}</span>
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Правила методики з інтерв&apos;ю. Підтвердіть ті, що точно відображають вашу систему — тільки підтверджені правила використовуються AI для відповідей атлетам.
+          {t("subtitle")}
         </p>
       </div>
 
-      {/* Stats */}
       <div className="grid sm:grid-cols-3 gap-4">
         <Card>
           <CardBody className="flex items-center gap-4">
@@ -101,7 +103,7 @@ export default function KnowledgePage() {
               <BookOpen className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Записів</p>
+              <p className="text-sm text-muted-foreground">{t("entriesLabel")}</p>
               <p className="text-2xl font-bold">{knowledgeQuery.isLoading ? "…" : entries.length}</p>
             </div>
           </CardBody>
@@ -113,7 +115,7 @@ export default function KnowledgePage() {
               <ListChecks className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Всього правил</p>
+              <p className="text-sm text-muted-foreground">{t("totalRules")}</p>
               <p className="text-2xl font-bold">{rulesQuery.isLoading ? "…" : rules.length}</p>
             </div>
           </CardBody>
@@ -125,30 +127,29 @@ export default function KnowledgePage() {
               <CheckCircle2 className="w-5 h-5 text-green-500" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Підтверджено</p>
+              <p className="text-sm text-muted-foreground">{t("confirmedLabel")}</p>
               <p className="text-2xl font-bold text-green-500">{rulesQuery.isLoading ? "…" : confirmedCount}</p>
             </div>
           </CardBody>
         </Card>
       </div>
 
-      {/* Methodology Rules */}
       <div>
         <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
           <Brain className="w-5 h-5 text-primary" />
-          Правила методики
+          {t("rulesHeader")}
         </h2>
         <p className="text-xs text-muted-foreground mb-3">
-          Натисніть ⭕ поруч з правилом щоб підтвердити його. Розгорніть правило щоб побачити деталі.
+          {t("rulesHint")}
         </p>
 
-        {rulesQuery.isLoading && <p className="text-sm text-muted-foreground">Завантаження…</p>}
+        {rulesQuery.isLoading && <p className="text-sm text-muted-foreground">{t("loading")}</p>}
 
         {!rulesQuery.isLoading && rules.length === 0 && (
           <Card>
             <CardBody>
               <p className="text-sm text-muted-foreground text-center py-4">
-                Правила з&apos;являться після проходження інтерв&apos;ю
+                {t("emptyRules")}
               </p>
             </CardBody>
           </Card>
@@ -157,7 +158,16 @@ export default function KnowledgePage() {
         <div className="space-y-2">
           {Object.entries(rulesByRound).map(([round, roundRules]) => {
             const isOpen = openRounds[round] ?? true;
-            const label = ROUND_LABELS[round] ?? round;
+            const knownRound = ([
+              "TARGET_ATHLETE",
+              "LOAD_MANAGEMENT",
+              "AUTOREGULATION",
+              "PROGRESSION_DELOAD",
+              "EXERCISE_SELECTION",
+              "TECHNIQUE_STANDARDS",
+              "LIFESTYLE_RECOVERY",
+            ] as const).includes(round as never);
+            const label = knownRound ? t(`rounds.${round as RoundKey}`) : round;
             const confirmedInRound = roundRules.filter(r => r.confirmed).length;
             return (
               <Card key={round}>
@@ -192,12 +202,11 @@ export default function KnowledgePage() {
         </div>
       </div>
 
-      {/* Knowledge Entries */}
       {entries.length > 0 && (
         <div>
           <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-primary" />
-            Записи бази знань
+            {t("entriesHeader")}
           </h2>
           <div className="space-y-3">
             {entries.map((entry) => (
@@ -209,8 +218,8 @@ export default function KnowledgePage() {
                       <p className="text-sm text-muted-foreground">{entry.answer}</p>
                     </div>
                     <div className="text-right shrink-0 space-y-1">
-                      <p className="text-xs text-muted-foreground">{new Date(entry.createdAt).toLocaleDateString("uk")}</p>
-                      {entry.approved && <span className="text-xs text-green-500">✓ підтверджено</span>}
+                      <p className="text-xs text-muted-foreground">{new Date(entry.createdAt).toLocaleDateString(locale)}</p>
+                      {entry.approved && <span className="text-xs text-green-500">{t("approved")}</span>}
                     </div>
                   </div>
                 </CardBody>

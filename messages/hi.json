@@ -1,0 +1,725 @@
+{
+  "meta": {
+    "title": "PowerInside — शक्ति खेलों के लिए मंच",
+    "description": "पावरलिफ्टर्स और शक्ति एथलीटों के लिए AI कोचिंग, ज्ञान आधार और सदस्यताएँ"
+  },
+  "common": {
+    "loading": "लोड हो रहा है…",
+    "loadingShort": "लोड हो रहा है...",
+    "loadingDots": "...",
+    "back": "वापस",
+    "next": "अगला",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "send": "भेजें",
+    "copy": "कॉपी करें",
+    "copied": "कॉपी हो गया!",
+    "delete": "हटाएँ",
+    "edit": "संपादित करें",
+    "search": "खोजें",
+    "yes": "हाँ",
+    "no": "नहीं",
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय",
+    "error": "त्रुटि",
+    "errorTryAgain": "एक त्रुटि हुई। कृपया पुनः प्रयास करें।",
+    "retry": "पुनः प्रयास करें",
+    "all": "सभी",
+    "ok": "ठीक है",
+    "close": "बंद करें"
+  },
+  "language": {
+    "label": "भाषा",
+    "select": "भाषा चुनें"
+  },
+  "nav": {
+    "login": "साइन इन",
+    "register": "साइन अप",
+    "logout": "साइन आउट",
+    "profile": "प्रोफ़ाइल",
+    "settings": "सेटिंग्स",
+    "dashboard": "डैशबोर्ड",
+    "chat": "चैट",
+    "multiexpert": "मल्टी-एक्सपर्ट",
+    "balance": "शेष राशि",
+    "referrals": "रेफ़रल",
+    "interview": "साक्षात्कार",
+    "athletesQuestions": "एथलीट के प्रश्न",
+    "knowledgeBase": "ज्ञान आधार",
+    "payouts": "भुगतान",
+    "users": "उपयोगकर्ता",
+    "coaches": "कोच",
+    "analytics": "विश्लेषिकी",
+    "investorReport": "रिपोर्ट",
+    "toggleMenu": "मेनू टॉगल करें"
+  },
+  "landing": {
+    "badge": "कोच की कार्यप्रणाली — आपकी जेब में",
+    "heroTitleA": "शक्ति खेलों के",
+    "heroTitleB": "लिए मंच",
+    "heroSubtitle": "असली कोचों की कार्यप्रणालियों पर आधारित व्यक्तिगत उत्तर। पावरलिफ्टिंग, स्ट्रॉन्गमैन, वेटलिफ्टिंग — अपना कोच ढूँढें और नई ऊँचाइयाँ प्राप्त करें।",
+    "ctaAthleteRole": "मैं एथलीट हूँ",
+    "ctaCoachRole": "मैं कोच हूँ",
+    "featuresTitleA": "आपकी प्रगति",
+    "featuresTitleB": "के लिए सब कुछ",
+    "featuresSubtitle": "हम सर्वश्रेष्ठ कोचों के अनुभव को ऐसी तकनीक के साथ जोड़ते हैं जो इस ज्ञान को 24/7 उपलब्ध कराती है।",
+    "feature": {
+      "coachingTitle": "कार्यप्रणाली-आधारित कोचिंग",
+      "coachingDesc": "आपके चुने हुए असली कोचों के ज्ञान पर आधारित व्यक्तिगत उत्तर।",
+      "knowledgeTitle": "ज्ञान आधार",
+      "knowledgeDesc": "कोच गहन साक्षात्कार से गुजरते हैं और अपनी कार्यप्रणालियाँ अपलोड करते हैं, जो परामर्श का आधार बनती हैं।",
+      "subscriptionsTitle": "सदस्यताएँ",
+      "subscriptionsDesc": "विभिन्न कोचों और परामर्श स्तरों तक पहुँच के साथ लचीली सदस्यता प्रणाली।",
+      "trackingTitle": "प्रगति ट्रैकिंग",
+      "trackingDesc": "शक्ति मेट्रिक्स ट्रैक करें, रुझानों का विश्लेषण करें, और नए रिकॉर्ड बनाएँ।",
+      "verifiedTitle": "सत्यापित कोच",
+      "verifiedDesc": "प्रत्येक कोच मंच पर शामिल होने से पहले साक्षात्कार और सत्यापन से गुजरता है।",
+      "support24Title": "24/7 उत्तर",
+      "support24Desc": "अपने कोच की कार्यप्रणाली के आधार पर किसी भी समय उत्तर प्राप्त करें।"
+    },
+    "ctaSectionTitle": "मजबूत बनने के लिए तैयार हैं?",
+    "ctaSectionSubtitle": "PowerInside से जुड़ें — एक ऐसा मंच जहाँ कोचों का अनुभव चौबीसों घंटे आपके परिणामों के लिए काम करता है।",
+    "startTraining": "प्रशिक्षण शुरू करें",
+    "becomeCoach": "कोच बनें",
+    "rights": "सर्वाधिकार सुरक्षित।"
+  },
+  "authLogin": {
+    "title": "साइन इन करें",
+    "subtitle": "साइन इन करने के लिए अपना विवरण दर्ज करें",
+    "passwordLabel": "पासवर्ड",
+    "submit": "साइन इन",
+    "noAccount": "कोई खाता नहीं?",
+    "signupLink": "साइन अप",
+    "invalidCredentials": "अमान्य ईमेल या पासवर्ड।",
+    "generalError": "एक त्रुटि हुई। कृपया पुनः प्रयास करें।"
+  },
+  "authRegister": {
+    "title": "साइन अप करें",
+    "subtitle": "शुरू करने के लिए खाता बनाएँ",
+    "athlete": "एथलीट",
+    "coach": "कोच",
+    "referralBonus": "आपको आमंत्रित किया गया है! साइन अप करने के बाद आपको <b>5 बोनस संदेश</b> मिलेंगे।",
+    "postSignInError": "साइन-अप सफल, लेकिन साइन-इन विफल। कृपया मैन्युअल रूप से साइन इन करें।",
+    "generalError": "साइन-अप विफल।",
+    "nameLabel": "नाम",
+    "namePlaceholder": "राहुल शर्मा",
+    "emailLabel": "ईमेल",
+    "phoneLabel": "फ़ोन",
+    "phonePlaceholder": "+91 98765 43210",
+    "addressLabel": "पता",
+    "addressPlaceholder": "मुख्य मार्ग 123, शहर",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "कम से कम 6 वर्ण",
+    "countryLabel": "देश",
+    "languageLabel": "भाषा",
+    "submit": "साइन अप",
+    "hasAccount": "पहले से खाता है?",
+    "loginLink": "साइन इन"
+  },
+  "countries": {
+    "UA": "यूक्रेन",
+    "US": "USA",
+    "GB": "यूनाइटेड किंगडम",
+    "DE": "जर्मनी",
+    "PL": "पोलैंड",
+    "CA": "कनाडा",
+    "AU": "ऑस्ट्रेलिया",
+    "OTHER": "अन्य",
+    "selectPlaceholder": "देश चुनें"
+  },
+  "roles": {
+    "label": "भूमिका",
+    "ATHLETE": "एथलीट",
+    "COACH": "कोच",
+    "INVESTOR": "निवेशक",
+    "ADMIN": "व्यवस्थापक",
+    "OWNER": "स्वामी",
+    "defaultUserName": "उपयोगकर्ता"
+  },
+  "coachStatus": {
+    "PENDING": "लंबित",
+    "ACTIVE": "सक्रिय",
+    "SUSPENDED": "निलंबित",
+    "pendingActivation": "सक्रियण की प्रतीक्षा में"
+  },
+  "dashboard": {
+    "athleteGreeting": "नमस्ते,",
+    "athleteSubtitle": "आपका व्यक्तिगत AI कोच आपकी प्रतीक्षा कर रहा है",
+    "balanceLabel": "संदेश शेष राशि",
+    "balanceBreakdown": "{free} मुफ्त / {weekly} साप्ताहिक / {purchased} खरीदे गए",
+    "conversationsLabel": "वार्तालाप",
+    "conversationsSub": "सक्रिय AI संवाद",
+    "askTitle": "प्रश्न पूछें",
+    "askSubtitle": "अपने AI कोच से प्रशिक्षण के बारे में पूछें",
+    "recentTitle": "हाल के वार्तालाप",
+    "allConversations": "सभी वार्तालाप",
+    "emptyConversations": "अभी तक आपके पास कोई वार्तालाप नहीं है। अपने AI कोच के साथ चैट शुरू करें!",
+    "newConversation": "नया वार्तालाप",
+    "coachStatusLine": "स्थिति:",
+    "interviewCard": "साक्षात्कार",
+    "interviewSub": "पूर्ण किए गए दौर",
+    "knowledgeCard": "ज्ञान आधार",
+    "knowledgeSub": "ज्ञान आधार में प्रविष्टियाँ",
+    "rulesCard": "नियम",
+    "rulesSub": "कार्यप्रणाली के नियम",
+    "continueTitle": "साक्षात्कार जारी रखें",
+    "continueSub": "AI कोच को सक्रिय करने के लिए सभी 7 दौर पूरे करें",
+    "goto": "जाएँ",
+    "adminTitle": "व्यवस्थापक",
+    "adminPanelLine": "पैनल",
+    "adminSubtitle": "मंच का अवलोकन",
+    "totalUsers": "कुल उपयोगकर्ता",
+    "coaches": "कोच",
+    "activeTotal": "सक्रिय / कुल",
+    "revenue": "राजस्व",
+    "subscriptionsInfo": "सदस्यताएँ: {active} सक्रिय / {total} कुल",
+    "manageCoachesTitle": "कोचों का प्रबंधन",
+    "manageCoachesSub": "कोचों को देखें, सक्रिय करें और निलंबित करें",
+    "manageCoachesAction": "देखें"
+  },
+  "balance": {
+    "titleA": "संदेश",
+    "titleB": "शेष राशि",
+    "subtitle": "अपनी शेष राशि का प्रबंधन करें और संदेश पैक खरीदें",
+    "successMsg": "✓ भुगतान सफल! आपकी शेष राशि अपडेट कर दी गई है।",
+    "canceledMsg": "भुगतान रद्द कर दिया गया।",
+    "free": "मुफ्त",
+    "weekly": "साप्ताहिक",
+    "purchased": "खरीदे गए",
+    "totalLabel": "कुल शेष राशि",
+    "totalUnit": "संदेश उपलब्ध",
+    "subscription": "सदस्यता",
+    "active": "सक्रिय",
+    "perMonth": "/ माह",
+    "nextBilling": "अगला शुल्क: {date}",
+    "subscriptionActiveLabel": "सदस्यता सक्रिय",
+    "basicTitle": "Basic — $30 / माह",
+    "feature": {
+      "weekly20": "प्रति सप्ताह 20 संदेश",
+      "aiChat": "कोच के साथ AI चैट",
+      "access": "कार्यप्रणाली तक पहुँच",
+      "noExpiry": "कभी समाप्त नहीं होते",
+      "anyCoach": "कोई भी कोच",
+      "instant": "तत्काल उत्तर"
+    },
+    "subscribeBasic": "Basic की सदस्यता लें",
+    "packsTitle": "संदेश पैक",
+    "popular": "सबसे लोकप्रिय",
+    "messages": "संदेश",
+    "perMessage": "{price} / संदेश",
+    "buy": "खरीदें"
+  },
+  "chat": {
+    "coachLabel": "कोच:",
+    "noCoaches": "कोई कोच उपलब्ध नहीं",
+    "messagesCount": "{count} संदेश",
+    "emptyTitle": "AI कोच के साथ वार्तालाप शुरू करें",
+    "emptySubtitle": "एक कोच चुनें और प्रशिक्षण, तकनीक या पोषण के बारे में अपना पहला प्रश्न पूछें।",
+    "multipleQuestionsWarning": "आपके संदेश में <b>{count} प्रश्न</b> हैं। प्रत्येक प्रश्न आपकी शेष राशि से 1 संदेश का उपभोग करता है — <b>{count}</b> काटे जाएँगे। हम अधिक सटीक उत्तर के लिए एक समय में एक प्रश्न पूछने की सलाह देते हैं।",
+    "inputPlaceholder": "अपना प्रश्न लिखें…",
+    "errorSend": "संदेश भेजने में विफल",
+    "errorPrefix": "त्रुटि: {message}"
+  },
+  "interview": {
+    "completed": "साक्षात्कार पूर्ण। आपके खुलेपन के लिए धन्यवाद।",
+    "startOver": "पुनः शुरू करें",
+    "inputPlaceholder": "विस्तार से उत्तर दें…",
+    "errorPrefix": "त्रुटि: {message}",
+    "errorSend": "भेजने में विफल"
+  },
+  "knowledge": {
+    "titleA": "ज्ञान",
+    "titleB": "आधार",
+    "subtitle": "आपके साक्षात्कार से कार्यप्रणाली के नियम। उन नियमों की पुष्टि करें जो आपके सिस्टम को सटीक रूप से दर्शाते हैं — एथलीटों को उत्तर देते समय AI केवल पुष्ट नियमों का उपयोग करता है।",
+    "entriesLabel": "प्रविष्टियाँ",
+    "totalRules": "कुल नियम",
+    "confirmedLabel": "पुष्ट",
+    "rulesHeader": "कार्यप्रणाली के नियम",
+    "rulesHint": "नियम की पुष्टि करने के लिए उसके बगल में ⭕ पर टैप करें। विवरण देखने के लिए नियम का विस्तार करें।",
+    "loading": "लोड हो रहा है…",
+    "emptyRules": "साक्षात्कार पूरा करने के बाद नियम दिखाई देंगे",
+    "entriesHeader": "ज्ञान आधार की प्रविष्टियाँ",
+    "approved": "✓ स्वीकृत",
+    "rule": {
+      "condition": "शर्त:",
+      "signal": "संकेत:",
+      "decision": "निर्णय:",
+      "exception": "अपवाद:",
+      "alternative": "विकल्प:",
+      "confirm": "नियम की पुष्टि करें",
+      "unconfirm": "पुष्टि रद्द करें"
+    },
+    "rounds": {
+      "TARGET_ATHLETE": "लक्ष्य एथलीट",
+      "LOAD_MANAGEMENT": "भार प्रबंधन",
+      "AUTOREGULATION": "स्व-नियमन",
+      "PROGRESSION_DELOAD": "प्रगति और डीलोड",
+      "EXERCISE_SELECTION": "व्यायाम चयन",
+      "TECHNIQUE_STANDARDS": "तकनीकी मानक",
+      "LIFESTYLE_RECOVERY": "जीवनशैली और रिकवरी"
+    }
+  },
+  "expertQa": {
+    "titleA": "एथलीट",
+    "titleB": "के प्रश्न",
+    "subtitle": "एथलीटों के प्रश्नों का उत्तर दें और ज्ञान आधार को बढ़ाएँ",
+    "pendingTitle": "उत्तर की प्रतीक्षा में",
+    "loading": "लोड हो रहा है…",
+    "noNew": "कोई नया प्रश्न नहीं",
+    "answerPlaceholder": "आपका उत्तर…",
+    "reply": "उत्तर दें",
+    "answeredTitle": "भेजे गए उत्तर",
+    "bestSelected": "★ एथलीट द्वारा सर्वश्रेष्ठ के रूप में चुना गया",
+    "empty": "अभी तक एथलीटों के कोई प्रश्न नहीं",
+    "athleteFallback": "एथलीट"
+  },
+  "qa": {
+    "titleA": "मल्टी-एक्सपर्ट",
+    "titleB": "उत्तर",
+    "subtitle": "एक साथ कई कोचों से पूछें और सर्वश्रेष्ठ उत्तर चुनें",
+    "newQuestion": "नया प्रश्न",
+    "questionLabel": "आपका प्रश्न",
+    "questionPlaceholder": "अपने प्रश्न का विस्तार से वर्णन करें — जितना अधिक सटीक, उत्तर उतने ही बेहतर…",
+    "chooseCoachesLabel": "कोच चुनें (5 तक)",
+    "selectedCount": "({count} चयनित)",
+    "loading": "लोड हो रहा है…",
+    "noActiveCoaches": "अभी तक कोई सक्रिय कोच नहीं",
+    "submit": "प्रश्न भेजें",
+    "myQuestions": "मेरे प्रश्न",
+    "emptyMy": "अभी तक आपके पास कोई प्रश्न नहीं है। पहला प्रश्न पूछें!",
+    "answersCount": "{answered}/{total} उत्तर",
+    "best": "सर्वश्रेष्ठ",
+    "selectBest": "सर्वश्रेष्ठ के रूप में चिह्नित करें",
+    "pendingAnswer": "उत्तर की प्रतीक्षा में…",
+    "genericError": "त्रुटि",
+    "coachFallback": "कोच"
+  },
+  "referral": {
+    "loading": "लोड हो रहा है…",
+    "title": "रेफ़रल कार्यक्रम",
+    "subtitle": "नए एथलीटों को आमंत्रित करें — जब वे सदस्यता लें तो <b>5 बोनस संदेश</b> प्राप्त करें। वे आपके लिंक से जुड़ने पर ही <b>5 स्वागत संदेश</b> प्राप्त करते हैं।",
+    "yourLink": "आपका रेफ़रल लिंक",
+    "copy": "कॉपी करें",
+    "copied": "कॉपी हो गया!",
+    "codeLabel": "कोड:",
+    "stats": {
+      "totalReferred": "कुल आमंत्रित",
+      "bonusEarned": "अर्जित बोनस संदेश",
+      "pending": "लंबित (अभी तक सदस्यता नहीं ली)"
+    },
+    "list": {
+      "title": "आमंत्रित एथलीट",
+      "joined": "{date} को शामिल हुए",
+      "earned": "+{n} संदेश अर्जित",
+      "pendingSub": "सदस्यता लंबित"
+    },
+    "how": {
+      "title": "यह कैसे काम करता है",
+      "step1": "नए एथलीट के साथ अपना रेफ़रल लिंक साझा करें।",
+      "step2": "वे पंजीकरण करते हैं और तुरंत 5 बोनस संदेश प्राप्त करते हैं।",
+      "step3": "जब वे अपनी पहली सदस्यता खरीदते हैं, तो आपको 5 बोनस संदेश मिलते हैं।",
+      "step4": "बोनस संदेश कभी समाप्त नहीं होते और आपकी शेष राशि में बने रहते हैं।"
+    }
+  },
+  "payouts": {
+    "titleA": "मेरे",
+    "titleB": "भुगतान",
+    "subtitle": "प्रत्येक एथलीट की सदस्यता का 70% आपके खाते में जमा किया जाता है",
+    "pendingLabel": "लंबित भुगतान",
+    "totalPaid": "कुल भुगतान",
+    "modelTitle": "वित्तीय मॉडल:",
+    "modelDescription": "एथलीट की सदस्यता का 70% आपको, 30% मंच को।",
+    "schedule": "भुगतान प्रत्येक महीने की 1 और 15 तारीख को होते हैं।",
+    "min": "न्यूनतम भुगतान राशि $250 है।",
+    "historyTitle": "भुगतान इतिहास",
+    "loading": "लोड हो रहा है…",
+    "empty": "अभी तक कोई भुगतान नहीं। ये आपके पहले एथलीट की सदस्यता के बाद दिखाई देंगे।",
+    "subscription": "सदस्यता",
+    "pack": "पैक",
+    "platformFee": "मंच: {fee}",
+    "status": {
+      "PENDING": "लंबित",
+      "PROCESSING": "प्रसंस्करण में",
+      "COMPLETED": "भुगतान हो गया",
+      "FAILED": "विफल"
+    }
+  },
+  "investor": {
+    "titleA": "निवेशक",
+    "titleB": "रिपोर्ट",
+    "subtitle": "मंच विश्लेषिकी — केवल देखने के लिए। निवेशक भुगतान त्रैमासिक (नेट)।",
+    "metrics": {
+      "totalUsers": "कुल उपयोगकर्ता",
+      "athletesSub": "{n} एथलीट",
+      "activeCoaches": "सक्रिय कोच",
+      "ofTotalCoaches": "कुल {total} में से",
+      "activeSubs": "सक्रिय सदस्यताएँ",
+      "ofTotalSubs": "कुल {total} में से",
+      "mrr": "MRR (अनुमान)",
+      "mrrSub": "सक्रिय सदस्यताओं के आधार पर",
+      "packsRevenue": "राजस्व (पैक)",
+      "packsRevenueSub": "एकमुश्त संदेश खरीद",
+      "pendingPayouts": "लंबित भुगतान",
+      "pendingPayoutsSub": "कोचों के लिए कतार में"
+    },
+    "quarterly": {
+      "title": "त्रैमासिक रिपोर्ट (पिछले 3 महीने)",
+      "coachPayouts": "कोच भुगतान",
+      "platformRevenue": "मंच राजस्व (30%)",
+      "transactions": "लेन-देन की संख्या",
+      "totalTurnover": "कुल टर्नओवर"
+    },
+    "conversion": {
+      "title": "रूपांतरण",
+      "coachesActive": "सक्रिय कोच",
+      "subsActive": "सक्रिय सदस्यताएँ",
+      "note": "निवेशकों को त्रैमासिक भुगतान मिलता है (नेट)। दावा करने का अधिकार ≥51% संचयी हिस्से पर उत्पन्न होता है (T.S. p.10)।"
+    }
+  },
+  "profile": {
+    "titleA": "मेरी",
+    "titleB": "प्रोफ़ाइल",
+    "subtitle": "अपनी जानकारी देखें और संपादित करें",
+    "basicInfo": "बुनियादी जानकारी",
+    "roleLabel": "भूमिका:",
+    "savedMsg": "प्रोफ़ाइल सफलतापूर्वक अपडेट हुई!",
+    "nameLabel": "नाम",
+    "namePlaceholder": "आपका नाम",
+    "emailLabel": "ईमेल",
+    "emailHelper": "ईमेल बदला नहीं जा सकता",
+    "phoneLabel": "फ़ोन",
+    "phonePlaceholder": "+91 98765 43210",
+    "countryLabel": "देश",
+    "countryPlaceholder": "देश चुनें",
+    "languageLabel": "इंटरफ़ेस की भाषा",
+    "languagePlaceholder": "भाषा चुनें",
+    "save": "परिवर्तन सहेजें",
+    "coach": {
+      "title": "कोच प्रोफ़ाइल",
+      "subtitle": "आपकी कोच प्रोफ़ाइल की स्थिति और आँकड़े",
+      "statusLabel": "स्थिति",
+      "active": "सक्रिय",
+      "pending": "सक्रियण की प्रतीक्षा में",
+      "suspended": "निलंबित",
+      "roundsLabel": "साक्षात्कार के दौर",
+      "roundsValue": "{done} / 7 पूर्ण",
+      "knowledgeLabel": "ज्ञान आधार",
+      "knowledgeValue": "{n} प्रविष्टियाँ",
+      "rulesLabel": "कार्यप्रणाली के नियम",
+      "rulesValue": "{n} नियम",
+      "identityTitle": "पहचान दस्तावेज़",
+      "identitySubtitle": "सत्यापन के लिए आवश्यक। प्रारूप: JPEG, PNG, PDF। अधिकतम 10 MB।",
+      "uploaded": "दस्तावेज़ अपलोड किया गया",
+      "replace": "बदलें",
+      "upload": "दस्तावेज़ अपलोड करें",
+      "uploading": "अपलोड हो रहा है…",
+      "uploadSuccess": "✓ दस्तावेज़ सफलतापूर्वक अपलोड हुआ",
+      "uploadFailed": "अपलोड विफल"
+    }
+  },
+  "adminCoaches": {
+    "titleA": "कोचों का",
+    "titleB": "प्रबंधन",
+    "subtitle": "मंच पर {n} कोच",
+    "searchPlaceholder": "नाम या ईमेल से खोजें…",
+    "table": {
+      "coach": "कोच",
+      "status": "स्थिति",
+      "interview": "साक्षात्कार",
+      "knowledge": "ज्ञान आधार",
+      "rules": "नियम",
+      "registered": "शामिल हुए",
+      "actions": "क्रियाएँ"
+    },
+    "notFound": "कोई कोच नहीं मिला",
+    "noName": "बिना नाम",
+    "activate": "सक्रिय करें",
+    "suspend": "निलंबित करें",
+    "resetInterview": "साक्षात्कार रीसेट करें",
+    "resetConfirm": "{who} के लिए साक्षात्कार रीसेट करें? सभी संदेश हटा दिए जाएँगे।"
+  },
+  "adminUsers": {
+    "titleA": "उपयोगकर्ताओं",
+    "titleB": "का प्रबंधन",
+    "subtitle": "मंच पर {n} उपयोगकर्ता",
+    "searchPlaceholder": "नाम या ईमेल से खोजें…",
+    "table": {
+      "user": "उपयोगकर्ता",
+      "role": "भूमिका",
+      "country": "देश",
+      "conversations": "वार्तालाप",
+      "registered": "शामिल हुए"
+    },
+    "loading": "लोड हो रहा है…",
+    "notFound": "कोई उपयोगकर्ता नहीं मिला",
+    "noName": "बिना नाम",
+    "page": "पृष्ठ {page} / {total}",
+    "prev": "← पीछे",
+    "next": "आगे →"
+  },
+  "adminAnalytics": {
+    "titleA": "मंच",
+    "titleB": "विश्लेषिकी",
+    "subtitle": "समग्र आँकड़े",
+    "cards": {
+      "totalUsers": "कुल उपयोगकर्ता",
+      "totalCoaches": "कुल कोच",
+      "activeCoaches": "सक्रिय कोच",
+      "activeSubs": "सक्रिय सदस्यताएँ",
+      "totalSubs": "कुल सदस्यताएँ",
+      "revenue": "राजस्व (पैक)"
+    },
+    "coachConversion": "कोच रूपांतरण",
+    "totalCoachesRow": "कुल कोच",
+    "activeRow": "सक्रिय",
+    "noCoaches": "कोई कोच नहीं",
+    "percentActive": "{pct}% सक्रिय",
+    "subscriptionsTitle": "सदस्यताएँ",
+    "totalSubsRow": "कुल सदस्यताएँ",
+    "noSubs": "कोई सदस्यता नहीं",
+    "loading": "लोड हो रहा है…"
+  },
+  "tg": {
+    "meta": {
+      "title": "PowerInside — Telegram",
+      "description": "Telegram के लिए PowerInside Mini App"
+    },
+    "common": {
+      "loading": "लोड हो रहा है…",
+      "back": "वापस",
+      "errorTitle": "प्राधिकरण त्रुटि",
+      "tryAgain": "त्रुटि। पुनः प्रयास करें।"
+    },
+    "tabs": {
+      "chat": "चैट",
+      "balance": "शेष राशि",
+      "profile": "प्रोफ़ाइल",
+      "admin": "व्यवस्थापक",
+      "interview": "साक्षात्कार"
+    },
+    "tabsCoach": {
+      "interview": "साक्षात्कार",
+      "profile": "प्रोफ़ाइल"
+    },
+    "athleteTabs": {
+      "chat": "वार्तालाप",
+      "balance": "शेष राशि",
+      "profile": "प्रोफ़ाइल",
+      "admin": "व्यवस्थापक"
+    },
+    "onboarding": {
+      "topLabel": "PowerInside · Est 2026",
+      "frameNumber": "N° 001",
+      "frameMid": "— कार्यप्रणाली —",
+      "frameInf": "∞",
+      "tagline": "कोच की कार्यप्रणाली के साथ बातचीत। कोई टेम्पलेट नहीं — केवल वही जो वे कहेंगे।",
+      "selectRole": "— अपनी भूमिका चुनें",
+      "imAthlete": "मैं एथलीट हूँ",
+      "athleteSub": "मैं कोचों से प्रश्न पूछता हूँ और उनकी कार्यप्रणाली से उत्तर प्राप्त करता हूँ",
+      "imCoach": "मैं कोच हूँ",
+      "coachSub": "मैं 7 दौर के साक्षात्कार से गुजरता हूँ — मेरी कार्यप्रणाली एथलीटों का आधार बनती है",
+      "saving": "चयन सहेज रहे हैं…",
+      "supportNote": "सहायता के माध्यम से चयन बदला जा सकता है"
+    },
+    "interview": {
+      "header": "कार्यप्रणाली साक्षात्कार",
+      "headlineA": "बताइए कि आप कैसे",
+      "headlineB": "प्रशिक्षित करते हैं।",
+      "empty": "7 दौर के प्रश्न। आपके उत्तर — कार्यप्रणाली की नींव।",
+      "inProgress": "{total} में से {done} दौर पूर्ण। जारी रखें।",
+      "allDone": "सभी दौर पूर्ण! कार्यप्रणाली दर्ज की गई।",
+      "roundCounter": "{done} / {total} दौर · {pct}%",
+      "rounds": {
+        "TARGET_ATHLETE": {
+          "label": "एथलीट प्रोफ़ाइल और प्रणाली",
+          "desc": "कार्यप्रणाली किसके लिए है और यह कहाँ सबसे अच्छा काम करती है"
+        },
+        "LOAD_MANAGEMENT": {
+          "label": "भार आवंटन तर्क",
+          "desc": "प्रशिक्षण भार कैसे चुना और समायोजित किया जाता है"
+        },
+        "AUTOREGULATION": {
+          "label": "स्व-नियमन और तत्परता",
+          "desc": "एथलीट की स्थिति के अनुसार प्रशिक्षण कैसे अनुकूलित होता है"
+        },
+        "PROGRESSION_DELOAD": {
+          "label": "प्रगति की संरचना",
+          "desc": "दीर्घकालिक प्रगति कैसे बनाई जाती है"
+        },
+        "EXERCISE_SELECTION": {
+          "label": "व्यायाम चयन की रणनीति",
+          "desc": "व्यायाम कैसे चुने और संशोधित किए जाते हैं"
+        },
+        "TECHNIQUE_STANDARDS": {
+          "label": "तकनीकी मानक और गति",
+          "desc": "तकनीकी आवश्यकताएँ और गति का दर्शन"
+        },
+        "LIFESTYLE_RECOVERY": {
+          "label": "रिकवरी पारिस्थितिकी",
+          "desc": "गैर-प्रशिक्षण कारक जो परिणामों को प्रभावित करते हैं"
+        }
+      },
+      "completedBadge": "✓ पूर्ण",
+      "answerInDetail": "विस्तृत उत्तर दें",
+      "voice": "आवाज़",
+      "text": "पाठ",
+      "answerInstructions": "विस्तार से उत्तर दें — जितने अधिक विवरण, उतनी ही सटीक रूप से आपकी कार्यप्रणाली एथलीटों के सामने प्रस्तुत होगी।",
+      "transcribing": "ट्रांसक्राइब हो रहा है…",
+      "inputPlaceholder": "विस्तार से उत्तर दें…"
+    },
+    "sport": {
+      "moderationTitle": "मॉडरेशन में",
+      "moderationSub": "आपका खेल व्यवस्थापक को भेजा गया है। अनुमोदन के बाद आपको Telegram अधिसूचना मिलेगी और आप साक्षात्कार ले सकेंगे।",
+      "customNameTitle": "कस्टम खेल",
+      "customNameSub": "नाम लिखें — व्यवस्थापक समीक्षा करके अनुमोदित करेगा।",
+      "customPlaceholder": "खेल का नाम…",
+      "submitting": "भेजा जा रहा है…",
+      "submitForModeration": "मॉडरेशन के लिए भेजें",
+      "step2Label": "PowerInside · चरण 2",
+      "yourSport": "आपका खेल",
+      "chooseDiscipline": "उस अनुशासन को चुनें जिसमें आप एथलीटों को प्रशिक्षित करते हैं।",
+      "loading": "लोड हो रहा है…",
+      "addCustom": "अपना खेल जोड़ें",
+      "moderationWithName": "आपका खेल <b>{name}</b> व्यवस्थापक को भेजा गया है। अनुमोदित होने पर आपको Telegram अधिसूचना मिलेगी।"
+    },
+    "coachProfile": {
+      "header": "कोच प्रोफ़ाइल",
+      "activeBadge": "● सक्रिय",
+      "pendingBadge": "● सक्रियण की प्रतीक्षा में",
+      "stats": {
+        "rules": "नियम",
+        "entries": "प्रविष्टियाँ",
+        "rounds": "/ 7 दौर"
+      },
+      "whatNextTitle": "आगे क्या?",
+      "whatNextDesc": "साक्षात्कार पूरा होने के बाद, व्यवस्थापक आपकी कार्यप्रणाली की समीक्षा करेगा और आपकी प्रोफ़ाइल को सक्रिय करेगा। सक्रिय होने पर एथलीट आपसे प्रश्न पूछ सकते हैं।",
+      "footer": "POWERINSIDE · COACH · V 0.1"
+    },
+    "coaches": {
+      "library": "कोच लाइब्रेरी",
+      "headlineA": "चुनें कि किसके",
+      "headlineB": "साथ बात करनी है।",
+      "loading": "लोड हो रहा है...",
+      "count": "{n} सक्रिय कार्यप्रणालियाँ।",
+      "noCoaches": "अभी तक कोई सक्रिय कोच नहीं।",
+      "recommended": "⸻ अनुशंसित",
+      "coachFallback": "कोच",
+      "rulesCount": "{n} नियम",
+      "entriesCount": "{n} प्रविष्टियाँ"
+    },
+    "chatView": {
+      "headerStatus": "कार्यप्रणाली · {n} नियम",
+      "emptyHeadlineA": "वह पूछें जिसके बारे में",
+      "emptyHeadlineB": "आप लंबे समय से झिझक रहे थे।",
+      "emptySub": "मैं उसी तरह उत्तर देता हूँ जैसे मेरे कोच देंगे। मेरे नियम — उनकी कार्यप्रणाली।",
+      "noMessages": "पर्याप्त संदेश नहीं। अपनी शेष राशि भरें।",
+      "inputPlaceholder": "कोच से पूछें…",
+      "prompts": {
+        "p1": "स्क्वैट से पहले वार्म-अप बनाएँ",
+        "p2": "क्या पीठ दर्द के बावजूद प्रशिक्षण करना चाहिए?",
+        "p3": "प्रतियोगिता के दिन कैसे खाना चाहिए?",
+        "p4": "समझाएँ कि स्व-नियमन क्या है",
+        "q1": "कितने सेट?",
+        "q2": "बाद में क्या खाएँ?",
+        "q3": "एक और प्रश्न"
+      }
+    },
+    "balance": {
+      "header": "शेष राशि",
+      "totalSub": "कोच को संदेश",
+      "totalLabel": "कुल / शेष",
+      "free": "● {n} मुफ्त",
+      "weekly": "● {n} साप्ताहिक",
+      "purchased": "● {n} खरीदे गए",
+      "subActive": "सक्रिय",
+      "subInactive": "निष्क्रिय",
+      "renews": "नवीनीकरण {date} · $30",
+      "packsTitle": "— संदेश पैक",
+      "perHundred": "≈ {rate} / 100 संदेश",
+      "pack50": "वार्म-अप के लिए",
+      "pack200": "लोकप्रिय",
+      "pack500": "सर्वोत्तम मूल्य"
+    },
+    "profile": {
+      "header": "प्रोफ़ाइल",
+      "athlete": "एथलीट",
+      "settings": "— सेटिंग्स",
+      "subscription": "सदस्यता",
+      "none": "कोई नहीं",
+      "notifications": "अधिसूचनाएँ",
+      "enabled": "सक्षम",
+      "language": "भाषा",
+      "support": "सहायता से संपर्क करें",
+      "logout": "साइन आउट",
+      "footer": "POWERINSIDE · V 0.1 · TELEGRAM MINI APP"
+    },
+    "admin": {
+      "header": "प्रशासन",
+      "sections": {
+        "stats": "विश्लेषिकी",
+        "coaches": "कोच",
+        "users": "उपयोगकर्ता",
+        "sports": "खेल"
+      },
+      "stats": {
+        "totalUsers": "कुल उपयोगकर्ता",
+        "totalCoaches": "कुल कोच",
+        "activeCoaches": "सक्रिय कोच",
+        "activeSubs": "सक्रिय सदस्यताएँ",
+        "totalSubs": "कुल सदस्यताएँ",
+        "revenue": "राजस्व (पैक)"
+      },
+      "coaches": {
+        "noName": "बिना नाम",
+        "activate": "सक्रिय करें",
+        "suspend": "निलंबित करें",
+        "resetInterview": "↺ साक्षात्कार रीसेट करें",
+        "empty": "कोई कोच नहीं",
+        "stats": "{rules} नियम · {entries} प्रविष्टियाँ · {rounds}/7",
+        "resetConfirm": "{who} के लिए साक्षात्कार रीसेट करें?"
+      },
+      "users": {
+        "noName": "बिना नाम",
+        "conversations": "{n} वार्तालाप · {date}",
+        "empty": "कोई उपयोगकर्ता नहीं"
+      },
+      "sports": {
+        "pending": "लंबित मॉडरेशन ({n})",
+        "from": "{who} से",
+        "approve": "अनुमोदित करें",
+        "reject": "अस्वीकार करें",
+        "addTitle": "खेल जोड़ें",
+        "addPlaceholder": "नाम…",
+        "add": "जोड़ें",
+        "allTitle": "सभी खेल ({n})",
+        "delete": "हटाएँ",
+        "deleteConfirm": "\"{name}\" हटाएँ?",
+        "unknown": "अज्ञात"
+      },
+      "status": {
+        "PENDING": "लंबित",
+        "ACTIVE": "सक्रिय",
+        "SUSPENDED": "निलंबित"
+      },
+      "roles": {
+        "ATHLETE": "एथलीट",
+        "COACH": "कोच",
+        "INVESTOR": "निवेशक",
+        "ADMIN": "व्यवस्थापक",
+        "OWNER": "स्वामी"
+      }
+    },
+    "adminProfile": {
+      "header": "व्यवस्थापक प्रोफ़ाइल",
+      "badge": "● व्यवस्थापक",
+      "previewTitle": "— इंटरफ़ेस पूर्वावलोकन",
+      "athleteMode": "एथलीट मोड",
+      "athleteSub": "एथलीट इंटरफ़ेस का पूर्वावलोकन",
+      "coachMode": "कोच मोड",
+      "coachSub": "कोच इंटरफ़ेस और साक्षात्कार का पूर्वावलोकन",
+      "previewAthlete": "पूर्वावलोकन: एथलीट मोड",
+      "previewCoach": "पूर्वावलोकन: कोच मोड",
+      "footer": "POWERINSIDE · ADMIN · V 0.1"
+    }
+  }
+}

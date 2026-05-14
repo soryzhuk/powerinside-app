@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import {
   MessageSquare,
   Users,
@@ -14,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
 
 export default function QaPage() {
+  const t = useTranslations("qa");
+  const locale = useLocale();
   const [question, setQuestion] = useState("");
   const [selectedCoachIds, setSelectedCoachIds] = useState<string[]>([]);
   const [creating, setCreating] = useState(false);
@@ -49,7 +52,7 @@ export default function QaPage() {
       setSelectedCoachIds([]);
       myQuestionsQuery.refetch();
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Помилка");
+      setError(err instanceof Error ? err.message : t("genericError"));
     } finally {
       setCreating(false);
     }
@@ -67,19 +70,18 @@ export default function QaPage() {
     <div className="space-y-8 max-w-4xl">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Мультиекспертні <span className="text-primary">відповіді</span>
+          {t("titleA")} <span className="text-primary">{t("titleB")}</span>
         </h1>
         <p className="text-muted-foreground mt-1">
-          Задайте питання одразу кільком тренерам і оберіть найкращу відповідь
+          {t("subtitle")}
         </p>
       </div>
 
-      {/* Create question form */}
       <Card>
         <CardHeader>
           <h2 className="text-lg font-semibold flex items-center gap-2">
             <Send className="w-5 h-5 text-primary" />
-            Нове запитання
+            {t("newQuestion")}
           </h2>
         </CardHeader>
         <CardBody>
@@ -92,12 +94,12 @@ export default function QaPage() {
 
             <div>
               <label className="text-sm font-medium block mb-1.5">
-                Ваше запитання
+                {t("questionLabel")}
               </label>
               <textarea
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                placeholder="Опишіть своє питання детально — чим точніше, тим кращі відповіді..."
+                placeholder={t("questionPlaceholder")}
                 rows={4}
                 className="w-full px-3 py-2 rounded-lg bg-input border border-border text-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-colors"
                 required
@@ -107,18 +109,18 @@ export default function QaPage() {
 
             <div>
               <label className="text-sm font-medium block mb-2">
-                Оберіть тренерів (до 5)
+                {t("chooseCoachesLabel")}
                 {selectedCoachIds.length > 0 && (
                   <span className="ml-2 text-primary">
-                    ({selectedCoachIds.length} обрано)
+                    {t("selectedCount", { count: selectedCoachIds.length })}
                   </span>
                 )}
               </label>
               {coachesQuery.isLoading ? (
-                <p className="text-sm text-muted-foreground">Завантаження...</p>
+                <p className="text-sm text-muted-foreground">{t("loading")}</p>
               ) : coaches.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  Поки немає активних тренерів
+                  {t("noActiveCoaches")}
                 </p>
               ) : (
                 <div className="grid sm:grid-cols-2 gap-2">
@@ -139,7 +141,7 @@ export default function QaPage() {
                           {coach.user.name?.[0]?.toUpperCase() ?? "?"}
                         </div>
                         <span className="text-sm font-medium">
-                          {coach.user.name ?? "Тренер"}
+                          {coach.user.name ?? t("coachFallback")}
                         </span>
                         {isSelected && (
                           <CheckCircle2 className="w-4 h-4 text-primary ml-auto shrink-0" />
@@ -158,27 +160,26 @@ export default function QaPage() {
               disabled={!question.trim() || selectedCoachIds.length === 0}
             >
               <Send className="w-4 h-4 mr-2" />
-              Надіслати питання
+              {t("submit")}
             </Button>
           </form>
         </CardBody>
       </Card>
 
-      {/* My questions */}
       <div>
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <Users className="w-5 h-5 text-primary" />
-          Мої запитання
+          {t("myQuestions")}
         </h2>
 
         {myQuestionsQuery.isLoading ? (
-          <p className="text-sm text-muted-foreground">Завантаження...</p>
+          <p className="text-sm text-muted-foreground">{t("loading")}</p>
         ) : myQuestions.length === 0 ? (
           <Card>
             <CardBody className="text-center py-8">
               <MessageSquare className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <p className="text-muted-foreground text-sm">
-                У вас ще немає запитань. Задайте перше!
+                {t("emptyMy")}
               </p>
             </CardBody>
           </Card>
@@ -197,9 +198,9 @@ export default function QaPage() {
                       <p className="text-sm font-medium">{questionText}</p>
                       <p className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
                         <Clock className="w-3.5 h-3.5" />
-                        {new Date(q.createdAt).toLocaleDateString("uk-UA")}
+                        {new Date(q.createdAt).toLocaleDateString(locale)}
                         <span>·</span>
-                        {answeredCount}/{answers.length} відповідей
+                        {t("answersCount", { answered: answeredCount, total: answers.length })}
                       </p>
                     </div>
 
@@ -216,12 +217,12 @@ export default function QaPage() {
                           >
                             <div className="flex items-center justify-between mb-1.5">
                               <span className="text-xs font-medium text-muted-foreground">
-                                {answer.coach.name ?? "Тренер"}
+                                {answer.coach.name ?? t("coachFallback")}
                               </span>
                               {answer.selected && (
                                 <span className="flex items-center gap-1 text-xs text-primary">
                                   <Star className="w-3 h-3 fill-current" />
-                                  Найкраща
+                                  {t("best")}
                                 </span>
                               )}
                             </div>
@@ -233,13 +234,13 @@ export default function QaPage() {
                                     onClick={() => handleSelectAnswer(answer.id)}
                                     className="mt-2 text-xs text-primary hover:underline cursor-pointer"
                                   >
-                                    Обрати найкращою
+                                    {t("selectBest")}
                                   </button>
                                 )}
                               </>
                             ) : (
                               <p className="text-muted-foreground italic">
-                                Очікує відповіді...
+                                {t("pendingAnswer")}
                               </p>
                             )}
                           </div>

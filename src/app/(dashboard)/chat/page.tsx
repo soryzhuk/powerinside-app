@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Send, MessageSquare, ChevronDown } from "lucide-react";
-import { Card, CardBody, CardHeader } from "@/components/ui/card";
+import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
@@ -15,7 +16,6 @@ interface Message {
   createdAt: Date | string;
 }
 
-/** Renders message text with clickable URLs */
 function MessageContent({ text, isUser }: { text: string; isUser: boolean }) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   const parts = text.split(urlRegex);
@@ -41,6 +41,8 @@ function MessageContent({ text, isUser }: { text: string; isUser: boolean }) {
 }
 
 export default function ChatPage() {
+  const t = useTranslations("chat");
+  const tCommon = useTranslations("common");
   const searchParams = useSearchParams();
   const initialConversationId = searchParams.get("conversation");
 
@@ -52,7 +54,6 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
 
-  // Count how many questions are in the input (ТЗ п.2.3)
   const questionCount = (input.match(/\?/g) ?? []).length;
   const hasMultipleQuestions = questionCount > 1;
 
@@ -60,7 +61,6 @@ export default function ChatPage() {
 
   const balanceQuery = trpc.athlete.getBalance.useQuery();
   const coachesQuery = trpc.admin.getCoaches.useQuery(undefined, {
-    // Athletes can see active coaches for selection
     retry: false,
   });
   const conversationQuery = trpc.athlete.getConversation.useQuery(
@@ -73,7 +73,6 @@ export default function ChatPage() {
   const balance = balanceQuery.data;
   const coaches = coachesQuery.data?.filter((c) => c.status === "ACTIVE") ?? [];
 
-  // Load conversation messages when selected
   useEffect(() => {
     if (conversationQuery.data) {
       setMessages(
@@ -87,12 +86,10 @@ export default function ChatPage() {
     }
   }, [conversationQuery.data]);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Auto-select first coach
   useEffect(() => {
     if (!selectedCoachId && coaches.length > 0) {
       setSelectedCoachId(coaches[0].id);
@@ -135,17 +132,16 @@ export default function ChatPage() {
         },
       ]);
 
-      // Refetch balance after sending
       balanceQuery.refetch();
     } catch (err: unknown) {
       const errorMessage =
-        err instanceof Error ? err.message : "Помилка при відправці повідомлення";
+        err instanceof Error ? err.message : t("errorSend");
       setMessages((prev) => [
         ...prev,
         {
           id: `error-${Date.now()}`,
           role: "assistant",
-          content: `Помилка: ${errorMessage}`,
+          content: t("errorPrefix", { message: errorMessage }),
           createdAt: new Date(),
         },
       ]);
@@ -156,11 +152,10 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-[calc(100dvh-5rem)]">
-      {/* Top bar: coach selector + balance */}
       <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <label className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-            Тренер:
+            {t("coachLabel")}
           </label>
           <div className="relative flex-1 sm:flex-none">
             <select
@@ -169,7 +164,7 @@ export default function ChatPage() {
               className="appearance-none w-full sm:w-48 px-3 py-2 pr-8 rounded-lg bg-input border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {coaches.length === 0 && (
-                <option value="">Немає доступних тренерів</option>
+                <option value="">{t("noCoaches")}</option>
               )}
               {coaches.map((coach) => (
                 <option key={coach.id} value={coach.id}>
@@ -184,12 +179,11 @@ export default function ChatPage() {
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary border border-border">
           <MessageSquare className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium">
-            {balance?.total ?? "..."} повідомлень
+            {t("messagesCount", { count: balance?.total ?? 0 })}
           </span>
         </div>
       </div>
 
-      {/* Messages */}
       <Card className="flex-1 flex flex-col overflow-hidden">
         <CardBody className="flex-1 overflow-y-auto space-y-4 p-4">
           {messages.length === 0 && (
@@ -198,11 +192,10 @@ export default function ChatPage() {
                 <MessageSquare className="w-8 h-8 text-primary" />
               </div>
               <h3 className="text-lg font-semibold mb-1">
-                Почніть розмову з AI-тренером
+                {t("emptyTitle")}
               </h3>
               <p className="text-sm text-muted-foreground max-w-sm">
-                Оберіть тренера та задайте своє перше питання про тренування,
-                техніку або харчування.
+                {t("emptySubtitle")}
               </p>
             </div>
           )}
@@ -239,20 +232,22 @@ export default function ChatPage() {
           <div ref={messagesEndRef} />
         </CardBody>
 
-        {/* Input */}
         <div className="border-t border-border p-4 space-y-2">
           {hasMultipleQuestions && (
             <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-700 dark:text-yellow-400">
-              <span className="shrink-0 mt-0.5">⚠️</span>
+              <span className="shrink-0 mt-0.5">⚠</span>
               <span>
-                Ваше повідомлення містить <strong>{questionCount} запитання</strong>. Кожне запитання списує 1 повідомлення з балансу — буде списано <strong>{questionCount}</strong>. Рекомендуємо задавати по одному питанню для точнішої відповіді.
+                {t.rich("multipleQuestionsWarning", {
+                  count: questionCount,
+                  b: (chunks) => <strong>{chunks}</strong>,
+                })}
               </span>
             </div>
           )}
           <form onSubmit={handleSend} className="flex items-center gap-3">
             <div className="flex-1">
               <Input
-                placeholder="Введіть ваше питання..."
+                placeholder={t("inputPlaceholder")}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={sending || !selectedCoachId}
@@ -262,6 +257,7 @@ export default function ChatPage() {
               type="submit"
               disabled={!input.trim() || !selectedCoachId || sending}
               loading={sending}
+              aria-label={tCommon("send")}
             >
               <Send className="w-4 h-4" />
             </Button>

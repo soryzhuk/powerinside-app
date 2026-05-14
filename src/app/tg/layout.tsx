@@ -1,12 +1,17 @@
 import Script from "next/script";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { TelegramProvider } from "@/components/telegram/tg-provider";
 import { TgTrpcProvider } from "@/components/telegram/tg-trpc-provider";
 import type { ReactNode } from "react";
 
-export const metadata = {
-  title: "PowerInside — Telegram",
-  description: "PowerInside Mini App для Telegram",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("tg.meta");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
 export default function TelegramLayout({ children }: { children: ReactNode }) {
   return (

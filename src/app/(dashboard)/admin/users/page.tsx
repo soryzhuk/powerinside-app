@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Search, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,14 +9,6 @@ import { trpc } from "@/lib/trpc";
 
 const ROLES = ["ATHLETE", "COACH", "INVESTOR", "ADMIN", "OWNER"] as const;
 type Role = (typeof ROLES)[number];
-
-const ROLE_LABELS: Record<Role, string> = {
-  ATHLETE: "Атлет",
-  COACH: "Тренер",
-  INVESTOR: "Інвестор",
-  ADMIN: "Адмін",
-  OWNER: "Власник",
-};
 
 const ROLE_COLORS: Record<Role, string> = {
   ATHLETE: "text-blue-400 bg-blue-400/10",
@@ -26,6 +19,10 @@ const ROLE_COLORS: Record<Role, string> = {
 };
 
 export default function AdminUsersPage() {
+  const t = useTranslations("adminUsers");
+  const tRoles = useTranslations("roles");
+  const tCommon = useTranslations("common");
+  const locale = useLocale();
   const [search, setSearch] = useState("");
   const [role, setRole] = useState<Role | "ALL">("ALL");
   const [page, setPage] = useState(1);
@@ -54,19 +51,18 @@ export default function AdminUsersPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
-          Управління <span className="text-primary">користувачами</span>
+          {t("titleA")} <span className="text-primary">{t("titleB")}</span>
         </h1>
         <p className="text-muted-foreground mt-1">
-          {data?.total ?? "..."} користувачів на платформі
+          {t("subtitle", { n: data?.total ?? "..." })}
         </p>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Пошук за ім'ям або email..."
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             className="pl-9"
@@ -82,7 +78,7 @@ export default function AdminUsersPage() {
                 : "bg-secondary border-border text-muted-foreground hover:text-foreground"
             }`}
           >
-            Всі
+            {tCommon("all")}
           </button>
           {ROLES.map((r) => (
             <button
@@ -94,32 +90,31 @@ export default function AdminUsersPage() {
                   : "bg-secondary border-border text-muted-foreground hover:text-foreground"
               }`}
             >
-              {ROLE_LABELS[r]}
+              {tRoles(r)}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Table */}
       <Card>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
                 <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-3">
-                  Користувач
+                  {t("table.user")}
                 </th>
                 <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-3">
-                  Роль
+                  {t("table.role")}
                 </th>
                 <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-3">
-                  Країна
+                  {t("table.country")}
                 </th>
                 <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-3">
-                  Розмови
+                  {t("table.conversations")}
                 </th>
                 <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-6 py-3">
-                  Реєстрація
+                  {t("table.registered")}
                 </th>
               </tr>
             </thead>
@@ -127,7 +122,7 @@ export default function AdminUsersPage() {
               {usersQuery.isLoading && (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-sm text-muted-foreground">
-                    Завантаження...
+                    {t("loading")}
                   </td>
                 </tr>
               )}
@@ -135,7 +130,7 @@ export default function AdminUsersPage() {
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-sm text-muted-foreground">
                     <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                    Користувачів не знайдено
+                    {t("notFound")}
                   </td>
                 </tr>
               )}
@@ -143,13 +138,13 @@ export default function AdminUsersPage() {
                 <tr key={user.id} className="hover:bg-secondary/30 transition-colors">
                   <td className="px-6 py-4">
                     <div>
-                      <p className="text-sm font-medium">{user.name ?? "Без імені"}</p>
+                      <p className="text-sm font-medium">{user.name ?? t("noName")}</p>
                       <p className="text-xs text-muted-foreground">{user.email}</p>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${ROLE_COLORS[user.role as Role]}`}>
-                      {ROLE_LABELS[user.role as Role]}
+                      {tRoles(user.role as Role)}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -160,7 +155,7 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-xs text-muted-foreground">
-                      {new Date(user.createdAt).toLocaleDateString("uk")}
+                      {new Date(user.createdAt).toLocaleDateString(locale)}
                     </span>
                   </td>
                 </tr>
@@ -169,11 +164,10 @@ export default function AdminUsersPage() {
           </table>
         </div>
 
-        {/* Pagination */}
         {data && data.totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-border">
             <p className="text-sm text-muted-foreground">
-              Сторінка {data.page} з {data.totalPages}
+              {t("page", { page: data.page, total: data.totalPages })}
             </p>
             <div className="flex gap-2">
               <button
@@ -181,14 +175,14 @@ export default function AdminUsersPage() {
                 disabled={page === 1}
                 className="px-3 py-1.5 text-sm rounded-lg border border-border bg-secondary disabled:opacity-40 cursor-pointer hover:bg-secondary/70"
               >
-                ← Назад
+                {t("prev")}
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
                 disabled={page === data.totalPages}
                 className="px-3 py-1.5 text-sm rounded-lg border border-border bg-secondary disabled:opacity-40 cursor-pointer hover:bg-secondary/70"
               >
-                Далі →
+                {t("next")}
               </button>
             </div>
           </div>

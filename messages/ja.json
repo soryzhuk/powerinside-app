@@ -1,0 +1,725 @@
+{
+  "meta": {
+    "title": "PowerInside — ストレングススポーツのためのプラットフォーム",
+    "description": "パワーリフターおよびストレングスアスリート向けのAIコーチング、ナレッジベース、サブスクリプション"
+  },
+  "common": {
+    "loading": "読み込み中…",
+    "loadingShort": "読み込み中...",
+    "loadingDots": "...",
+    "back": "戻る",
+    "next": "次へ",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "send": "送信",
+    "copy": "コピー",
+    "copied": "コピーしました!",
+    "delete": "削除",
+    "edit": "編集",
+    "search": "検索",
+    "yes": "はい",
+    "no": "いいえ",
+    "active": "アクティブ",
+    "inactive": "非アクティブ",
+    "error": "エラー",
+    "errorTryAgain": "エラーが発生しました。もう一度お試しください。",
+    "retry": "再試行",
+    "all": "すべて",
+    "ok": "OK",
+    "close": "閉じる"
+  },
+  "language": {
+    "label": "言語",
+    "select": "言語を選択"
+  },
+  "nav": {
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "dashboard": "ダッシュボード",
+    "chat": "チャット",
+    "multiexpert": "マルチエキスパート",
+    "balance": "残高",
+    "referrals": "紹介",
+    "interview": "インタビュー",
+    "athletesQuestions": "アスリートからの質問",
+    "knowledgeBase": "ナレッジベース",
+    "payouts": "支払い",
+    "users": "ユーザー",
+    "coaches": "コーチ",
+    "analytics": "アナリティクス",
+    "investorReport": "レポート",
+    "toggleMenu": "メニュー切り替え"
+  },
+  "landing": {
+    "badge": "コーチのメソドロジーを、あなたのポケットに",
+    "heroTitleA": "ストレングススポーツの",
+    "heroTitleB": "ためのプラットフォーム",
+    "heroSubtitle": "本物のコーチのメソドロジーに基づいたパーソナライズされた回答。パワーリフティング、ストロングマン、ウエイトリフティング — あなたのコーチを見つけて新たな高みへ。",
+    "ctaAthleteRole": "私はアスリートです",
+    "ctaCoachRole": "私はコーチです",
+    "featuresTitleA": "あなたの",
+    "featuresTitleB": "進歩のためのすべて",
+    "featuresSubtitle": "最高のコーチの経験を、その知識を24時間365日利用可能にするテクノロジーと組み合わせています。",
+    "feature": {
+      "coachingTitle": "メソドロジーに基づくコーチング",
+      "coachingDesc": "あなたが選んだ本物のコーチの知識に基づくパーソナライズされた回答。",
+      "knowledgeTitle": "ナレッジベース",
+      "knowledgeDesc": "コーチは深いインタビューを受け、自身のメソドロジーをアップロードし、それがコンサルテーションの基盤となります。",
+      "subscriptionsTitle": "サブスクリプション",
+      "subscriptionsDesc": "さまざまなコーチやコンサルテーションレベルにアクセスできる柔軟なサブスクリプションシステム。",
+      "trackingTitle": "進捗トラッキング",
+      "trackingDesc": "筋力指標を追跡し、トレンドを分析し、新たな記録を達成します。",
+      "verifiedTitle": "認証済みコーチ",
+      "verifiedDesc": "すべてのコーチはプラットフォームに登録される前にインタビューと認証を受けます。",
+      "support24Title": "24/7 回答",
+      "support24Desc": "あなたのコーチのメソドロジーに基づき、いつでも回答を得られます。"
+    },
+    "ctaSectionTitle": "より強くなる準備はできましたか?",
+    "ctaSectionSubtitle": "PowerInsideに参加してください — コーチの経験があなたの結果のために24時間体制で働くプラットフォームです。",
+    "startTraining": "トレーニングを始める",
+    "becomeCoach": "コーチになる",
+    "rights": "無断複写・転載を禁じます。"
+  },
+  "authLogin": {
+    "title": "サインインする先:",
+    "subtitle": "サインインするには情報を入力してください",
+    "passwordLabel": "パスワード",
+    "submit": "サインイン",
+    "noAccount": "アカウントをお持ちでない方は?",
+    "signupLink": "登録",
+    "invalidCredentials": "メールアドレスまたはパスワードが無効です。",
+    "generalError": "エラーが発生しました。もう一度お試しください。"
+  },
+  "authRegister": {
+    "title": "登録する先:",
+    "subtitle": "始めるためにアカウントを作成してください",
+    "athlete": "アスリート",
+    "coach": "コーチ",
+    "referralBonus": "招待されました!登録後、<b>5つのボーナスメッセージ</b>を受け取れます。",
+    "postSignInError": "登録は成功しましたが、サインインに失敗しました。手動でサインインしてください。",
+    "generalError": "登録に失敗しました。",
+    "nameLabel": "名前",
+    "namePlaceholder": "山田 太郎",
+    "emailLabel": "メールアドレス",
+    "phoneLabel": "電話番号",
+    "phonePlaceholder": "+81 90 1234 5678",
+    "addressLabel": "住所",
+    "addressPlaceholder": "東京都中央区1-2-3",
+    "passwordLabel": "パスワード",
+    "passwordPlaceholder": "6文字以上",
+    "countryLabel": "国",
+    "languageLabel": "言語",
+    "submit": "登録",
+    "hasAccount": "すでにアカウントをお持ちですか?",
+    "loginLink": "サインイン"
+  },
+  "countries": {
+    "UA": "ウクライナ",
+    "US": "USA",
+    "GB": "イギリス",
+    "DE": "ドイツ",
+    "PL": "ポーランド",
+    "CA": "カナダ",
+    "AU": "オーストラリア",
+    "OTHER": "その他",
+    "selectPlaceholder": "国を選択"
+  },
+  "roles": {
+    "label": "役割",
+    "ATHLETE": "アスリート",
+    "COACH": "コーチ",
+    "INVESTOR": "投資家",
+    "ADMIN": "管理者",
+    "OWNER": "オーナー",
+    "defaultUserName": "ユーザー"
+  },
+  "coachStatus": {
+    "PENDING": "保留中",
+    "ACTIVE": "アクティブ",
+    "SUSPENDED": "停止中",
+    "pendingActivation": "アクティベーション待ち"
+  },
+  "dashboard": {
+    "athleteGreeting": "こんにちは、",
+    "athleteSubtitle": "あなた専用のAIコーチがお待ちしています",
+    "balanceLabel": "メッセージ残高",
+    "balanceBreakdown": "{free} 無料 / {weekly} 週次 / {purchased} 購入済み",
+    "conversationsLabel": "会話",
+    "conversationsSub": "アクティブなAI対話",
+    "askTitle": "質問する",
+    "askSubtitle": "AIコーチにトレーニングについて質問してください",
+    "recentTitle": "最近の会話",
+    "allConversations": "すべての会話",
+    "emptyConversations": "まだ会話がありません。AIコーチとのチャットを始めましょう!",
+    "newConversation": "新しい会話",
+    "coachStatusLine": "ステータス:",
+    "interviewCard": "インタビュー",
+    "interviewSub": "完了ラウンド",
+    "knowledgeCard": "ナレッジベース",
+    "knowledgeSub": "ナレッジベースのエントリー",
+    "rulesCard": "ルール",
+    "rulesSub": "メソドロジーのルール",
+    "continueTitle": "インタビューを続ける",
+    "continueSub": "AIコーチをアクティベートするには、全7ラウンドを完了してください",
+    "goto": "移動",
+    "adminTitle": "管理",
+    "adminPanelLine": "パネル",
+    "adminSubtitle": "プラットフォーム概要",
+    "totalUsers": "総ユーザー数",
+    "coaches": "コーチ",
+    "activeTotal": "アクティブ / 合計",
+    "revenue": "収益",
+    "subscriptionsInfo": "サブスクリプション: {active} アクティブ / 合計 {total}",
+    "manageCoachesTitle": "コーチを管理",
+    "manageCoachesSub": "コーチの表示、アクティベート、停止",
+    "manageCoachesAction": "表示"
+  },
+  "balance": {
+    "titleA": "メッセージ",
+    "titleB": "残高",
+    "subtitle": "残高を管理し、メッセージパックを購入してください",
+    "successMsg": "✓ 支払いが完了しました!残高が更新されました。",
+    "canceledMsg": "支払いがキャンセルされました。",
+    "free": "無料",
+    "weekly": "週次",
+    "purchased": "購入済み",
+    "totalLabel": "合計残高",
+    "totalUnit": "利用可能なメッセージ",
+    "subscription": "サブスクリプション",
+    "active": "アクティブ",
+    "perMonth": "/ 月",
+    "nextBilling": "次回請求日: {date}",
+    "subscriptionActiveLabel": "サブスクリプション有効",
+    "basicTitle": "Basic — $30 / 月",
+    "feature": {
+      "weekly20": "週20メッセージ",
+      "aiChat": "コーチとのAIチャット",
+      "access": "メソドロジーへのアクセス",
+      "noExpiry": "期限なし",
+      "anyCoach": "任意のコーチ",
+      "instant": "即座の回答"
+    },
+    "subscribeBasic": "Basicに登録",
+    "packsTitle": "メッセージパック",
+    "popular": "最も人気",
+    "messages": "メッセージ",
+    "perMessage": "{price} / メッセージ",
+    "buy": "購入"
+  },
+  "chat": {
+    "coachLabel": "コーチ:",
+    "noCoaches": "利用可能なコーチがいません",
+    "messagesCount": "{count} メッセージ",
+    "emptyTitle": "AIコーチとの会話を始めましょう",
+    "emptySubtitle": "コーチを選択し、トレーニング、テクニック、または栄養について最初の質問をしてください。",
+    "multipleQuestionsWarning": "あなたのメッセージには <b>{count} 個の質問</b>が含まれています。各質問は残高から1メッセージを消費します — <b>{count}</b> が差し引かれます。より正確な回答のため、一度に1つの質問をすることをお勧めします。",
+    "inputPlaceholder": "質問を入力…",
+    "errorSend": "メッセージの送信に失敗しました",
+    "errorPrefix": "エラー: {message}"
+  },
+  "interview": {
+    "completed": "インタビューが完了しました。率直なお答えをありがとうございました。",
+    "startOver": "やり直す",
+    "inputPlaceholder": "詳しくお答えください…",
+    "errorPrefix": "エラー: {message}",
+    "errorSend": "送信に失敗しました"
+  },
+  "knowledge": {
+    "titleA": "ナレッジ",
+    "titleB": "ベース",
+    "subtitle": "あなたのインタビューから得たメソドロジーのルール。あなたのシステムを正確に反映しているものを確認してください — 確認されたルールのみが、アスリートへの回答時にAIによって使用されます。",
+    "entriesLabel": "エントリー",
+    "totalRules": "ルール総数",
+    "confirmedLabel": "確認済み",
+    "rulesHeader": "メソドロジーのルール",
+    "rulesHint": "ルールの横にある ⭕ をタップして確認してください。ルールを展開すると詳細が表示されます。",
+    "loading": "読み込み中…",
+    "emptyRules": "ルールはインタビュー完了後に表示されます",
+    "entriesHeader": "ナレッジベースのエントリー",
+    "approved": "✓ 承認済み",
+    "rule": {
+      "condition": "条件:",
+      "signal": "シグナル:",
+      "decision": "決定:",
+      "exception": "例外:",
+      "alternative": "代替:",
+      "confirm": "ルールを確認",
+      "unconfirm": "確認をキャンセル"
+    },
+    "rounds": {
+      "TARGET_ATHLETE": "対象アスリート",
+      "LOAD_MANAGEMENT": "負荷管理",
+      "AUTOREGULATION": "自己調整",
+      "PROGRESSION_DELOAD": "進歩とディロード",
+      "EXERCISE_SELECTION": "エクササイズの選択",
+      "TECHNIQUE_STANDARDS": "技術基準",
+      "LIFESTYLE_RECOVERY": "ライフスタイルとリカバリー"
+    }
+  },
+  "expertQa": {
+    "titleA": "アスリート",
+    "titleB": "の質問",
+    "subtitle": "アスリートの質問に答えて、ナレッジベースを成長させましょう",
+    "pendingTitle": "返信待ち",
+    "loading": "読み込み中…",
+    "noNew": "新しい質問はありません",
+    "answerPlaceholder": "あなたの回答…",
+    "reply": "返信",
+    "answeredTitle": "送信済みの返信",
+    "bestSelected": "★ アスリートによってベストとして選ばれました",
+    "empty": "まだアスリートからの質問はありません",
+    "athleteFallback": "アスリート"
+  },
+  "qa": {
+    "titleA": "マルチエキスパート",
+    "titleB": "の回答",
+    "subtitle": "複数のコーチに同時に質問し、最良の回答を選びましょう",
+    "newQuestion": "新しい質問",
+    "questionLabel": "あなたの質問",
+    "questionPlaceholder": "質問を詳しく説明してください — 正確であるほど、より良い回答が得られます…",
+    "chooseCoachesLabel": "コーチを選択(最大5名)",
+    "selectedCount": "({count} 名選択)",
+    "loading": "読み込み中…",
+    "noActiveCoaches": "まだアクティブなコーチはいません",
+    "submit": "質問を送信",
+    "myQuestions": "私の質問",
+    "emptyMy": "まだ質問がありません。最初の質問をしてみましょう!",
+    "answersCount": "{answered}/{total} 回答",
+    "best": "ベスト",
+    "selectBest": "ベストとして選ぶ",
+    "pendingAnswer": "返信待ち…",
+    "genericError": "エラー",
+    "coachFallback": "コーチ"
+  },
+  "referral": {
+    "loading": "読み込み中…",
+    "title": "紹介プログラム",
+    "subtitle": "新しいアスリートを招待しましょう — 彼らがサブスクライブすると <b>5 つのボーナスメッセージ</b> を獲得できます。彼らはあなたのリンク経由で参加するだけで <b>5 つのウェルカムメッセージ</b> を受け取ります。",
+    "yourLink": "あなたの紹介リンク",
+    "copy": "コピー",
+    "copied": "コピーしました!",
+    "codeLabel": "コード:",
+    "stats": {
+      "totalReferred": "総紹介数",
+      "bonusEarned": "獲得したボーナスメッセージ",
+      "pending": "保留中(まだ未登録)"
+    },
+    "list": {
+      "title": "紹介したアスリート",
+      "joined": "{date} に参加",
+      "earned": "+{n} メッセージ獲得",
+      "pendingSub": "サブスクリプション待ち"
+    },
+    "how": {
+      "title": "仕組み",
+      "step1": "紹介リンクを新しいアスリートと共有します。",
+      "step2": "彼らは登録するとすぐに5つのボーナスメッセージを受け取ります。",
+      "step3": "彼らが最初のサブスクリプションを購入すると、あなたは5つのボーナスメッセージを受け取ります。",
+      "step4": "ボーナスメッセージは期限切れにならず、残高に残ります。"
+    }
+  },
+  "payouts": {
+    "titleA": "私の",
+    "titleB": "支払い",
+    "subtitle": "各アスリートのサブスクリプションの70%があなたのアカウントに入金されます",
+    "pendingLabel": "保留中の支払い",
+    "totalPaid": "総支払額",
+    "modelTitle": "金融モデル:",
+    "modelDescription": "アスリートのサブスクリプションの70%はあなたへ、30%はプラットフォームへ。",
+    "schedule": "支払いは毎月1日と15日に行われます。",
+    "min": "最低支払額は $250 です。",
+    "historyTitle": "支払い履歴",
+    "loading": "読み込み中…",
+    "empty": "まだ支払いはありません。最初のアスリートのサブスクリプション後に表示されます。",
+    "subscription": "サブスクリプション",
+    "pack": "パック",
+    "platformFee": "プラットフォーム: {fee}",
+    "status": {
+      "PENDING": "保留中",
+      "PROCESSING": "処理中",
+      "COMPLETED": "支払い済み",
+      "FAILED": "失敗"
+    }
+  },
+  "investor": {
+    "titleA": "投資家",
+    "titleB": "レポート",
+    "subtitle": "プラットフォームの分析 — 閲覧のみ。投資家への支払いは四半期ごと(ネット)。",
+    "metrics": {
+      "totalUsers": "総ユーザー数",
+      "athletesSub": "{n} アスリート",
+      "activeCoaches": "アクティブなコーチ",
+      "ofTotalCoaches": "合計 {total} 中",
+      "activeSubs": "アクティブなサブスクリプション",
+      "ofTotalSubs": "合計 {total} 中",
+      "mrr": "MRR(推定)",
+      "mrrSub": "アクティブなサブスクリプションに基づく",
+      "packsRevenue": "収益(パック)",
+      "packsRevenueSub": "メッセージの一回限りの購入",
+      "pendingPayouts": "保留中の支払い",
+      "pendingPayoutsSub": "コーチ向けに待機中"
+    },
+    "quarterly": {
+      "title": "四半期レポート(過去3ヶ月)",
+      "coachPayouts": "コーチへの支払い",
+      "platformRevenue": "プラットフォーム収益(30%)",
+      "transactions": "取引数",
+      "totalTurnover": "総取引高"
+    },
+    "conversion": {
+      "title": "コンバージョン",
+      "coachesActive": "アクティブなコーチ",
+      "subsActive": "アクティブなサブスクリプション",
+      "note": "投資家は四半期ごとに支払いを受け取ります(ネット)。請求権は累積シェアが ≥51% で発生します(T.S. p.10)。"
+    }
+  },
+  "profile": {
+    "titleA": "私の",
+    "titleB": "プロフィール",
+    "subtitle": "情報の表示と編集",
+    "basicInfo": "基本情報",
+    "roleLabel": "役割:",
+    "savedMsg": "プロフィールが正常に更新されました!",
+    "nameLabel": "名前",
+    "namePlaceholder": "あなたの名前",
+    "emailLabel": "メールアドレス",
+    "emailHelper": "メールアドレスは変更できません",
+    "phoneLabel": "電話番号",
+    "phonePlaceholder": "+81 90 1234 5678",
+    "countryLabel": "国",
+    "countryPlaceholder": "国を選択",
+    "languageLabel": "インターフェース言語",
+    "languagePlaceholder": "言語を選択",
+    "save": "変更を保存",
+    "coach": {
+      "title": "コーチプロフィール",
+      "subtitle": "コーチプロフィールのステータスと統計",
+      "statusLabel": "ステータス",
+      "active": "アクティブ",
+      "pending": "アクティベーション待ち",
+      "suspended": "停止中",
+      "roundsLabel": "インタビューラウンド",
+      "roundsValue": "{done} / 7 完了",
+      "knowledgeLabel": "ナレッジベース",
+      "knowledgeValue": "{n} エントリー",
+      "rulesLabel": "メソドロジーのルール",
+      "rulesValue": "{n} ルール",
+      "identityTitle": "身分証明書",
+      "identitySubtitle": "認証に必要です。形式: JPEG, PNG, PDF。最大 10 MB。",
+      "uploaded": "ドキュメントがアップロードされました",
+      "replace": "置き換え",
+      "upload": "ドキュメントをアップロード",
+      "uploading": "アップロード中…",
+      "uploadSuccess": "✓ ドキュメントが正常にアップロードされました",
+      "uploadFailed": "アップロードに失敗しました"
+    }
+  },
+  "adminCoaches": {
+    "titleA": "コーチを",
+    "titleB": "管理",
+    "subtitle": "プラットフォームに {n} 名のコーチ",
+    "searchPlaceholder": "名前またはメールで検索…",
+    "table": {
+      "coach": "コーチ",
+      "status": "ステータス",
+      "interview": "インタビュー",
+      "knowledge": "ナレッジベース",
+      "rules": "ルール",
+      "registered": "参加日",
+      "actions": "アクション"
+    },
+    "notFound": "コーチが見つかりません",
+    "noName": "名前なし",
+    "activate": "アクティベート",
+    "suspend": "停止",
+    "resetInterview": "インタビューをリセット",
+    "resetConfirm": "{who} のインタビューをリセットしますか?すべてのメッセージが削除されます。"
+  },
+  "adminUsers": {
+    "titleA": "ユーザーを",
+    "titleB": "管理",
+    "subtitle": "プラットフォームに {n} 名のユーザー",
+    "searchPlaceholder": "名前またはメールで検索…",
+    "table": {
+      "user": "ユーザー",
+      "role": "役割",
+      "country": "国",
+      "conversations": "会話",
+      "registered": "参加日"
+    },
+    "loading": "読み込み中…",
+    "notFound": "ユーザーが見つかりません",
+    "noName": "名前なし",
+    "page": "ページ {page} / {total}",
+    "prev": "← 前へ",
+    "next": "次へ →"
+  },
+  "adminAnalytics": {
+    "titleA": "プラットフォーム",
+    "titleB": "アナリティクス",
+    "subtitle": "総合統計",
+    "cards": {
+      "totalUsers": "総ユーザー数",
+      "totalCoaches": "総コーチ数",
+      "activeCoaches": "アクティブなコーチ",
+      "activeSubs": "アクティブなサブスクリプション",
+      "totalSubs": "総サブスクリプション数",
+      "revenue": "収益(パック)"
+    },
+    "coachConversion": "コーチのコンバージョン",
+    "totalCoachesRow": "総コーチ数",
+    "activeRow": "アクティブ",
+    "noCoaches": "コーチなし",
+    "percentActive": "{pct}% アクティブ",
+    "subscriptionsTitle": "サブスクリプション",
+    "totalSubsRow": "総サブスクリプション数",
+    "noSubs": "サブスクリプションなし",
+    "loading": "読み込み中…"
+  },
+  "tg": {
+    "meta": {
+      "title": "PowerInside — Telegram",
+      "description": "Telegram 用 PowerInside Mini App"
+    },
+    "common": {
+      "loading": "読み込み中…",
+      "back": "戻る",
+      "errorTitle": "認証エラー",
+      "tryAgain": "エラー。もう一度お試しください。"
+    },
+    "tabs": {
+      "chat": "チャット",
+      "balance": "残高",
+      "profile": "プロフィール",
+      "admin": "管理",
+      "interview": "インタビュー"
+    },
+    "tabsCoach": {
+      "interview": "インタビュー",
+      "profile": "プロフィール"
+    },
+    "athleteTabs": {
+      "chat": "会話",
+      "balance": "残高",
+      "profile": "プロフィール",
+      "admin": "管理"
+    },
+    "onboarding": {
+      "topLabel": "PowerInside · Est 2026",
+      "frameNumber": "N° 001",
+      "frameMid": "— メソドロジー —",
+      "frameInf": "∞",
+      "tagline": "コーチのメソドロジーとの対話。テンプレートはなし — 彼が言うであろうことだけ。",
+      "selectRole": "— 役割を選択してください",
+      "imAthlete": "私はアスリートです",
+      "athleteSub": "コーチに質問し、彼らのメソドロジーから回答を得ます",
+      "imCoach": "私はコーチです",
+      "coachSub": "7ラウンドのインタビューを受けます — 私のメソドロジーがアスリートのベースになります",
+      "saving": "選択を保存中…",
+      "supportNote": "選択はサポートを通じて変更できます"
+    },
+    "interview": {
+      "header": "メソドロジーインタビュー",
+      "headlineA": "あなたの",
+      "headlineB": "指導方法を教えてください。",
+      "empty": "7ラウンドの質問。あなたの回答 — メソドロジーの基盤。",
+      "inProgress": "{total} ラウンド中 {done} 完了。続けてください。",
+      "allDone": "すべてのラウンドが完了しました!メソドロジーが記録されました。",
+      "roundCounter": "{done} / {total} ラウンド · {pct}%",
+      "rounds": {
+        "TARGET_ATHLETE": {
+          "label": "アスリートのプロファイルとシステム",
+          "desc": "メソドロジーが誰のためのもので、どこで最も効果的か"
+        },
+        "LOAD_MANAGEMENT": {
+          "label": "負荷割り当てのロジック",
+          "desc": "トレーニング負荷の選択と調整方法"
+        },
+        "AUTOREGULATION": {
+          "label": "自己調整とコンディション",
+          "desc": "アスリートの状態に応じてトレーニングがどう適応するか"
+        },
+        "PROGRESSION_DELOAD": {
+          "label": "進歩のアーキテクチャ",
+          "desc": "長期的な進歩の構築方法"
+        },
+        "EXERCISE_SELECTION": {
+          "label": "エクササイズ選択戦略",
+          "desc": "エクササイズの選択と修正の方法"
+        },
+        "TECHNIQUE_STANDARDS": {
+          "label": "技術基準と動作",
+          "desc": "技術要件と動作哲学"
+        },
+        "LIFESTYLE_RECOVERY": {
+          "label": "リカバリーエコシステム",
+          "desc": "結果に影響するトレーニング以外の要因"
+        }
+      },
+      "completedBadge": "✓ 完了",
+      "answerInDetail": "詳細な回答をしてください",
+      "voice": "音声",
+      "text": "テキスト",
+      "answerInstructions": "詳しくお答えください — 詳細であるほど、あなたのメソドロジーがアスリートに正確に表現されます。",
+      "transcribing": "文字起こし中…",
+      "inputPlaceholder": "詳しくお答えください…"
+    },
+    "sport": {
+      "moderationTitle": "モデレーション中",
+      "moderationSub": "あなたのスポーツが管理者に送信されました。承認後、Telegram 通知を受け取り、インタビューを受けることができます。",
+      "customNameTitle": "カスタムスポーツ",
+      "customNameSub": "名前を入力してください — 管理者が確認し承認します。",
+      "customPlaceholder": "スポーツ名…",
+      "submitting": "送信中…",
+      "submitForModeration": "モデレーションに送信",
+      "step2Label": "PowerInside · ステップ 2",
+      "yourSport": "あなたのスポーツ",
+      "chooseDiscipline": "アスリートを指導している競技を選んでください。",
+      "loading": "読み込み中…",
+      "addCustom": "独自のスポーツを追加",
+      "moderationWithName": "あなたのスポーツ <b>{name}</b> が管理者に送信されました。承認されると Telegram 通知が届きます。"
+    },
+    "coachProfile": {
+      "header": "コーチプロフィール",
+      "activeBadge": "● アクティブ",
+      "pendingBadge": "● アクティベーション待ち",
+      "stats": {
+        "rules": "ルール",
+        "entries": "エントリー",
+        "rounds": "/ 7 ラウンド"
+      },
+      "whatNextTitle": "次は?",
+      "whatNextDesc": "インタビューが完了すると、管理者があなたのメソドロジーを確認し、プロフィールをアクティベートします。アクティベートされると、アスリートがあなたに質問できます。",
+      "footer": "POWERINSIDE · COACH · V 0.1"
+    },
+    "coaches": {
+      "library": "コーチライブラリ",
+      "headlineA": "誰と話すか",
+      "headlineB": "選んでください。",
+      "loading": "読み込み中...",
+      "count": "{n} のアクティブなメソドロジー。",
+      "noCoaches": "まだアクティブなコーチはいません。",
+      "recommended": "⸻ おすすめ",
+      "coachFallback": "コーチ",
+      "rulesCount": "{n} ルール",
+      "entriesCount": "{n} エントリー"
+    },
+    "chatView": {
+      "headerStatus": "メソドロジー · {n} ルール",
+      "emptyHeadlineA": "ずっと迷っていたことを",
+      "emptyHeadlineB": "聞いてください。",
+      "emptySub": "私はコーチと同じように答えます。私のルール — 彼のメソドロジー。",
+      "noMessages": "メッセージが足りません。残高をチャージしてください。",
+      "inputPlaceholder": "コーチに質問…",
+      "prompts": {
+        "p1": "スクワット前のウォームアップを組み立てて",
+        "p2": "背中の痛みを抱えてトレーニングすべきですか?",
+        "p3": "大会当日の食事は?",
+        "p4": "自己調整とは何か説明して",
+        "q1": "何セット?",
+        "q2": "後に何を食べる?",
+        "q3": "別の質問"
+      }
+    },
+    "balance": {
+      "header": "残高",
+      "totalSub": "コーチへのメッセージ",
+      "totalLabel": "合計 / 残り",
+      "free": "● {n} 無料",
+      "weekly": "● {n} 週次",
+      "purchased": "● {n} 購入済み",
+      "subActive": "アクティブ",
+      "subInactive": "非アクティブ",
+      "renews": "更新 {date} · $30",
+      "packsTitle": "— メッセージパック",
+      "perHundred": "≈ {rate} / 100 メッセージ",
+      "pack50": "ウォームアップ用",
+      "pack200": "人気",
+      "pack500": "ベストバリュー"
+    },
+    "profile": {
+      "header": "プロフィール",
+      "athlete": "アスリート",
+      "settings": "— 設定",
+      "subscription": "サブスクリプション",
+      "none": "なし",
+      "notifications": "通知",
+      "enabled": "有効",
+      "language": "言語",
+      "support": "サポートに連絡",
+      "logout": "ログアウト",
+      "footer": "POWERINSIDE · V 0.1 · TELEGRAM MINI APP"
+    },
+    "admin": {
+      "header": "管理",
+      "sections": {
+        "stats": "アナリティクス",
+        "coaches": "コーチ",
+        "users": "ユーザー",
+        "sports": "スポーツ"
+      },
+      "stats": {
+        "totalUsers": "総ユーザー数",
+        "totalCoaches": "総コーチ数",
+        "activeCoaches": "アクティブなコーチ",
+        "activeSubs": "アクティブなサブスクリプション",
+        "totalSubs": "総サブスクリプション数",
+        "revenue": "収益(パック)"
+      },
+      "coaches": {
+        "noName": "名前なし",
+        "activate": "アクティベート",
+        "suspend": "停止",
+        "resetInterview": "↺ インタビューをリセット",
+        "empty": "コーチなし",
+        "stats": "{rules} ルール · {entries} エントリー · {rounds}/7",
+        "resetConfirm": "{who} のインタビューをリセットしますか?"
+      },
+      "users": {
+        "noName": "名前なし",
+        "conversations": "{n} 会話 · {date}",
+        "empty": "ユーザーなし"
+      },
+      "sports": {
+        "pending": "モデレーション待ち ({n})",
+        "from": "{who} から",
+        "approve": "承認",
+        "reject": "却下",
+        "addTitle": "スポーツを追加",
+        "addPlaceholder": "名前…",
+        "add": "追加",
+        "allTitle": "すべてのスポーツ ({n})",
+        "delete": "削除",
+        "deleteConfirm": "「{name}」を削除しますか?",
+        "unknown": "不明"
+      },
+      "status": {
+        "PENDING": "保留中",
+        "ACTIVE": "アクティブ",
+        "SUSPENDED": "停止中"
+      },
+      "roles": {
+        "ATHLETE": "アスリート",
+        "COACH": "コーチ",
+        "INVESTOR": "投資家",
+        "ADMIN": "管理者",
+        "OWNER": "オーナー"
+      }
+    },
+    "adminProfile": {
+      "header": "管理者プロフィール",
+      "badge": "● 管理者",
+      "previewTitle": "— インターフェースのプレビュー",
+      "athleteMode": "アスリートモード",
+      "athleteSub": "アスリートインターフェースのプレビュー",
+      "coachMode": "コーチモード",
+      "coachSub": "コーチインターフェースとインタビューのプレビュー",
+      "previewAthlete": "プレビュー: アスリートモード",
+      "previewCoach": "プレビュー: コーチモード",
+      "footer": "POWERINSIDE · ADMIN · V 0.1"
+    }
+  }
+}
